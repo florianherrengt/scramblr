@@ -5,29 +5,47 @@ orbs:
   cli: digitalocean/cli@0.1.1
   docker: circleci/docker@1.0.0
 
+defaults: &defaults
+  working_directory: ~/repo
+
 jobs:
   test-web:
+    <<: *defaults
     docker:
       - image: node:13
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "web/package.json" }}
+            - v1-dependencies-
       - run: yarn --cwd web install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "web/package.json" }}
       - run: yarn --cwd web test
       - persist_to_workspace:
-          root: .
+          root: ~/repo
           paths: .
 
   build-web:
+    <<: *defaults
     docker:
       - image: node:13
     steps:
-      - attach_workspace
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "web/package.json" }}
+            - v1-dependencies-
+      - run: yarn --cwd web install
       - run: yarn --cwd web build
       - persist_to_workspace:
-          root: .
+          root: ~/repo
           paths: .
 
   test-server:
+    <<: *defaults
     docker:
       - image: node:13
     steps:
@@ -47,13 +65,13 @@ workflows:
             branches:
               only:
                 - master
-      # - docker/publish:
-      #     executor: docker/docker
-      #     image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-      #     lint-dockerfile: true
-      #     tag: $CIRCLE_SHA1,latest
-      #     before_build:
-      #       - attach_workspace
+          # - docker/publish:
+          #     executor: docker/docker
+          #     image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          #     lint-dockerfile: true
+          #     tag: $CIRCLE_SHA1,latest
+          #     before_build:
+          #       - attach_workspace:
       #     requires:
       #       - build-web
       #       - test-server
