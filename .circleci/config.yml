@@ -75,7 +75,8 @@ jobs:
       - run: yarn --cwd server build
       - persist_to_workspace:
           root: ~/repo
-          paths: server/build
+          paths:
+            - ./server/build
 
   docker-build-and-push:
     <<: *defaults
