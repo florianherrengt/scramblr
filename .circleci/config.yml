@@ -158,6 +158,3 @@ workflows:
                       branches:
                           only:
                               - master
-            - cypress-test:
-                  requires:
-                      - kubenetes-deploy
