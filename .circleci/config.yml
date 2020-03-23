@@ -73,7 +73,9 @@ jobs:
             - v1-dependencies-{{ checksum "server/package.json" }}
             - v1-dependencies-
       - run: npm i -g typescript
+      - run: yarn --cwd server
       - run: yarn --cwd server build
+
 workflows:
   build-and-test:
     jobs:
