@@ -7,12 +7,12 @@ import { LineSpacer } from '../../components';
 interface TagsPageProps {}
 
 export const TagsPage: React.SFC<TagsPageProps> = props => {
-  return (
-    <div>
-      <LineSpacer />
-      <CreateTagContainer />
-      <LineSpacer />
-      <TagsListContainer />
-    </div>
-  );
+    return (
+        <div>
+            <LineSpacer />
+            <CreateTagContainer />
+            <LineSpacer />
+            <TagsListContainer />
+        </div>
+    );
 };

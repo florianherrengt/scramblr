@@ -1,5 +1,13 @@
 import { ObjectType, Field, ID } from 'type-graphql';
-import { Entity, ManyToMany, JoinTable, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import {
+    Entity,
+    ManyToMany,
+    JoinTable,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    CreateDateColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 import { Note } from './note.entity';
 

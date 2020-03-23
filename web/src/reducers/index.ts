@@ -5,10 +5,10 @@ import { currentUserTags } from './currentUserTagsReducer';
 import { searchNotes } from './searchNotes';
 
 export const rootReducer = combineReducers({
-  currentUser,
-  currentUserNotes,
-  currentUserTags,
-  searchNotes,
+    currentUser,
+    currentUserNotes,
+    currentUserTags,
+    searchNotes,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

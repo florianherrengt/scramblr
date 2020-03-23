@@ -6,29 +6,33 @@ import { AesPassphraseForm } from '../../components';
 import { RootState } from '../../reducers';
 
 interface AesPassphraseContainerProps {
-  submitLabel?: string;
+    submitLabel?: string;
 }
 
 export const AesPassphraseContainer: React.SFC<AesPassphraseContainerProps> = props => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  const currentUserNotes = useSelector(
-    (state: RootState) => state.currentUserNotes,
-  );
+    const currentUserNotes = useSelector(
+        (state: RootState) => state.currentUserNotes,
+    );
 
-  if (currentUserNotes.isFetching) {
-    return <CircularProgress />;
-  }
-  return (
-    <AesPassphraseForm
-      submitLabel={props.submitLabel}
-      testNote={
-        (currentUserNotes.notes.length && currentUserNotes.notes[0].text) || ''
-      }
-      onSubmit={({ passphrase, shouldSaveToLocalstorage }) => {
-        dispatch(setAesPassphrase(passphrase, shouldSaveToLocalstorage));
-        // window.location.replace(routerUri.notes);
-      }}
-    />
-  );
+    if (currentUserNotes.isFetching) {
+        return <CircularProgress />;
+    }
+    return (
+        <AesPassphraseForm
+            submitLabel={props.submitLabel}
+            testNote={
+                (currentUserNotes.notes.length &&
+                    currentUserNotes.notes[0].text) ||
+                ''
+            }
+            onSubmit={({ passphrase, shouldSaveToLocalstorage }) => {
+                dispatch(
+                    setAesPassphrase(passphrase, shouldSaveToLocalstorage),
+                );
+                // window.location.replace(routerUri.notes);
+            }}
+        />
+    );
 };

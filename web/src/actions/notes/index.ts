@@ -11,8 +11,8 @@ export * from './deleteNote';
 export * from './searchNotes';
 
 export type NotesAction =
-  | GetNoteAction
-  | DeleteNoteAction
-  | CreateNoteAction
-  | SearchNoteAction
-  | UpdateNoteAction;
+    | GetNoteAction
+    | DeleteNoteAction
+    | CreateNoteAction
+    | SearchNoteAction
+    | UpdateNoteAction;

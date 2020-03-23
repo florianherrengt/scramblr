@@ -10,7 +10,10 @@ import { AppContext } from 'src/helpers';
 
 @Resolver(User)
 export class UserResolver {
-    constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
+    constructor(
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+    ) {}
 
     @Query(returns => Int, { nullable: false })
     async userExists(@Arg('username') username: string): Promise<boolean> {
@@ -29,7 +32,9 @@ export class UserResolver {
 
     @Mutation(returns => String, { nullable: true })
     async signIn(@Arg('input') input: SignInInput): Promise<string> {
-        const user = await this.userRepository.findOne({ where: { username: input.username } });
+        const user = await this.userRepository.findOne({
+            where: { username: input.username },
+        });
         if (!user || !bcrypt.compareSync(input.password, user.password)) {
             throw new UserInputError('Incorrect username/password');
         }
@@ -41,7 +46,10 @@ export class UserResolver {
         if (await this.userRepository.findOne(input.username)) {
             throw new Error('Username already exists');
         }
-        const newUser = this.userRepository.create({ ...input, password: bcrypt.hashSync(input.password) });
+        const newUser = this.userRepository.create({
+            ...input,
+            password: bcrypt.hashSync(input.password),
+        });
         await this.userRepository.save(newUser);
         if (!newUser) {
             throw new Error('cannot create new user');

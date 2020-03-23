@@ -1,4 +1,4 @@
 export const localStorageKeys = {
-  token: 'token',
-  aesPassphrase: 'aesPassphrase',
+    token: 'token',
+    aesPassphrase: 'aesPassphrase',
 };

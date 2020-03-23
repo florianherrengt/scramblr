@@ -8,7 +8,9 @@ import { CreateTagInput, UpdateTagInput } from '../inputs/tag.input';
 
 @Resolver(Tag)
 export class TagResolver {
-    constructor(@InjectRepository(Tag) private readonly tagRepository: Repository<Tag>) {}
+    constructor(
+        @InjectRepository(Tag) private readonly tagRepository: Repository<Tag>,
+    ) {}
 
     @Query(returns => [Tag])
     async currentUserTags(@Ctx() context: AppContext): Promise<Tag[]> {
@@ -21,16 +23,25 @@ export class TagResolver {
         });
     }
     @Mutation(returns => Tag)
-    async createTag(@Arg('input') input: CreateTagInput, @Ctx() context: AppContext): Promise<Tag> {
+    async createTag(
+        @Arg('input') input: CreateTagInput,
+        @Ctx() context: AppContext,
+    ): Promise<Tag> {
         if (!context.user) {
             throw new AuthenticationError('User not logged in');
         }
-        const newTag = this.tagRepository.create({ ...input, user: context.user });
+        const newTag = this.tagRepository.create({
+            ...input,
+            user: context.user,
+        });
         await this.tagRepository.save(newTag);
         return newTag;
     }
     @Mutation(returns => Tag)
-    async updateTag(@Arg('input') tag: UpdateTagInput, @Ctx() context: AppContext): Promise<Tag | undefined> {
+    async updateTag(
+        @Arg('input') tag: UpdateTagInput,
+        @Ctx() context: AppContext,
+    ): Promise<Tag | undefined> {
         if (!context.user) {
             throw new AuthenticationError('User not logged in');
         }
@@ -39,7 +50,10 @@ export class TagResolver {
         return this.tagRepository.findOne(tag.id);
     }
     @Mutation(returns => Tag)
-    async deleteTag(@Arg('id') id: string, @Ctx() context: AppContext): Promise<Tag | undefined> {
+    async deleteTag(
+        @Arg('id') id: string,
+        @Ctx() context: AppContext,
+    ): Promise<Tag | undefined> {
         if (!context.user) {
             throw new AuthenticationError('User not logged in');
         }

@@ -36,8 +36,13 @@ export const createApp = async () => {
                 return {};
             }
             try {
-                const user = jwt.verify(token, config.get('Jwt.secret')) as JwtObject;
-                const context = await createContext({ username: user.username });
+                const user = jwt.verify(
+                    token,
+                    config.get('Jwt.secret'),
+                ) as JwtObject;
+                const context = await createContext({
+                    username: user.username,
+                });
                 return context;
             } catch (e) {
                 return {};

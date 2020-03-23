@@ -8,17 +8,17 @@ import { RootState } from '../../reducers';
 interface TagsListContainerProps {}
 
 export const CreateTagContainer: React.SFC<TagsListContainerProps> = props => {
-  const dispatch = useDispatch();
-  const aesPassphrase = useSelector(
-    (state: RootState) => state.currentUser.aesPassphrase,
-  );
+    const dispatch = useDispatch();
+    const aesPassphrase = useSelector(
+        (state: RootState) => state.currentUser.aesPassphrase,
+    );
 
-  if (!aesPassphrase) {
-    return <Typography>No aes passphrase found...</Typography>;
-  }
-  return (
-    <CreateTagForm
-      onSubmit={label => dispatch(createTag({ input: { label } }))}
-    />
-  );
+    if (!aesPassphrase) {
+        return <Typography>No aes passphrase found...</Typography>;
+    }
+    return (
+        <CreateTagForm
+            onSubmit={label => dispatch(createTag({ input: { label } }))}
+        />
+    );
 };

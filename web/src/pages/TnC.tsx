@@ -1,5 +1,5 @@
 import React from 'react';
 
 export const TnCPage = () => {
-  return <div>todo..</div>;
+    return <div>todo..</div>;
 };

@@ -1,5 +1,11 @@
 import { ObjectType, Field, ID } from 'type-graphql';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    PrimaryColumn,
+    OneToMany,
+} from 'typeorm';
 import { Note } from './note.entity';
 import { Tag } from './tag.entitiy';
 

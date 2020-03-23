@@ -7,20 +7,24 @@ import { CreateNoteContainer } from './CreateNoteContainer';
 import { NoteListContainer } from './NoteListContainer';
 
 export const NotesPage = () => {
-  const aesPassphrase = useSelector(
-    (state: RootState) => state.currentUser.aesPassphrase,
-  );
-  const searchValue = useSelector(
-    (state: RootState) => state.searchNotes.searchValue,
-  );
+    const aesPassphrase = useSelector(
+        (state: RootState) => state.currentUser.aesPassphrase,
+    );
+    const searchValue = useSelector(
+        (state: RootState) => state.searchNotes.searchValue,
+    );
 
-  return (
-    <div>
-      <LineSpacer />
-      {!searchValue &&
-        (!aesPassphrase ? <AesPassphraseContainer /> : <CreateNoteContainer />)}
-      <LineSpacer />
-      <NoteListContainer />
-    </div>
-  );
+    return (
+        <div>
+            <LineSpacer />
+            {!searchValue &&
+                (!aesPassphrase ? (
+                    <AesPassphraseContainer />
+                ) : (
+                    <CreateNoteContainer />
+                ))}
+            <LineSpacer />
+            <NoteListContainer />
+        </div>
+    );
 };
