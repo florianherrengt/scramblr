@@ -34,6 +34,7 @@ jobs:
     docker:
       - image: node:13
     steps:
+      - checkout
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "web/package.json" }}
@@ -50,9 +51,28 @@ jobs:
       - image: node:13
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "server/package.json" }}
+            - v1-dependencies-
       - run: yarn --cwd server install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "server/package.json" }}
       - run: yarn --cwd server test
 
+  build-server:
+    <<: *defaults
+    docker:
+      - image: node:13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "server/package.json" }}
+            - v1-dependencies-
+      - run: yarn --cwd server build
 workflows:
   build-and-test:
     jobs:
