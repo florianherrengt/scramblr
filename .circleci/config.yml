@@ -93,6 +93,11 @@ jobs:
                   CYPRESS_BASE_URL: https://scramblrapp.com
         steps:
             - checkout
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "web/package.json" }}
+                      - v1-dependencies-
+            - run: yarn --cwd web install
             - run: yarn --cwd web run test:e2e
 
     docker-build-and-push:
@@ -130,30 +135,29 @@ jobs:
 workflows:
     install-and-test:
         jobs:
-            - cypress-test
-              # - web-test
-              # - server-test
-              # - server-build:
-              #       requires:
-              #           - server-test
-              # - web-build:
-              #       requires:
-              #           - web-test
-              # - docker-build-and-push:
-              #       requires:
-              #           - server-build
-              #           - web-build
-              #       filters:
-              #           branches:
-              #               only:
-              #                   - master
-              # - kubenetes-deploy:
-              #       requires:
-              #           - docker-build-and-push
-              #       filters:
-              #           branches:
-              #               only:
-              #                   - master
-              # - cypress-test:
-              #     requires:
-              #           - docker-build-and-push
+            - web-test
+            - server-test
+            - server-build:
+                  requires:
+                      - server-test
+            - web-build:
+                  requires:
+                      - web-test
+            - docker-build-and-push:
+                  requires:
+                      - server-build
+                      - web-build
+                  filters:
+                      branches:
+                          only:
+                              - master
+            - kubenetes-deploy:
+                  requires:
+                      - docker-build-and-push
+                  filters:
+                      branches:
+                          only:
+                              - master
+            - cypress-test:
+                  requires:
+                      - docker-build-and-push

@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createTag } from '../../actions';
-import { CreateTagForm } from '../../components/CreateTagForm';
+import { CreateTagForm } from '../../components';
 import { RootState } from '../../reducers';
 
 interface TagsListContainerProps {}

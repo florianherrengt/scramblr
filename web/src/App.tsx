@@ -8,10 +8,10 @@ import {
 } from 'react-router-dom';
 import { fetchCurrentUserNotes, fetchCurrentUserTags } from './actions';
 import './App.css';
-import { PrivateRoute } from './components/PrivateRoute';
+import { PrivateRoute } from './components';
 import { localStorageKeys } from './config';
 import { routerUri } from './config/routerUri';
-import { MainLayout } from './pages/Layout';
+import { MainLayout } from './pages/MainLayout';
 import { NotesPage } from './pages/Notes';
 import { PrivacyPage } from './pages/Privacy';
 import { SettingsPage } from './pages/Settings';

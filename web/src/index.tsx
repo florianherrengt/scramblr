@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'react-quill/dist/quill.snow.css';
-import './index.css';
+import './styles/index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
