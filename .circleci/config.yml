@@ -38,7 +38,7 @@ jobs:
       - run: yarn --cwd server install
       - run: yarn --cwd server test
 
-  deploy-docker:
+  build-and-push-docker:
     executor: docker/docker
     working_directory: ~/app
     steps:
@@ -63,7 +63,7 @@ workflows:
             branches:
               only:
                 - master
-      - deploy-docker:
+      - build-and-push-docker:
           requires:
             - build-web
             - test-server
