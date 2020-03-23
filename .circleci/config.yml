@@ -157,22 +157,20 @@ workflows:
             - server-test
             - server-build:
                   requires:
-                      - web-test
+                      - server-test
             - web-build:
                   requires:
                       - web-test
             - docker-build-only:
                   requires:
-                      - web-test
+                      - web-build
                       - server-build
             - cypress-test:
                   requires:
                       - docker-build-only
             - docker-build-and-push:
                   requires:
-                      - web-build
-                      - server-build
-                      - cypress-test
+                      - docker-build-only
                   filters:
                       branches:
                           only:
