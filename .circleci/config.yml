@@ -161,13 +161,13 @@ workflows:
             - web-build:
                   requires:
                       - web-test
-            - docker-build:
+            - docker-build-only:
                   requires:
                       - web-test
                       - server-build
             - cypress-test:
                   requires:
-                      - docker-build
+                      - docker-build-only
             - docker-build-and-push:
                   requires:
                       - web-build
