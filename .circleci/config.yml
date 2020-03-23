@@ -85,17 +85,21 @@ workflows:
             branches:
               only:
                 - master
-          # - docker/publish:
-          #     executor: docker/docker
-          #     image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          #     lint-dockerfile: true
-          #     tag: $CIRCLE_SHA1,latest
-          #     before_build:
-          #       - attach_workspace:
-      #     requires:
-      #       - build-web
-      #       - test-server
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
+      - docker/publish:
+          working_directory: ~/repo
+          executor: docker/docker
+          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          lint-dockerfile: true
+          tag: $CIRCLE_SHA1,latest
+          before_build:
+            - attach_workspace:
+                at: ~/repo
+            - run: ls web
+            - run: ls server
+          requires:
+            - build-web
+            - build-server
+          filters:
+            branches:
+              only:
+                - master
