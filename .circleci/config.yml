@@ -9,7 +9,6 @@ jobs:
   test-web:
     docker:
       - image: node:13
-    working_directory: ~/app
     steps:
       - checkout
       - run: yarn --cwd web install
@@ -21,10 +20,8 @@ jobs:
   build-web:
     docker:
       - image: node:13
-    working_directory: ~/app
     steps:
-      - attach_workspace:
-          at: ~/app
+      - attach_workspace
       - run: yarn --cwd web build
       - persist_to_workspace:
           root: .
@@ -33,24 +30,13 @@ jobs:
   test-server:
     docker:
       - image: node:13
-    working_directory: ~/app
     steps:
       - checkout
       - run: yarn --cwd server install
       - run: yarn --cwd server test
 
   docker/publish:
-    executor: docker/docker
-    working_directory: ~/app
-    steps:
-      - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/app
-      - docker/publish:
-          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          lint-dockerfile: true
-          tag: $CIRCLE_SHA1,latest
+    
 
 workflows:
   build-and-test:
@@ -65,6 +51,13 @@ workflows:
               only:
                 - master
       - docker/publish:
+          executor: docker/docker
+          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          lint-dockerfile: true
+          tag: $CIRCLE_SHA1,latest
+          before_build:
+            - attach_workspace:
+                at: ~/app
           requires:
             - build-web
             - test-server
