@@ -33,9 +33,10 @@ jobs:
 
   deploy-docker:
     docker:
-      - image: node:13
+      - image: circleci/buildpack-deps:stretch
     working_directory: ~/app
     steps:
+      - setup_remote_docker
       - attach_workspace:
           at: ~/app
       - run: docker login -u florianherrengt -p $DOCKER_TOKEN
