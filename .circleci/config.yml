@@ -90,9 +90,6 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - docker/check
-      - docker/publish:
-          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          tag: $CIRCLE_SHA1,latest
 
 workflows:
   install-and-test:
