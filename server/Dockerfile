@@ -12,6 +12,7 @@ RUN npm install
 COPY . .
 
 RUN npm run build
-RUN npm run download:web
+
+COPY ../web/build ./assets
 
 CMD ["forever", "build/index.js"]

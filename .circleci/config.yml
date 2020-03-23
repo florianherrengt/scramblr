@@ -1,31 +1,61 @@
 version: 2.1
 
 jobs:
-  build-and-test:
+  test-web:
     docker:
       - image: node:13
-    working_directory: ~/app/web
+    working_directory: ~/app
     steps:
       - checkout
-      - run: cd web
-      - run: ls
-  #     - run: yarn build
-  #     - persist_to_workspace:
-  #         root: .
-  #         paths: .
-  # deploy:
-  #   docker:
-  #     - image: node:13
-  #   working_directory: ~/app
-  #   steps:
-  #     - attach_workspace:
-  #         at: ~/app
-  #     - run: ls build
+      - run: yarn --cwd web install
+      - run: yarn --cwd web test
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+  build-web:
+    docker:
+      - image: node:13
+    working_directory: ~/app
+    steps:
+      - attach_workspace:
+          at: ~/app
+      - run: yarn --cwd web build
+
+  test-server:
+    docker:
+      - image: node:13
+    working_directory: ~/app
+    steps:
+      - checkout
+      - run: yarn --cwd server install
+      - run: yarn --cwd server test
+
+  build-server:
+    docker:
+      - image: node:13
+    working_directory: ~/app
+    steps:
+      - run: docker login -u florianherrengt -p $DOCKER_TOKEN
+      - run: docker build -t florianherrengt/scramblr:${CIRCLE_SHA1} ./server
+      - run: docker push florianherrengt/scramblr:${CIRCLE_SHA1}
 
 workflows:
   build-and-test:
     jobs:
-      - build-and-test
-      # - deploy:
-      #     requires:
-      #       - build-and-test
+      - test-web
+      - test-server
+      - build-web:
+          requires:
+            - test-web
+          filters:
+            branches:
+              only:
+                - master
+      - build-server:
+          requires:
+            - test-server
+          filters:
+            branches:
+              only:
+                - master
