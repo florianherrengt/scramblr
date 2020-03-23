@@ -25,9 +25,6 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "web/package.json" }}
       - run: yarn --cwd web test
-      - persist_to_workspace:
-          root: ~/repo
-          paths: .
 
   web-build:
     <<: *defaults
@@ -44,7 +41,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - ./server/build
+            - web/build
 
   server-test:
     <<: *defaults
@@ -79,7 +76,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - ./server/build
+            - server/build
 
   docker-build-and-push:
     <<: *defaults
@@ -89,6 +86,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
+      - run: ls server web
       - docker/check
       - docker/build:
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
