@@ -81,16 +81,16 @@ jobs:
           paths:
             - server/build
 
-    docker-build-and-push:
-      <<: *defaults
-      executor: docker/docker
-      steps:
-        - setup_remote_docker
-        - checkout
-        - attach_workspace:
+  docker-build-and-push:
+    <<: *defaults
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+      - checkout
+      - attach_workspace:
           at: ~/repo
-        - docker/check
-        - docker/publish:
+      - docker/check
+      - docker/publish:
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
           tag: $CIRCLE_SHA1,latest
 
