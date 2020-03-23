@@ -1,5 +1,10 @@
 import { ThunkAction } from 'redux-thunk';
-import { api, decrypt, GetCurrentUserNotesQuery, GetCurrentUserNotesQueryVariables } from '../../helpers';
+import {
+  api,
+  decrypt,
+  GetCurrentUserNotesQuery,
+  GetCurrentUserNotesQueryVariables,
+} from '../../helpers';
 import { RootState } from '../../reducers';
 
 export interface GetNotesActionFetching {
@@ -32,55 +37,55 @@ export const fetchCurrentUserNotes = (
 ): ThunkAction<Promise<void>, RootState, Options, GetNoteAction> => async (
   dispatch,
   getState,
-  ) => {
-    const state = getState();
+) => {
+  const state = getState();
 
-    if (
-      state.currentUserNotes.isFetching ||
-      (state.currentUserNotes.fetched && !state.currentUserNotes.hasMore)
-    ) {
+  if (
+    state.currentUserNotes.isFetching ||
+    (state.currentUserNotes.fetched && !state.currentUserNotes.hasMore)
+  ) {
+    return;
+  }
+
+  if (!options?.forceReload) {
+    if (state.currentUserNotes.fetched) {
       return;
     }
+  }
+  dispatch({
+    type: 'GET_CURRENT_USER_NOTES_REQUEST',
+    isFetching: true,
+  });
+  try {
+    const { currentUserNotes } = await api.getCurrentUserNotes(
+      options?.variables,
+    );
 
-    if (!options?.forceReload) {
-      if (state.currentUserNotes.fetched) {
-        return;
-      }
-    }
-    dispatch({
-      type: 'GET_CURRENT_USER_NOTES_REQUEST',
-      isFetching: true,
-    });
-    try {
-      const { currentUserNotes } = await api.getCurrentUserNotes(
-        options?.variables,
-      );
-
-      if (!currentUserNotes) {
-        dispatch({
-          type: 'GET_CURRENT_USER_NOTES_FAILURE',
-          error: 'No notes returned',
-        });
-        return;
-      }
-      dispatch({
-        type: 'GET_CURRENT_USER_NOTES_SUCCESS',
-        notes: {
-          ...currentUserNotes,
-          items: currentUserNotes.items.map(note => ({
-            ...note,
-            text: state.currentUser.aesPassphrase
-              ? decrypt(note.text, state.currentUser.aesPassphrase)
-              : note.text,
-          })),
-        },
-        aesPassphrase: state.currentUser.aesPassphrase,
-      });
-    } catch (error) {
-      console.error(error);
+    if (!currentUserNotes) {
       dispatch({
         type: 'GET_CURRENT_USER_NOTES_FAILURE',
-        error,
+        error: 'No notes returned',
       });
+      return;
     }
-  };
+    dispatch({
+      type: 'GET_CURRENT_USER_NOTES_SUCCESS',
+      notes: {
+        ...currentUserNotes,
+        items: currentUserNotes.items.map(note => ({
+          ...note,
+          text: state.currentUser.aesPassphrase
+            ? decrypt(note.text, state.currentUser.aesPassphrase)
+            : note.text,
+        })),
+      },
+      aesPassphrase: state.currentUser.aesPassphrase,
+    });
+  } catch (error) {
+    console.error(error);
+    dispatch({
+      type: 'GET_CURRENT_USER_NOTES_FAILURE',
+      error,
+    });
+  }
+};

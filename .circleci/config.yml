@@ -9,6 +9,14 @@ defaults: &defaults
   working_directory: ~/repo
 
 jobs:
+  prettier:
+    docker:
+      - image: node:13
+    steps:
+      - checkout
+      - run: npm i -g prettier
+      - run: prettier --check **/src/**/*.{ts,tsx}
+
   web-test:
     <<: *defaults
     docker:
@@ -99,6 +107,7 @@ jobs:
 workflows:
   install-and-test:
     jobs:
+      - prettier
       - web-test
       - server-test
       - server-build:
@@ -118,6 +127,7 @@ workflows:
       - docker-build-and-push:
           requires:
             - web-build
+            - server-build
           filters:
             branches:
               only:

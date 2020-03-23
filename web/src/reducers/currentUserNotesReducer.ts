@@ -5,8 +5,8 @@ type StateNote = Omit<Note, 'tags'> & {
   tags: Array<Pick<Tag, 'id'>>;
   isLoading: boolean;
   transactionId?: string;
-  revert?: StateNote
-}
+  revert?: StateNote;
+};
 
 export interface CurrentUserNotesState {
   notes: StateNote[];
@@ -116,27 +116,37 @@ export const currentUserNotes = (
     case 'UPDATE_NOTE_REQUEST':
       return {
         ...state,
-        notes: state.notes.map(note => note.id === action.note.id ? {
-          ...note,
-          text: action.note.text || note.text,
-          tags: action.note.tags || note.tags,
-          isLoading: true,
-          transactionId: action.transactionId,
-          revert: note,
-        } : note),
+        notes: state.notes.map(note =>
+          note.id === action.note.id
+            ? {
+                ...note,
+                text: action.note.text || note.text,
+                tags: action.note.tags || note.tags,
+                isLoading: true,
+                transactionId: action.transactionId,
+                revert: note,
+              }
+            : note,
+        ),
       };
 
     case 'UPDATE_NOTE_SUCCESS':
       return {
         ...state,
-        notes: state.notes.map(note => note.transactionId === action.transactionId ? { ...action.note, isLoading: false } : note)
+        notes: state.notes.map(note =>
+          note.transactionId === action.transactionId
+            ? { ...action.note, isLoading: false }
+            : note,
+        ),
       };
 
     case 'UPDATE_NOTE_FAILURE':
       alert('Oops! Something wrong happened.');
       return {
         ...state,
-        notes: state.notes.map(note => note.transactionId === action.transactionId ? note.revert! : note),
+        notes: state.notes.map(note =>
+          note.transactionId === action.transactionId ? note.revert! : note,
+        ),
       };
 
     default:
