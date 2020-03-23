@@ -7,6 +7,7 @@ jobs:
     working_directory: ~/app/web
     steps:
       - checkout
+      - run: cd web
       - run: ls
   #     - run: yarn build
   #     - persist_to_workspace:
