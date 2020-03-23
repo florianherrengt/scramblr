@@ -44,7 +44,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - web/build
+            - ./server/build
 
   server-test:
     <<: *defaults
@@ -79,7 +79,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - server/build
+            - ./server/build
 
   docker-build-and-push:
     <<: *defaults
