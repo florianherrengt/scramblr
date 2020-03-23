@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: scramblr
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: scramblr
+    namespace: scramblr
+    labels:
+        app: scramblr
+spec:
+    ports:
+        - port: 8080
+          targetPort: 8080
+          protocol: TCP
+    selector:
+        app: scramblr
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: scramblr
+    namespace: scramblr
+    labels:
+        app: scramblr
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: scramblr
+    template:
+        metadata:
+            labels:
+                app: scramblr
+        spec:
+            containers:
+                - name: scramblr
+                  image: florianherrengt/scramblr:latest
+                  imagePullPolicy: Always
+                  resources:
+                      limits:
+                          cpu: 100m
+                          memory: 200Mi
+                      requests:
+                          cpu: 100m
+                          memory: 200Mi
+                  env:
+                      - name: DATABASE_TYPE
+                        value: postgres
+                      - name: DATABASE_NAME
+                        valueFrom:
+                            secretKeyRef:
+                                name: scramblr-secrets
+                                key: database_name
+                      - name: DATABASE_USERNAME
+                        valueFrom:
+                            secretKeyRef:
+                                name: scramblr-secrets
+                                key: database_username
+                      - name: DATABASE_PASSWORD
+                        valueFrom:
+                            secretKeyRef:
+                                name: scramblr-secrets
+                                key: database_password
+                      - name: DATABASE_HOST
+                        valueFrom:
+                            secretKeyRef:
+                                name: scramblr-secrets
+                                key: database_host
+                      - name: DATABASE_PORT
+                        valueFrom:
+                            secretKeyRef:
+                                name: scramblr-secrets
+                                key: database_port
+                      - name: JWT_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: scramblr-secrets
+                                key: jwt
+                  ports:
+                      - containerPort: 8080

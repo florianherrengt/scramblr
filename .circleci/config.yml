@@ -1,0 +1,30 @@
+version: 2.1
+
+jobs:
+  build-and-test:
+    docker:
+      - image: node:13
+    working_directory: ~/app/web
+    steps:
+      - checkout
+      - run: ls
+  #     - run: yarn build
+  #     - persist_to_workspace:
+  #         root: .
+  #         paths: .
+  # deploy:
+  #   docker:
+  #     - image: node:13
+  #   working_directory: ~/app
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/app
+  #     - run: ls build
+
+workflows:
+  build-and-test:
+    jobs:
+      - build-and-test
+      # - deploy:
+      #     requires:
+      #       - build-and-test

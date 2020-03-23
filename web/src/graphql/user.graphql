@@ -1,0 +1,21 @@
+query getCurrentUser {
+  currentUser {
+    ...UserFields
+  }
+}
+
+mutation signIn($input: SignInInput!) {
+  signIn(input: $input)
+}
+
+query userExists($username: String!) {
+  userExists(username: $username)
+}
+
+mutation signUp($input: SignUpInput!) {
+  signUp(input: $input)
+}
+
+fragment UserFields on User {
+  username
+}

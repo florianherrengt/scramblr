@@ -1,0 +1,10 @@
+Jwt:
+    secret: JWT_SECRET
+Database:
+    type: DATABASE_TYPE
+    name: DATABASE_NAME
+    username: DATABASE_USERNAME
+    password: DATABASE_PASSWORD
+    host: DATABASE_HOST
+    port: DATABASE_PORT
+    ssl: DATABASE_SSL

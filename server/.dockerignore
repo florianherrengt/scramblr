@@ -1,0 +1,6 @@
+build
+node_modules
+local.db
+Dockerfile
+.env
+assets

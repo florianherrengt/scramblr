@@ -1,0 +1,28 @@
+query getCurrentUserTags {
+  currentUserTags {
+    ...TagFields
+  }
+}
+
+mutation createTag($input: CreateTagInput!) {
+  createTag(input: $input) {
+    ...TagFields
+  }
+}
+
+mutation updateTag($input: UpdateTagInput!) {
+  updateTag(input: $input) {
+    ...TagFields
+  }
+}
+
+mutation deleteTag($id: String!) {
+  deleteTag(id: $id) {
+    id
+  }
+}
+
+fragment TagFields on Tag {
+  id
+  label
+}

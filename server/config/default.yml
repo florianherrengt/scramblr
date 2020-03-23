@@ -1,0 +1,11 @@
+Jwt:
+    secret: JWT_SECRET
+LogLevel: debug
+Database:
+    type: sqlite
+    name: postgres
+    username: postgres
+    password: postgres
+    host: null
+    port: null
+    ssl: 1
