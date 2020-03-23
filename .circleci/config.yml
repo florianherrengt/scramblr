@@ -31,11 +31,13 @@ jobs:
       - run: yarn --cwd server install
       - run: yarn --cwd server test
 
-  build-server:
+  deploy-docker:
     docker:
       - image: node:13
     working_directory: ~/app
     steps:
+      - attach_workspace:
+          at: ~/app
       - run: docker login -u florianherrengt -p $DOCKER_TOKEN
       - run: docker build -t florianherrengt/scramblr:${CIRCLE_SHA1} ./server
       - run: docker push florianherrengt/scramblr:${CIRCLE_SHA1}
@@ -52,7 +54,7 @@ workflows:
             branches:
               only:
                 - master
-      - build-server:
+      - deploy-docker:
           requires:
             - test-server
           filters:
