@@ -78,6 +78,13 @@ workflows:
     jobs:
       - test-web
       - test-server
+      - build-server:
+          requires:
+            - test-web
+          filters:
+            branches:
+              only:
+                - master
       - build-web:
           requires:
             - test-web
