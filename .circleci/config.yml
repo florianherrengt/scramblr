@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs:
+  kubernetes: circleci/kubernetes@0.11.0
+  cli: digitalocean/cli@0.1.1
+
 jobs:
   test-web:
     docker:
@@ -35,17 +39,17 @@ jobs:
       - run: yarn --cwd server test
 
   deploy-docker:
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor: docker/docker
     working_directory: ~/app
     steps:
       - checkout
       - setup_remote_docker
       - attach_workspace:
           at: ~/app
-      - run: docker login -u florianherrengt -p $DOCKER_TOKEN
-      - run: docker build -t florianherrengt/scramblr:${CIRCLE_SHA1} .
-      - run: docker push florianherrengt/scramblr:${CIRCLE_SHA1}
+      - docker/publish:
+          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          lint-dockerfile: true
+          tag: $CIRCLE_SHA1,latest
 
 workflows:
   build-and-test:
