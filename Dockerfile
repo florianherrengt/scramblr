@@ -7,8 +7,8 @@ COPY ./server/package-lock.json .
 
 RUN npm install --production
 
-COPY ./server/build .
+COPY ./server .
 
 COPY ./web/build ./assets
 
-CMD ["node", "index.js"]
+CMD ["node", "build/index.js"]

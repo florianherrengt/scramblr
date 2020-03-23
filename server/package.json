@@ -27,6 +27,7 @@
         "nodemon": "^2.0.2",
         "pg": "^7.18.2",
         "reflect-metadata": "^0.1.13",
+        "sqlite": "^3.0.6",
         "type-graphql": "^0.17.6",
         "typedi": "^0.8.0",
         "typeorm": "^0.2.24",
