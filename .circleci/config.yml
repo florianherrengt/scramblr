@@ -21,6 +21,9 @@ jobs:
       - attach_workspace:
           at: ~/app
       - run: yarn --cwd web build
+      - persist_to_workspace:
+          root: .
+          paths: . 
 
   test-server:
     docker:
