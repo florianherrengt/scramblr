@@ -86,14 +86,13 @@ workflows:
               only:
                 - master
       - docker/publish:
-          working_directory: ~/repo
           executor: docker/docker
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
           lint-dockerfile: true
           tag: $CIRCLE_SHA1,latest
           before_build:
             - attach_workspace:
-                at: ~/repo
+                at: .
             - run: ls web
             - run: ls server
           requires:
