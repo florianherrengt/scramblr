@@ -32,6 +32,8 @@ jobs:
       - run: yarn --cwd server test
 
   deploy-docker:
+    docker:
+      - image: circleci/buildpack-deps:stretch
     working_directory: ~/app
     steps:
       - setup_remote_docker
