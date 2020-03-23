@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   kubernetes: circleci/kubernetes@0.11.0
   cli: digitalocean/cli@0.1.1
+  docker: circleci/docker@1.0.0
 
 jobs:
   test-web:
