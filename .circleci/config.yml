@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-    kubernetes: circleci/kubernetes@1.11.0
+    kubernetes: circleci/kubernetes@0.11.0
     docker: circleci/docker@1.0.0
 
 defaults: &defaults
@@ -120,7 +120,7 @@ jobs:
     kubenetes-deploy:
         <<: *defaults
         docker:
-            - image: 'cimg/base:stable'
+            - image: "cimg/base:stable"
         steps:
             - checkout
             - kubernetes/install-kubectl
