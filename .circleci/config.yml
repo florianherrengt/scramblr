@@ -1,134 +1,149 @@
 version: 2.1
 
 orbs:
-  kubernetes: circleci/kubernetes@0.11.0
-  cli: digitalocean/cli@0.1.1
-  docker: circleci/docker@1.0.0
+    kubernetes: circleci/kubernetes@0.11.0
+    docker: circleci/docker@1.0.0
 
 defaults: &defaults
-  working_directory: ~/repo
+    working_directory: ~/repo
 
 jobs:
-  prettier:
-    docker:
-      - image: node:13
-    steps:
-      - checkout
-      - run: npm i -g prettier
-      - run: prettier --check **/src/**/*.{ts,tsx}
+    prettier:
+        docker:
+            - image: node:13
+        steps:
+            - checkout
+            - run: npm i -g prettier
+            - run: prettier --config .prettierrc --check **/src/**/*.{ts,tsx}
 
-  web-test:
-    <<: *defaults
-    docker:
-      - image: node:13
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "web/package.json" }}
-            - v1-dependencies-
-      - run: yarn --cwd web install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "web/package.json" }}
-      - run: yarn --cwd web test
+    web-test:
+        <<: *defaults
+        docker:
+            - image: node:13
+        steps:
+            - checkout
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "web/package.json" }}
+                      - v1-dependencies-
+            - run: yarn --cwd web install
+            - save_cache:
+                  paths:
+                      - node_modules
+                  key: v1-dependencies-{{ checksum "web/package.json" }}
+            - run: yarn --cwd web test
 
-  web-build:
-    <<: *defaults
-    docker:
-      - image: node:13
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "web/package.json" }}
-            - v1-dependencies-
-      - run: yarn --cwd web install
-      - run: yarn --cwd web build
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - ./web/build
+    web-build:
+        <<: *defaults
+        docker:
+            - image: node:13
+        steps:
+            - checkout
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "web/package.json" }}
+                      - v1-dependencies-
+            - run: yarn --cwd web install
+            - run: yarn --cwd web build
+            - persist_to_workspace:
+                  root: ~/repo
+                  paths:
+                      - ./web/build
 
-  server-test:
-    <<: *defaults
-    docker:
-      - image: node:13
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "server/package.json" }}
-            - v1-dependencies-
-      - run: yarn --cwd server install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "server/package.json" }}
-      - run: yarn --cwd server test
+    server-test:
+        <<: *defaults
+        docker:
+            - image: node:13
+        steps:
+            - checkout
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "server/package.json" }}
+                      - v1-dependencies-
+            - run: yarn --cwd server install
+            - save_cache:
+                  paths:
+                      - node_modules
+                  key: v1-dependencies-{{ checksum "server/package.json" }}
+            - run: yarn --cwd server test
 
-  server-build:
-    <<: *defaults
-    docker:
-      - image: node:13
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "server/package.json" }}
-            - v1-dependencies-
-      - run: npm i -g typescript
-      - run: yarn --cwd server
-      - run: yarn --cwd server build
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - ./server/build
+    server-build:
+        <<: *defaults
+        docker:
+            - image: node:13
+        steps:
+            - checkout
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "server/package.json" }}
+                      - v1-dependencies-
+            - run: npm i -g typescript
+            - run: yarn --cwd server
+            - run: yarn --cwd server build
+            - persist_to_workspace:
+                  root: ~/repo
+                  paths:
+                      - ./server/build
 
-  docker-build-and-push:
-    <<: *defaults
-    executor: docker/docker
-    steps:
-      - setup_remote_docker
-      - checkout
-      - attach_workspace:
-          at: ~/repo
-      - run: ls server web
-      - docker/check
-      - docker/build:
-          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          cache_from: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest
-          tag: $CIRCLE_SHA1,latest
-      - docker/push:
-          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          tag: $CIRCLE_SHA1,latest
+    docker-build-and-push:
+        <<: *defaults
+        executor: docker/docker
+        steps:
+            - setup_remote_docker
+            - checkout
+            - attach_workspace:
+                  at: ~/repo
+            - run: ls server web
+            - docker/check
+            - docker/build:
+                  image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+                  cache_from: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest
+                  tag: $CIRCLE_SHA1,latest
+            - docker/push:
+                  image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+                  tag: $CIRCLE_SHA1,latest
+
+    kubenetes-deploy:
+        <<: *defaults
+        docker:
+            - image: 'cimg/base:stable'
+        steps:
+            - checkout
+            - kubernetes/install-kubectl
+            - kubernetes/install-kubeconfig
+            - kubernetes/update-container-image:
+                  namespace: $CIRCLE_PROJECT_REPONAME
+                  container-image-updates: $CIRCLE_PROJECT_REPONAME=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+                  get-rollout-status: true
+                  record: true
+                  resource-name: deployment/$CIRCLE_PROJECT_REPONAME
 
 workflows:
-  install-and-test:
-    jobs:
-      - prettier
-      - web-test
-      - server-test
-      - server-build:
-          requires:
-            - web-test
-          filters:
-            branches:
-              only:
-                - master
-      - web-build:
-          requires:
-            - web-test
-          filters:
-            branches:
-              only:
-                - master
-      - docker-build-and-push:
-          requires:
-            - web-build
-            - server-build
-          filters:
-            branches:
-              only:
-                - master
+    install-and-test:
+        jobs:
+            - prettier
+            - kubenetes-deploy
+            # - web-test
+            # - server-test
+            # - server-build:
+            #       requires:
+            #           - web-test
+            #       filters:
+            #           branches:
+            #               only:
+            #                   - master
+            # - web-build:
+            #       requires:
+            #           - web-test
+            #       filters:
+            #           branches:
+            #               only:
+            #                   - master
+            # - docker-build-and-push:
+            #       requires:
+            #           - web-build
+            #           - server-build
+            #       filters:
+            #           branches:
+            #               only:
+            #                   - master
