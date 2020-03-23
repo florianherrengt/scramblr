@@ -7,7 +7,7 @@ RUN npm i -g forever
 COPY ./server/package.json .
 COPY ./server/package-lock.json .
 
-RUN npm install
+RUN npm install --production
 
 COPY ./server/build .
 
