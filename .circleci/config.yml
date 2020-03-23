@@ -72,7 +72,7 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "server/package.json" }}
             - v1-dependencies-
-      - run: yarn add -g typescript
+      - run: npm i -g typescript
       - run: yarn --cwd server build
 workflows:
   build-and-test:
