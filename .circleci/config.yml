@@ -43,7 +43,8 @@ jobs:
       - run: yarn --cwd web build
       - persist_to_workspace:
           root: ~/repo
-          paths: .
+          paths:
+            - web/build
 
   test-server:
     <<: *defaults
@@ -75,6 +76,10 @@ jobs:
       - run: npm i -g typescript
       - run: yarn --cwd server
       - run: yarn --cwd server build
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - server/build
 
 workflows:
   build-and-test:
@@ -98,7 +103,6 @@ workflows:
       - docker/publish:
           executor: docker/docker
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          lint-dockerfile: true
           tag: $CIRCLE_SHA1,latest
           before_build:
             - attach_workspace:
