@@ -85,20 +85,41 @@ jobs:
                   paths:
                       - ./server/build
 
-    docker-build-only:
-        <<: *defaults
-        executor: docker/docker
+    cypress-test:
+        docker:
+            - image: node:13
+              environment:
+                  CYPRESS_BASE_URL: http://localhost:8080
+                  JWT_SECRET: secret
+                  DATABASE_TYPE: postgres
+                  DATABASE_NAME: postgres
+                  DATABASE_USERNAME: postgres
+                  DATABASE_PASSWORD: postgres
+                  DATABASE_SSL: '0'
+            - image: circleci/postgres:11
+              environment:
+                  POSTGRES_PASSWORD: postgres
+
         steps:
-            - setup_remote_docker
             - checkout
-            - attach_workspace:
-                  at: ~/repo
-            - run: ls server web
-            - docker/check
-            - docker/build:
-                  image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-                  cache_from: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest
-                  tag: $CIRCLE_SHA1
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "web/package.json" }}
+                      - v1-dependencies-{{ checksum "server/package.json" }}
+                      - v1-dependencies-
+            - run:
+                  name: install dockerize
+                  command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+                  environment:
+                      DOCKERIZE_VERSION: v0.6.1
+            - run:
+                  name: Wait for db
+                  command: dockerize -wait tcp://localhost:5432 -timeout 1m
+            - run: yarn --cwd web install
+            - run: yarn --cwd server install
+            - run: yarn --cwd server start
+            - run: yarn --cwd web wait:server -- $CYPRESS_BASE_URL
+            - run: yarn --cwd web run test:e2e
 
     docker-build-and-push:
         <<: *defaults
@@ -117,23 +138,6 @@ jobs:
             - docker/push:
                   image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
                   tag: $CIRCLE_SHA1,latest
-
-    cypress-test:
-        docker:
-            - image: node:13
-              environment:
-                  CYPRESS_BASE_URL: http://localhost:8080
-            - image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
-
-        steps:
-            - checkout
-            - restore_cache:
-                  keys:
-                      - v1-dependencies-{{ checksum "web/package.json" }}
-                      - v1-dependencies-
-            - run: yarn --cwd web install
-            - run: yarn --cwd web wait:server -- $CYPRESS_BASE_URL
-            - run: yarn --cwd web run test:e2e
 
     kubenetes-deploy:
         <<: *defaults
@@ -161,16 +165,13 @@ workflows:
             - web-build:
                   requires:
                       - web-test
-            - docker-build-only:
+            - cypress-test:
                   requires:
                       - web-build
                       - server-build
-            - cypress-test:
-                  requires:
-                      - docker-build-only
             - docker-build-and-push:
                   requires:
-                      - docker-build-only
+                      - cypress-test
                   filters:
                       branches:
                           only:

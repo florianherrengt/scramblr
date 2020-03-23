@@ -4,6 +4,7 @@
     "description": "",
     "main": "jest.config.js",
     "scripts": {
+        "start": "node build/index.js",
         "test": "jest",
         "build": "tsc --outDir build",
         "download:web": "./scripts/dowload_web.sh",
