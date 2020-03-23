@@ -121,29 +121,34 @@ jobs:
 workflows:
     install-and-test:
         jobs:
-            - prettier
-            - kubenetes-deploy
-            # - web-test
-            # - server-test
-            # - server-build:
-            #       requires:
-            #           - web-test
-            #       filters:
-            #           branches:
-            #               only:
-            #                   - master
-            # - web-build:
-            #       requires:
-            #           - web-test
-            #       filters:
-            #           branches:
-            #               only:
-            #                   - master
-            # - docker-build-and-push:
-            #       requires:
-            #           - web-build
-            #           - server-build
-            #       filters:
-            #           branches:
-            #               only:
-            #                   - master
+            - web-test
+            - server-test
+            - server-build:
+                  requires:
+                      - web-test
+                  filters:
+                      branches:
+                          only:
+                              - master
+            - web-build:
+                  requires:
+                      - web-test
+                  filters:
+                      branches:
+                          only:
+                              - master
+            - docker-build-and-push:
+                  requires:
+                      - web-build
+                      - server-build
+                  filters:
+                      branches:
+                          only:
+                              - master
+            - kubenetes-deploy:
+                  requires:
+                      - docker-build-and-push
+                  filters:
+                      branches:
+                          only:
+                              - master
