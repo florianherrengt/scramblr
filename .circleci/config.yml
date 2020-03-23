@@ -101,20 +101,26 @@ jobs:
 workflows:
   install-and-test:
     jobs:
-      - docker-build-and-push
-      # - web-test
-      # - server-test
-      # - server-build:
-      #     requires:
-      #       - web-test
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
-      # - web-build:
-      #     requires:
-      #       - web-test
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
+      - web-test
+      - server-test
+      - server-build:
+          requires:
+            - web-test
+          filters:
+            branches:
+              only:
+                - master
+      - web-build:
+          requires:
+            - web-test
+          filters:
+            branches:
+              only:
+                - master
+      - docker-build-and-push:
+          requires:
+            - web-build
+          filters:
+            branches:
+              only:
+                - master
