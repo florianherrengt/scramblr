@@ -41,7 +41,7 @@ jobs:
       - attach_workspace:
           at: ~/app
       - run: docker login -u florianherrengt -p $DOCKER_TOKEN
-      - run: docker build -t florianherrengt/scramblr:${CIRCLE_SHA1} ./server
+      - run: docker build -t florianherrengt/scramblr:${CIRCLE_SHA1} .
       - run: docker push florianherrengt/scramblr:${CIRCLE_SHA1}
 
 workflows:
