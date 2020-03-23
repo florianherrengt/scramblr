@@ -85,6 +85,21 @@ jobs:
                   paths:
                       - ./server/build
 
+    docker-build-only:
+        <<: *defaults
+        executor: docker/docker
+        steps:
+            - setup_remote_docker
+            - checkout
+            - attach_workspace:
+                  at: ~/repo
+            - run: ls server web
+            - docker/check
+            - docker/build:
+                  image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+                  cache_from: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest
+                  tag: $CIRCLE_SHA1
+
     docker-build-and-push:
         <<: *defaults
         executor: docker/docker
@@ -102,6 +117,23 @@ jobs:
             - docker/push:
                   image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
                   tag: $CIRCLE_SHA1,latest
+
+    cypress-test:
+        docker:
+            - image: node:13
+              environment:
+                  CYPRESS_BASE_URL: http://localhost:8080
+            - image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+
+        steps:
+            - checkout
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "web/package.json" }}
+                      - v1-dependencies-
+            - run: yarn --cwd web install
+            - run: yarn --cwd web wait:server -- $CYPRESS_BASE_URL
+            - run: yarn --cwd web run test:e2e
 
     kubenetes-deploy:
         <<: *defaults
@@ -126,21 +158,21 @@ workflows:
             - server-build:
                   requires:
                       - web-test
-                  filters:
-                      branches:
-                          only:
-                              - master
             - web-build:
                   requires:
                       - web-test
-                  filters:
-                      branches:
-                          only:
-                              - master
+            - docker-build:
+                  requires:
+                      - web-test
+                      - server-build
+            - cypress-test:
+                  requires:
+                      - docker-build
             - docker-build-and-push:
                   requires:
                       - web-build
                       - server-build
+                      - cypress-test
                   filters:
                       branches:
                           only:

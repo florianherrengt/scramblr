@@ -10,7 +10,7 @@ const aesPassphrase = 'passphrase'
 const tagLabel = 'tagtest'
 context('Smoke tests', () => {
   it('sign up', function () {
-    cy.visit(config.baseUrl + config.routerUri.signUp)
+    cy.visit(Cypress.config().baseUrl + config.routerUri.signUp)
     cy.get('.SignUp_TextField_Username').type(username)
     cy.get('.SignUp_TextField_Password').type(password)
     cy.get('.SignUp_Button_Submit').click()
