@@ -36,6 +36,7 @@ jobs:
       - image: circleci/buildpack-deps:stretch
     working_directory: ~/app
     steps:
+      - checkout
       - setup_remote_docker
       - attach_workspace:
           at: ~/app
@@ -57,6 +58,7 @@ workflows:
                 - master
       - deploy-docker:
           requires:
+            - build-web
             - test-server
           filters:
             branches:
