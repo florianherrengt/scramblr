@@ -4,15 +4,15 @@ WORKDIR /app
 
 RUN npm i -g forever
 
-COPY ./package.json .
-COPY ./package-lock.json .
+COPY ./server/package.json .
+COPY ./server/package-lock.json .
 
 RUN npm install
 
-COPY . .
+COPY ./server .
 
 RUN npm run build
 
-COPY ../web/build ./assets
+COPY ./web/build ./assets
 
 CMD ["forever", "build/index.js"]

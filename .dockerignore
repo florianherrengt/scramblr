@@ -1,0 +1,6 @@
+server/build
+**/node_modules
+**/*.db
+Dockerfile
+server/.env
+server/assets
