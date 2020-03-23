@@ -86,39 +86,13 @@ jobs:
                       - ./server/build
 
     cypress-test:
+        <<: *defaults
         docker:
-            - image: node:13
+            - image: cypress/included:3.2.0
               environment:
-                  CYPRESS_BASE_URL: http://localhost:8080
-                  JWT_SECRET: secret
-                  DATABASE_TYPE: postgres
-                  DATABASE_NAME: postgres
-                  DATABASE_USERNAME: postgres
-                  DATABASE_PASSWORD: postgres
-                  DATABASE_SSL: '0'
-            - image: circleci/postgres:11
-              environment:
-                  POSTGRES_PASSWORD: postgres
-
+                  CYPRESS_BASE_URL: https://scramblrapp.com
         steps:
             - checkout
-            - restore_cache:
-                  keys:
-                      - v1-dependencies-{{ checksum "web/package.json" }}
-                      - v1-dependencies-{{ checksum "server/package.json" }}
-                      - v1-dependencies-
-            - run:
-                  name: install dockerize
-                  command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-                  environment:
-                      DOCKERIZE_VERSION: v0.6.1
-            - run:
-                  name: Wait for db
-                  command: dockerize -wait tcp://localhost:5432 -timeout 1m
-            - run: yarn --cwd web install
-            - run: yarn --cwd server install
-            - run: yarn --cwd server start
-            - run: yarn --cwd web wait:server -- $CYPRESS_BASE_URL
             - run: yarn --cwd web run test:e2e
 
     docker-build-and-push:
@@ -129,7 +103,6 @@ jobs:
             - checkout
             - attach_workspace:
                   at: ~/repo
-            - run: ls server web
             - docker/check
             - docker/build:
                   image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
@@ -157,29 +130,30 @@ jobs:
 workflows:
     install-and-test:
         jobs:
-            - web-test
-            - server-test
-            - server-build:
-                  requires:
-                      - server-test
-            - web-build:
-                  requires:
-                      - web-test
-            - cypress-test:
-                  requires:
-                      - web-build
-                      - server-build
-            - docker-build-and-push:
-                  requires:
-                      - cypress-test
-                  filters:
-                      branches:
-                          only:
-                              - master
-            - kubenetes-deploy:
-                  requires:
-                      - docker-build-and-push
-                  filters:
-                      branches:
-                          only:
-                              - master
+            - cypress-test
+              # - web-test
+              # - server-test
+              # - server-build:
+              #       requires:
+              #           - server-test
+              # - web-build:
+              #       requires:
+              #           - web-test
+              # - docker-build-and-push:
+              #       requires:
+              #           - server-build
+              #           - web-build
+              #       filters:
+              #           branches:
+              #               only:
+              #                   - master
+              # - kubenetes-deploy:
+              #       requires:
+              #           - docker-build-and-push
+              #       filters:
+              #           branches:
+              #               only:
+              #                   - master
+              # - cypress-test:
+              #     requires:
+              #           - docker-build-and-push
