@@ -14,6 +14,7 @@ export interface CurrentUserNotesState {
     error?: string;
     fetched: boolean;
     hasMore: boolean;
+    total: number
 }
 
 const defaultState: CurrentUserNotesState = {
@@ -21,6 +22,7 @@ const defaultState: CurrentUserNotesState = {
     isFetching: false,
     fetched: false,
     hasMore: false,
+    total: 0
 };
 
 export const currentUserNotes = (
@@ -53,6 +55,7 @@ export const currentUserNotes = (
                 hasMore: action.notes.hasMore,
                 fetched: true,
                 isFetching: false,
+                total: action.notes.total
             };
         case 'GET_CURRENT_USER_NOTES_FAILURE':
             return { ...state, fetched: true, isFetching: false };
@@ -63,13 +66,14 @@ export const currentUserNotes = (
                 notes: state.notes.map(note => ({
                     ...note,
                     isLoading: note.id === action.id,
-                })),
+                }))
             };
 
         case 'DELETE_NOTE_SUCCESS':
             return {
                 ...state,
                 notes: state.notes.filter(note => note.id !== action.id),
+                total: state.total - 1
             };
 
         case 'DELETE_NOTE_FAILURE':
@@ -90,7 +94,7 @@ export const currentUserNotes = (
                         transactionId: action.transactionId,
                     },
                     ...state.notes,
-                ],
+                ]
             };
 
         case 'CREATE_NOTE_SUCCESS':
@@ -102,6 +106,7 @@ export const currentUserNotes = (
                         note => note.transactionId !== action.transactionId,
                     ),
                 ],
+                total: state.total + 1
             };
 
         case 'CREATE_NOTE_FAILURE':

@@ -1,41 +1,42 @@
 query getCurrentUserNotes($skip: Int, $limit: Int, $tagsId: [String!]) {
-  currentUserNotes(skip: $skip, limit: $limit, tagsId: $tagsId) {
-    items {
-      ...NoteFields
-      tags {
-        id
-      }
+    currentUserNotes(skip: $skip, limit: $limit, tagsId: $tagsId) {
+        items {
+            ...NoteFields
+            tags {
+                id
+            }
+        }
+        hasMore
+        total
     }
-    hasMore
-  }
 }
 
 mutation deleteNote($id: String!) {
-  deleteNote(id: $id) {
-    id
-  }
+    deleteNote(id: $id) {
+        id
+    }
 }
 
 mutation createNote($input: CreateNoteInput!) {
-  createNote(input: $input) {
-    ...NoteFields
-    tags {
-      id
+    createNote(input: $input) {
+        ...NoteFields
+        tags {
+            id
+        }
     }
-  }
 }
 
 mutation updateNote($input: UpdateNoteInput!) {
-  updateNote(input: $input) {
-    ...NoteFields
-    tags {
-      id
+    updateNote(input: $input) {
+        ...NoteFields
+        tags {
+            id
+        }
     }
-  }
 }
 
 fragment NoteFields on Note {
-  id
-  text
-  createdAt
+    id
+    text
+    createdAt
 }

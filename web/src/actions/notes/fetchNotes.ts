@@ -3,7 +3,6 @@ import {
     decrypt,
     GetCurrentUserNotesQuery,
     GetCurrentUserNotesQueryVariables,
-    formatGraphqlErrors,
     getApi,
 } from '../../helpers';
 import { RootState } from '../../reducers';
@@ -88,8 +87,5 @@ export const fetchCurrentUserNotes = (
             dispatch({
                 type: 'GET_CURRENT_USER_NOTES_FAILURE',
             });
-            // if (formatGraphqlErrors(error)?.isUnauthenticated) {
-            //     dispatch(push(routerUri.signIn));
-            // }
         }
     };

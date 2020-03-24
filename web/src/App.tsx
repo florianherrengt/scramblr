@@ -1,14 +1,10 @@
-import {
-    CircularProgress,
-    CssBaseline,
-    ThemeProvider,
-} from '@material-ui/core';
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
 import React, { lazy, Suspense } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import './App.css';
-import { localStorageKeys } from './config';
 import { AppRouter } from './AppRouter';
+import { localStorageKeys } from './config';
 import { configureStore } from './store';
 import { theme } from './theme';
 

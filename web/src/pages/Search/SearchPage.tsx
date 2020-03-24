@@ -1,15 +1,14 @@
-import React, { useEffect, Fragment, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { LineSpacer, SelectTag, SelectTagProps } from '../../components';
-import { RootState } from '../../reducers';
-import { NoteListContainer } from '../../containers/NoteListContainer';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     fetchCurrentUserNotes,
     resetSearchNotes,
     searchNotes,
 } from '../../actions';
+import { LineSpacer } from '../../components';
+import { NoteListContainer } from '../../containers/NoteListContainer';
 import { SelectTagContainer } from '../../containers/SelectTagContainer';
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { RootState } from '../../reducers';
 
 export const SearchPage = () => {
     const dispatch = useDispatch();
@@ -50,12 +49,19 @@ export const SearchPage = () => {
             <SelectTagContainer
                 onChange={tags => setTagsId(tags.map(tag => tag.id))}
             />
+            {displayedNotes.fetched && displayedNotes.total ? (
+                <p className='text-center'>
+                    {`${displayedNotes.total} note${
+                        displayedNotes.total !== 1 ? 's' : ''
+                    } found`}{' '}
+                </p>
+            ) : null}
             <LineSpacer />
             <NoteListContainer
                 displayedNotes={displayedNotes}
                 loadMore={loadMore}
             />
-            {displayedNotes.fetched && !displayedNotes.notes.length && (
+            {displayedNotes.fetched && !displayedNotes.total && (
                 <Fragment>
                     <LineSpacer />
                     <p className='text-center'>No results</p>

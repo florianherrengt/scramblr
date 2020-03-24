@@ -1,6 +1,6 @@
 import { Fab, Slide, useScrollTrigger } from '@material-ui/core';
 import { KeyboardArrowUp as KeyboardArrowUpIcon } from '@material-ui/icons';
-import React, { useState } from 'react';
+import React from 'react';
 import { CreateNote, CreateNoteProps } from '../CreateNote';
 import { LineSpacer } from '../LineSpacer';
 import { NoteCard, NoteCardProps } from '../NoteCard';

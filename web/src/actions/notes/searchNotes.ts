@@ -85,16 +85,6 @@ export const searchNotes = (options: SearchOptions) => async (
         type: 'SEARCH_NOTES_REQUEST',
     });
 
-    if (isEmpty(options.tagsId)) {
-        dispatch({
-            type: 'SEARCH_NOTES_SUCCESS',
-            notes: {
-                items: [],
-                hasMore: false,
-            },
-        });
-        return;
-    }
 
     try {
         const { currentUserNotes } = await api.getCurrentUserNotes({

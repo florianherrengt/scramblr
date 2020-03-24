@@ -1,4 +1,4 @@
-import { push, RouterAction } from 'connected-react-router';
+import { push } from 'connected-react-router';
 import { ThunkDispatch } from 'redux-thunk';
 import { localStorageKeys, routerUri } from '../../config';
 import { getApi, MutationSignUpArgs, User } from '../../helpers';

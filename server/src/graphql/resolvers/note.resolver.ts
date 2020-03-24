@@ -40,7 +40,7 @@ export class NoteResolver {
         @InjectRepository(Note)
         private readonly noteRepository: Repository<Note>,
         @InjectRepository(Tag) private readonly tagRepository: Repository<Tag>,
-    ) {}
+    ) { }
 
     @Query(returns => PaginatedNoteResponse)
     async currentUserNotes(
