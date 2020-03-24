@@ -20,6 +20,14 @@ code {
     text-align: center;
 }
 
+.flex {
+    display: flex;
+}
+
+.grow {
+    flex-grow: 1;
+}
+
 .text-error {
     color: red;
 }

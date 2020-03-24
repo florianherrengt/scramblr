@@ -19,6 +19,7 @@ export type CreateNoteInput = {
 
 export type CreateTagInput = {
   label: Scalars['String'];
+  emotion?: Maybe<Scalars['String']>;
 };
 
 
@@ -124,6 +125,7 @@ export type Tag = {
    __typename?: 'Tag';
   id: Scalars['ID'];
   label: Scalars['String'];
+  emotion?: Maybe<Scalars['String']>;
 };
 
 export type TagNote = {
@@ -273,7 +275,7 @@ export type DeleteTagMutation = (
 
 export type TagFieldsFragment = (
   { __typename?: 'Tag' }
-  & Pick<Tag, 'id' | 'label'>
+  & Pick<Tag, 'id' | 'label' | 'emotion'>
 );
 
 export type GetCurrentUserQueryVariables = {};
@@ -333,6 +335,7 @@ export const TagFieldsFragmentDoc = gql`
     fragment TagFields on Tag {
   id
   label
+  emotion
 }
     `;
 export const UserFieldsFragmentDoc = gql`

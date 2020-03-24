@@ -1,15 +1,10 @@
-import {
-    Chip,
-    ListItemIcon,
-    Menu,
-    MenuItem,
-    Typography,
-} from '@material-ui/core';
+import { ListItemIcon, Menu, MenuItem, Typography } from '@material-ui/core';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@material-ui/icons';
 import React from 'react';
+import { ValuesType } from 'utility-types';
 import { EditTagModal } from '../EditTagModal';
 import { SelectTagProps } from '../SelectTag';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@material-ui/icons';
-import { ValuesType } from 'utility-types';
+import { TagChip } from '../TagChip';
 
 interface ListTagsProps {
     tags: SelectTagProps['tags'];
@@ -37,11 +32,11 @@ export const ListTags: React.SFC<ListTagsProps> = props => {
                 }}
             />
             {props.tags.map(tag => (
-                <Chip
+                <TagChip
+                    tag={tag}
                     key={tag.id}
                     style={{ margin: '10px 10px 0 0' }}
                     clickable
-                    label={tag.label}
                     size='medium'
                     deleteIcon={<EditIcon fontSize='small' />}
                     onClick={event => {

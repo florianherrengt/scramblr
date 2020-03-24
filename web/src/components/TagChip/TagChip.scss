@@ -1,0 +1,24 @@
+@import '../../styles/variables';
+.TagChip {
+    font-weight: bold;
+    &--neutral {
+        border-color: $color-grey !important;
+        svg {
+            color: $color-grey !important;
+        }
+    }
+    &--positive {
+        border-color: $color-success !important;
+        color: $color-success !important;
+        svg {
+            color: $color-success !important;
+        }
+    }
+    &--negative {
+        border-color: $color-error !important;
+        color: $color-error !important;
+        svg {
+            color: $color-error !important;
+        }
+    }
+}

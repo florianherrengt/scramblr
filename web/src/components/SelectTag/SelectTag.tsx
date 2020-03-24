@@ -1,7 +1,8 @@
-import { Chip, CircularProgress, TextField } from '@material-ui/core/';
+import { CircularProgress, TextField } from '@material-ui/core/';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import React from 'react';
 import { RootState } from '../../reducers';
+import { TagChip } from '../TagChip';
 
 export interface SelectTagProps {
     tags: RootState['currentUserTags']['tags'];
@@ -35,10 +36,7 @@ export const SelectTag: React.SFC<SelectTagProps> = props => {
             renderTags={(value: SelectTagProps['tags'], getTagProps) => {
                 return value.map((option, index) => {
                     return option ? (
-                        <Chip
-                            label={option.label}
-                            {...getTagProps({ index })}
-                        />
+                        <TagChip tag={option} {...getTagProps({ index })} />
                     ) : null;
                 });
             }}

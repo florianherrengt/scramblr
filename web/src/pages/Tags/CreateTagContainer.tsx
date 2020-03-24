@@ -16,9 +16,5 @@ export const CreateTagContainer: React.SFC<TagsListContainerProps> = props => {
     if (!aesPassphrase) {
         return <Typography>No aes passphrase found...</Typography>;
     }
-    return (
-        <CreateTagForm
-            onSubmit={label => dispatch(createTag({ input: { label } }))}
-        />
-    );
+    return <CreateTagForm onSubmit={input => dispatch(createTag({ input }))} />;
 };

@@ -1,6 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-import red from '@material-ui/core/colors/red';
+// import red from '@material-ui/core/colors/red';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import common from '@material-ui/core/colors/common';
 
@@ -8,7 +8,6 @@ import common from '@material-ui/core/colors/common';
 export const theme = createMuiTheme({
     palette: {
         primary: blueGrey,
-        secondary: red,
         background: {
             default: common.white,
             paper: common.white

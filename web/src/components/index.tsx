@@ -10,3 +10,4 @@ export * from './SignUp';
 export * from './ListTags';
 export * from './Settings';
 export * from './CreateTagForm';
+export * from './TagChip';

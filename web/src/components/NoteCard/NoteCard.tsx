@@ -2,7 +2,6 @@ import {
     Card,
     CardContent,
     CardHeader,
-    Chip,
     CircularProgress,
     IconButton,
     ListItemIcon,
@@ -20,6 +19,7 @@ import React from 'react';
 import { Optional, ValuesType } from 'utility-types';
 import { RootState } from '../../reducers';
 import classNames from 'classnames';
+import { TagChip } from '../TagChip';
 
 export interface NoteCardProps {
     note: ValuesType<RootState['currentUserNotes']['notes']>;
@@ -55,7 +55,8 @@ export const NoteCard: React.SFC<NoteCardProps> = props => {
                 }
                 subheader={props.tags.map(tag => {
                     return (
-                        <Chip
+                        <TagChip
+                            tag={tag}
                             key={tag.id}
                             style={{ marginRight: 5 }}
                             variant='outlined'
