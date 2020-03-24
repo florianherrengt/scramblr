@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 export const PrivacyPage = () => {
     return (
         <div>
-            <Typography>Braindump Privacy Notice</Typography>
+            <Typography>Scramblr Privacy Notice</Typography>
             <Typography>
                 Please read this document carefully before accessing or using
                 this service!
@@ -13,14 +13,13 @@ export const PrivacyPage = () => {
                 <li>Introduction</li>
                 <li>
                     <ol>
-                        <li>Instances Provided By New Vector</li>
+                        <li>Instances Provided By Herrengt Limited</li>
                         <Typography>
-                            Herrengt Ltd hosts several Braindump instances at
-                            https://braimdump.im/. This agreement does not cover
-                            braimdump.im instances hosted by anyone else.
+                            Herrengt Ltd hosts a Scramblr instance at
+                            https://scramblrapp.com. This agreement does not
+                            cover Scramblr instances hosted by anyone else.
                         </Typography>
                         <li>Company information</li>
-                        <Typography>Email: support@herrengtltd.com</Typography>
                         <Typography>
                             Postal address: Unit 5 City Business Centre, Lower
                             Road, London, England, SE16 2XB

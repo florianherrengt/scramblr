@@ -1,5 +1,5 @@
 import React from 'react';
 
-export const TnCPage = () => {
+export const TermAndConditionsPage = () => {
     return <div>todo..</div>;
 };

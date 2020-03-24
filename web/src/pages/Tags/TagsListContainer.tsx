@@ -8,6 +8,7 @@ import { RootState } from '../../reducers';
 interface TagsListContainerProps {}
 
 export const TagsListContainer: React.SFC<TagsListContainerProps> = props => {
+    console.debug('TagsListContainer');
     const dispatch = useDispatch();
 
     const aesPassphrase = useSelector(

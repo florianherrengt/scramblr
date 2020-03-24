@@ -11,7 +11,9 @@ interface AesPassphraseContainerProps {
 
 export const AesPassphraseContainer: React.SFC<AesPassphraseContainerProps> = props => {
     const dispatch = useDispatch();
-
+    const aesPassphrase = useSelector(
+        (state: RootState) => state.currentUser.aesPassphrase,
+    );
     const currentUserNotes = useSelector(
         (state: RootState) => state.currentUserNotes,
     );
@@ -21,6 +23,7 @@ export const AesPassphraseContainer: React.SFC<AesPassphraseContainerProps> = pr
     }
     return (
         <AesPassphraseForm
+            defaultValue={aesPassphrase}
             submitLabel={props.submitLabel}
             testNote={
                 (currentUserNotes.notes.length &&

@@ -15,8 +15,10 @@ import {
     MutationUpdateTagArgs,
 } from '../helpers';
 import { RootState } from '../reducers';
-import { push, RouterAction } from 'connected-react-router';
+import { push } from 'connected-react-router';
 import { routerUri } from '../config';
+import { SharedActions } from './shared';
+import { enqueueSnackbar } from './notifier';
 
 export interface GetTagsActionFetching {
     type: 'GET_CURRENT_USER_TAGS_REQUEST';
@@ -37,7 +39,7 @@ export interface GetTagsActionFailure {
 }
 
 export type GetTagsAction =
-    | RouterAction
+    | SharedActions
     | GetTagsActionFetching
     | GetTagsActionSuccess
     | GetTagsActionFailure;
@@ -61,7 +63,7 @@ export interface CreateTagsActionFailure {
 }
 
 export type CreateTagsAction =
-    | RouterAction
+    | SharedActions
     | CreateTagsActionFetching
     | CreateTagsActionSuccess
     | CreateTagsActionFailure;
@@ -85,7 +87,7 @@ export interface UpdateTagsActionFailure {
 }
 
 export type UpdateTagsAction =
-    | RouterAction
+    | SharedActions
     | UpdateTagsActionFetching
     | UpdateTagsActionSuccess
     | UpdateTagsActionFailure;
@@ -109,7 +111,7 @@ export interface DeleteTagsActionFailure {
 }
 
 export type DeleteTagsAction =
-    | RouterAction
+    | SharedActions
     | DeleteTagsActionFetching
     | DeleteTagsActionSuccess
     | DeleteTagsActionFailure;
@@ -130,73 +132,73 @@ export const fetchCurrentUserTags = (
 ) => async (
     dispatch: ThunkDispatch<{}, {}, GetTagsAction>,
     getState: () => RootState,
-    ) => {
-        const state = getState();
-        const token = state.currentUser.token
-        if (!token) {
-            dispatch(push(routerUri.signIn))
+) => {
+    const state = getState();
+    const token = state.currentUser.token;
+    if (!token) {
+        dispatch(push(routerUri.signIn));
+        return;
+    }
+    const api = getApi({ token });
+    const { aesPassphrase } = state.currentUser;
+
+    if (!options?.forceReload) {
+        if (
+            state.currentUserTags.isFetching ||
+            state.currentUserTags.fetched ||
+            state.currentUserTags.error
+        ) {
             return;
         }
-        const api = getApi({ token })
-        const { aesPassphrase } = state.currentUser;
+    }
 
-        if (!options?.forceReload) {
-            if (
-                state.currentUserTags.isFetching ||
-                state.currentUserTags.fetched ||
-                state.currentUserTags.error
-            ) {
-                return;
-            }
-        }
-
-        dispatch({
-            type: 'GET_CURRENT_USER_TAGS_REQUEST',
-            isFetching: true,
-        });
-        try {
-            const { currentUserTags } = await api.getCurrentUserTags(
-                options?.variables,
-            );
-            if (!currentUserTags) {
-                return dispatch({
-                    type: 'GET_CURRENT_USER_TAGS_FAILURE',
-                    error: 'No user returned',
-                    isFetching: false,
-                });
-            }
-            dispatch({
-                type: 'GET_CURRENT_USER_TAGS_SUCCESS',
-                tags: currentUserTags.map(tag => ({
-                    ...tag,
-                    label: aesPassphrase
-                        ? decrypt(tag.label, aesPassphrase)
-                        : tag.label,
-                })),
-                aesPassphrase: state.currentUser.aesPassphrase,
-                isFetching: false,
-            });
-        } catch (error) {
-            console.error(error);
-            dispatch({
+    dispatch({
+        type: 'GET_CURRENT_USER_TAGS_REQUEST',
+        isFetching: true,
+    });
+    try {
+        const { currentUserTags } = await api.getCurrentUserTags(
+            options?.variables,
+        );
+        if (!currentUserTags) {
+            return dispatch({
                 type: 'GET_CURRENT_USER_TAGS_FAILURE',
-                error,
+                error: 'No user returned',
                 isFetching: false,
             });
         }
-    };
+        dispatch({
+            type: 'GET_CURRENT_USER_TAGS_SUCCESS',
+            tags: currentUserTags.map(tag => ({
+                ...tag,
+                label: aesPassphrase
+                    ? decrypt(tag.label, aesPassphrase)
+                    : tag.label,
+            })),
+            aesPassphrase: state.currentUser.aesPassphrase,
+            isFetching: false,
+        });
+    } catch (error) {
+        console.error(error);
+        dispatch({
+            type: 'GET_CURRENT_USER_TAGS_FAILURE',
+            error,
+            isFetching: false,
+        });
+    }
+};
 
 export const createTag = (variables: MutationCreateTagArgs) => async (
     dispatch: ThunkDispatch<{}, {}, CreateTagsAction>,
     getState: () => RootState,
 ) => {
     const state = getState();
-    const token = state.currentUser.token
+    const token = state.currentUser.token;
     if (!token) {
-        dispatch(push(routerUri.signIn))
+        dispatch(push(routerUri.signIn));
         return;
     }
-    const api = getApi({ token })
+    const api = getApi({ token });
     const { aesPassphrase } = state.currentUser;
     const transactionId =
         new Date().valueOf().toString() +
@@ -217,6 +219,7 @@ export const createTag = (variables: MutationCreateTagArgs) => async (
             error: 'No AES Passphrase',
             transactionId,
         });
+        dispatch(enqueueSnackbar({ message: 'No AES Passphrase' }));
         return;
     }
 
@@ -232,6 +235,7 @@ export const createTag = (variables: MutationCreateTagArgs) => async (
             tag: { ...createTag, label: variables.input.label },
             transactionId,
         });
+        dispatch(enqueueSnackbar({ message: 'Tag created' }));
     } catch (error) {
         console.error(error);
         dispatch({
@@ -247,12 +251,12 @@ export const updateTag = (variables: MutationUpdateTagArgs) => async (
     getState: () => RootState,
 ) => {
     const state = getState();
-    const token = state.currentUser.token
+    const token = state.currentUser.token;
     if (!token) {
-        dispatch(push(routerUri.signIn))
+        dispatch(push(routerUri.signIn));
         return;
     }
-    const api = getApi({ token })
+    const api = getApi({ token });
     const { aesPassphrase } = state.currentUser;
     const transactionId =
         new Date().valueOf().toString() +
@@ -267,7 +271,6 @@ export const updateTag = (variables: MutationUpdateTagArgs) => async (
 
     if (!aesPassphrase) {
         console.error('No AES Passphrase');
-
         dispatch({
             type: 'UPDATE_TAGS_FAILURE',
             error: 'No AES Passphrase',
@@ -282,7 +285,12 @@ export const updateTag = (variables: MutationUpdateTagArgs) => async (
     };
     try {
         const { updateTag } = await api.updateTag({ input });
-
+        dispatch(
+            enqueueSnackbar({
+                message: 'Tag updated',
+                options: { variant: 'success' },
+            }),
+        );
         dispatch({
             type: 'UPDATE_TAGS_SUCCESS',
             tag: {
@@ -303,15 +311,15 @@ export const updateTag = (variables: MutationUpdateTagArgs) => async (
 
 export const deleteTag = (variables: MutationDeleteTagArgs) => async (
     dispatch: ThunkDispatch<{}, {}, DeleteTagsAction>,
-    getState: () => RootState
+    getState: () => RootState,
 ) => {
-    const state = getState()
-    const token = state.currentUser.token
+    const state = getState();
+    const token = state.currentUser.token;
     if (!token) {
-        dispatch(push(routerUri.signIn))
+        dispatch(push(routerUri.signIn));
         return;
     }
-    const api = getApi({ token })
+    const api = getApi({ token });
     const transactionId =
         new Date().valueOf().toString() +
         '-' +
@@ -325,7 +333,12 @@ export const deleteTag = (variables: MutationDeleteTagArgs) => async (
 
     try {
         const { deleteTag } = await api.deleteTag({ id: variables.id });
-
+        dispatch(
+            enqueueSnackbar({
+                message: 'Tag deleted',
+                options: { variant: 'success' },
+            }),
+        );
         dispatch({
             type: 'DELETE_TAGS_SUCCESS',
             id: deleteTag.id,
@@ -333,6 +346,12 @@ export const deleteTag = (variables: MutationDeleteTagArgs) => async (
         });
     } catch (error) {
         console.error(error);
+        dispatch(
+            enqueueSnackbar({
+                message: 'Error deleting tag...',
+                options: { variant: 'error' },
+            }),
+        );
         dispatch({
             type: 'DELETE_TAGS_FAILURE',
             error,

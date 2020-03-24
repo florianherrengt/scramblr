@@ -21,7 +21,7 @@ export interface GetNotesActionSuccess {
 }
 
 export interface GetNotesActionFailure {
-    type: 'GET_CURRENT_USER_NOTES_FAILURE'
+    type: 'GET_CURRENT_USER_NOTES_FAILURE';
 }
 
 export type GetNoteAction =
@@ -41,28 +41,27 @@ export const fetchCurrentUserNotes = (
     dispatch,
     getState,
     ) => {
+        console.debug('action.fetchCurrentUserNotes')
         const state = getState();
 
-        const token = state.currentUser.token
+        const token = state.currentUser.token;
 
         if (!token) {
-            dispatch(push(routerUri.signIn))
+            console.debug('Undefined token. Redirecting to /sign-in')
+            dispatch(push(routerUri.signIn));
             return;
         }
-        const api = getApi({ token })
-
-        if (
-            state.currentUserNotes.isFetching ||
-            (state.currentUserNotes.fetched && !state.currentUserNotes.hasMore)
-        ) {
+        if (!token) {
+            console.debug('Undefined token. Redirecting to /sign-in')
+            dispatch(push(routerUri.signIn));
             return;
         }
 
-        if (!options?.forceReload) {
-            if (state.currentUserNotes.fetched) {
-                return;
-            }
+        if (state.currentUserNotes.fetched && !options?.forceReload) {
+            return;
         }
+        const api = getApi({ token });
+
         dispatch({
             type: 'GET_CURRENT_USER_NOTES_REQUEST',
             isFetching: true,
@@ -71,7 +70,6 @@ export const fetchCurrentUserNotes = (
             const { currentUserNotes } = await api.getCurrentUserNotes(
                 options?.variables,
             );
-
             dispatch({
                 type: 'GET_CURRENT_USER_NOTES_SUCCESS',
                 notes: {
@@ -86,11 +84,12 @@ export const fetchCurrentUserNotes = (
                 aesPassphrase: state.currentUser.aesPassphrase,
             });
         } catch (error) {
+            console.error(error)
             dispatch({
-                type: 'GET_CURRENT_USER_NOTES_FAILURE'
+                type: 'GET_CURRENT_USER_NOTES_FAILURE',
             });
-            if (formatGraphqlErrors(error)?.isUnauthenticated) {
-                dispatch(push(routerUri.signIn))
-            }
+            // if (formatGraphqlErrors(error)?.isUnauthenticated) {
+            //     dispatch(push(routerUri.signIn));
+            // }
         }
     };

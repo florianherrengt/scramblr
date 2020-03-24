@@ -48,6 +48,12 @@ export const getTagsIdFromSearch = (
     return tagsIdFilter;
 };
 
+export const resetSearchNotes = () => async (
+    dispatch: ThunkDispatch<{}, {}, SearchNoteAction>,
+    getState: () => RootState,
+) => {
+    dispatch({ type: 'SEARCH_NOTES_RESET' })
+}
 interface SearchOptions {
     searchValue: string;
 }
@@ -58,12 +64,13 @@ export const searchNotes = (options: SearchOptions) => async (
 ) => {
     const state = getState();
 
-    const token = state.currentUser.token
+    const token = state.currentUser.token;
     if (!token) {
-        dispatch(push(routerUri.signIn))
+        console.debug('Undefined token. Redirecting to /sign-in')
+        dispatch(push(routerUri.signIn));
         return;
     }
-    const api = getApi({ token })
+    const api = getApi({ token });
     if (isEmpty(options.searchValue)) {
         dispatch({
             type: 'SEARCH_NOTES_RESET',

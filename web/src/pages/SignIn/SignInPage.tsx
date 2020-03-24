@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { signIn } from '../../actions';
-import { LineSpacer } from '../../components/LineSpacer';
 import { SignIn } from '../../components';
-import { useSelector, useDispatch } from 'react-redux';
+import { LineSpacer } from '../../components/LineSpacer';
 import { RootState } from '../../reducers';
 
 export const SignInPage = () => {
+    console.debug('SignInPage');
     const dispatch = useDispatch();
     const currentUser = useSelector((state: RootState) => state.currentUser);
     return (

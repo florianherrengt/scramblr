@@ -1,5 +1,5 @@
-import { TagsAction } from '../actions';
-import { Tag } from '../helpers/';
+import { TagsAction, CurrentUserActionSetAesPassphrase } from '../actions';
+import { Tag, decrypt } from '../helpers/';
 
 interface CurrentUserTagsState {
     tags: Array<
@@ -18,9 +18,17 @@ const defaultState: CurrentUserTagsState = {
 
 export const currentUserTags = (
     state: CurrentUserTagsState = defaultState,
-    action: TagsAction,
+    action: TagsAction | CurrentUserActionSetAesPassphrase,
 ): CurrentUserTagsState => {
     switch (action.type) {
+        case 'SET_AES_PASSPHRASE':
+            return {
+                ...state,
+                tags: state.tags.map(tag => ({
+                    ...tag,
+                    label: decrypt(tag.label, action.user.aesPassphrase),
+                })),
+            };
         /* 
       GET
     */

@@ -39,7 +39,7 @@ export const currentUserNotes = (
         case 'GET_CURRENT_USER_NOTES_REQUEST':
             return { ...state, ...action, isFetching: true };
         case 'GET_CURRENT_USER_NOTES_SUCCESS':
-            console.log('GET_CURRENT_USER_NOTES_SUCCESS');
+            console.debug('GET_CURRENT_USER_NOTES_SUCCESS');
             const notes = [
                 ...state.notes,
                 ...action.notes.items.map(note => ({

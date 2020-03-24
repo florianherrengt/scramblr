@@ -9,7 +9,7 @@ const password = 'demoaccount' + CryptoJS.lib.WordArray.random(128 / 8).toString
 const aesPassphrase = 'passphrase'
 const tagLabel = 'tagtest'
 context('Smoke tests', () => {
-  it('sign up', function () {
+  it.only('sign up', function () {
     cy.visit(Cypress.config().baseUrl + config.routerUri.signUp)
     cy.get('.SignUp_TextField_Username').type(username)
     cy.get('.SignUp_TextField_Password').type(password)

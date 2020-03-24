@@ -7,10 +7,12 @@ import {
     ListItemText,
 } from '@material-ui/core';
 import {
+    Search as SearchIcon,
     ArrowLeft as ArrowLeftIcon,
     Label as LabelIcon,
-    Note as NoteIcon,
-    Settings as SettingsIcon,
+    Notes as NotesIcon,
+    BarChart as InsightsIcon,
+    AccountCircle as AccountIcon,
 } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
@@ -27,6 +29,7 @@ const MainLayout: React.SFC<MainLayoutProps> = props => {
         <div className='MainLayout'>
             <TopBar onMenuClick={() => setDrawerOpen(true)} />
             <Drawer
+                color='inherit'
                 anchor='left'
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
@@ -40,6 +43,19 @@ const MainLayout: React.SFC<MainLayoutProps> = props => {
                     </ListItem>
                     <Divider />
                     <ListItem
+                        className='MainLayout_Drawer_ListItem_Search'
+                        button
+                        onClick={() => {
+                            history.push(routerUri.search);
+                            setDrawerOpen(false);
+                        }}
+                    >
+                        <ListItemIcon>
+                            <SearchIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='Search' />
+                    </ListItem>
+                    <ListItem
                         className='MainLayout_Drawer_ListItem_Notes'
                         button
                         onClick={() => {
@@ -48,7 +64,7 @@ const MainLayout: React.SFC<MainLayoutProps> = props => {
                         }}
                     >
                         <ListItemIcon>
-                            <NoteIcon />
+                            <NotesIcon />
                         </ListItemIcon>
                         <ListItemText primary='Notes' />
                     </ListItem>
@@ -65,7 +81,19 @@ const MainLayout: React.SFC<MainLayoutProps> = props => {
                         </ListItemIcon>
                         <ListItemText primary='Tags' />
                     </ListItem>
-                    <Divider />
+                    <ListItem
+                        className='MainLayout_Drawer_ListItem_Insights'
+                        button
+                        onClick={() => {
+                            history.push(routerUri.insights);
+                            setDrawerOpen(false);
+                        }}
+                    >
+                        <ListItemIcon>
+                            <InsightsIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='Insights' />
+                    </ListItem>
                     <div style={{ flexGrow: 1 }} />
                     <ListItem
                         className='MainLayout_Drawer_ListItem_Settings'
@@ -76,9 +104,9 @@ const MainLayout: React.SFC<MainLayoutProps> = props => {
                         }}
                     >
                         <ListItemIcon>
-                            <SettingsIcon />
+                            <AccountIcon />
                         </ListItemIcon>
-                        <ListItemText primary='Settings' />
+                        <ListItemText primary='Account' />
                     </ListItem>
                 </List>
             </Drawer>

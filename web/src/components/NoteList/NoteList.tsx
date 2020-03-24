@@ -1,6 +1,5 @@
-import { Fab, Slide } from '@material-ui/core';
+import { Fab, Slide, useScrollTrigger } from '@material-ui/core';
 import { KeyboardArrowUp as KeyboardArrowUpIcon } from '@material-ui/icons';
-import { useThrottledFn, useWindowScroll } from 'beautiful-react-hooks';
 import React, { useState } from 'react';
 import { CreateNote, CreateNoteProps } from '../CreateNote';
 import { LineSpacer } from '../LineSpacer';
@@ -21,14 +20,10 @@ interface NoteListProps {
 }
 
 export const NoteList: React.SFC<NoteListProps> = props => {
-    const [scrollY, setScrollY] = useState(window.scrollY);
-
-    useWindowScroll(
-        (useThrottledFn(
-            () => setScrollY(window.scrollY),
-            1000,
-        ) as unknown) as () => {},
-    );
+    const scrollTriggerGoTop = useScrollTrigger({
+        disableHysteresis: true,
+        threshold: 0,
+    });
 
     return (
         <div className='NoteList'>
@@ -55,15 +50,14 @@ export const NoteList: React.SFC<NoteListProps> = props => {
                 </div>
             ))}
 
-            <Slide direction='up' in={!!scrollY} mountOnEnter unmountOnExit>
+            <Slide direction='up' in={scrollTriggerGoTop}>
                 <div className='NoteList_GoTop'>
                     <Fab
                         className='NoteList_Button_ScrollTop'
                         onClick={() => {
                             window.scrollTo(0, 0);
-                            setScrollY(0);
                         }}
-                        color='primary'
+                        color='inherit'
                         size='small'
                     >
                         <KeyboardArrowUpIcon />

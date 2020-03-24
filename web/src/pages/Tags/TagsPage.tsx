@@ -7,6 +7,7 @@ import { LineSpacer } from '../../components';
 interface TagsPageProps {}
 
 export const TagsPage: React.SFC<TagsPageProps> = props => {
+    console.debug('TagsPage');
     return (
         <div>
             <LineSpacer />

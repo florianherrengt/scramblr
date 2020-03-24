@@ -1,8 +1,10 @@
 import { ThunkDispatch } from 'redux-thunk';
 import { getApi } from '../../helpers';
 import { RootState } from '../../reducers';
-import { push, RouterAction } from 'connected-react-router';
+import { push } from 'connected-react-router';
 import { routerUri } from '../../config';
+import { enqueueSnackbar } from '../notifier';
+import { SharedActions } from '../shared';
 
 export interface DeleteNotesActionFetching {
     type: 'DELETE_NOTE_REQUEST';
@@ -21,7 +23,7 @@ export interface DeleteNotesActionError {
 }
 
 export type DeleteNoteAction =
-    | RouterAction
+    | SharedActions
     | DeleteNotesActionFetching
     | DeleteNotesActionSuccess
     | DeleteNotesActionError;
@@ -32,21 +34,33 @@ export const deleteNote = (id: string) => async (
 ) => {
     const state = getState();
 
-    const token = state.currentUser.token
+    const token = state.currentUser.token;
     if (!token) {
-        dispatch(push(routerUri.signIn))
+        dispatch(push(routerUri.signIn));
         return;
     }
-    const api = getApi({ token })
+    const api = getApi({ token });
     dispatch({ type: 'DELETE_NOTE_REQUEST', id });
     try {
         const { deleteNote } = await api.deleteNote({ id });
+        dispatch(
+            enqueueSnackbar({
+                message: 'Note deleted',
+                options: { variant: 'success' },
+            }),
+        );
         dispatch({
             type: 'DELETE_NOTE_SUCCESS',
             id: deleteNote.id,
         });
     } catch (error) {
         console.error(error);
+        dispatch(
+            enqueueSnackbar({
+                message: 'Error deleting note',
+                options: { variant: 'error' },
+            }),
+        );
         dispatch({
             type: 'DELETE_NOTE_FAILURE',
             id,

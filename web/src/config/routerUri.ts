@@ -6,4 +6,6 @@ export const routerUri = {
     notes: '/notes',
     settings: '/settings',
     tags: '/tags',
+    search: '/search',
+    insights: '/insights'
 };

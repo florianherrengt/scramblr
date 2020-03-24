@@ -4,7 +4,7 @@ import { localStorageKeys } from '../config';
 
 interface CurrentUserState {
     user?: User;
-    token?: string
+    token?: string;
     aesPassphrase?: string;
     isFetching: boolean;
     error?: string;
@@ -21,7 +21,13 @@ export const currentUser = (
         case 'GET_CURRENT_USER_REQUEST':
             return { ...state, ...action, isFetching: true, error: '' };
         case 'GET_CURRENT_USER_SUCCESS':
-            return { ...state, ...action, fetched: true, isFetching: false, error: '' };
+            return {
+                ...state,
+                ...action,
+                fetched: true,
+                isFetching: false,
+                error: '',
+            };
         case 'GET_CURRENT_USER_FAILURE':
             return { ...state, ...action, fetched: true, isFetching: false };
         case 'SET_AES_PASSPHRASE':
@@ -30,9 +36,20 @@ export const currentUser = (
             return { ...state, isFetching: true, error: '' };
         case 'SIGN_IN_SUCCESS':
             localStorage.setItem(localStorageKeys.token, action.token);
-            return { ...state, token: action.token, fetched: true, isFetching: false, error: '' };
+            return {
+                ...state,
+                token: action.token,
+                fetched: true,
+                isFetching: false,
+                error: '',
+            };
         case 'SIGN_IN_FAILURE':
-            return { ...state, fetched: true, isFetching: false, error: action.error };
+            return {
+                ...state,
+                fetched: true,
+                isFetching: false,
+                error: action.error,
+            };
         default:
             return state;
     }
