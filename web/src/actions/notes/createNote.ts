@@ -1,13 +1,15 @@
 import CryptoJS from 'crypto-js';
 import { ThunkDispatch } from 'redux-thunk';
 import {
-    api,
+    getApi,
     CreateNoteMutation,
     CreateNoteMutationVariables,
     decrypt,
     encrypt,
 } from '../../helpers';
 import { RootState } from '../../reducers';
+import { push, RouterAction } from 'connected-react-router';
+import { routerUri } from '../../config';
 
 export interface CreateNotesActionFetching {
     type: 'CREATE_NOTE_REQUEST';
@@ -28,6 +30,7 @@ export interface CreateNotesActionError {
 }
 
 export type CreateNoteAction =
+    | RouterAction
     | CreateNotesActionFetching
     | CreateNotesActionSuccess
     | CreateNotesActionError;
@@ -37,45 +40,52 @@ export const createNote = (
 ) => async (
     dispatch: ThunkDispatch<{}, {}, CreateNoteAction>,
     getState: () => RootState,
-) => {
-    const state = getState();
-    const transactionId =
-        new Date().valueOf().toString() +
-        '-' +
-        CryptoJS.lib.WordArray.random(128 / 8).toString();
+    ) => {
+        const state = getState();
 
-    dispatch({ type: 'CREATE_NOTE_REQUEST', note, transactionId });
-    const { aesPassphrase } = state.currentUser;
-    if (!aesPassphrase) {
-        dispatch({
-            type: 'CREATE_NOTE_FAILURE',
-            transactionId,
-            error: 'No aes passphrase in state',
-        });
-        return;
-    }
-    try {
-        const { createNote } = await api.createNote({
-            input: {
-                ...note,
-                text: encrypt(note.text, aesPassphrase),
-                tags: note.tags.map(tag => ({ id: tag.id })),
-            },
-        });
-        dispatch({
-            type: 'CREATE_NOTE_SUCCESS',
-            note: {
-                ...createNote,
-                text: decrypt(createNote.text, aesPassphrase),
-            },
-            transactionId,
-        });
-    } catch (error) {
-        console.error(error);
-        dispatch({
-            type: 'CREATE_NOTE_FAILURE',
-            transactionId,
-            error,
-        });
-    }
-};
+        const token = state.currentUser.token
+        if (!token) {
+            dispatch(push(routerUri.signIn))
+            return;
+        }
+        const api = getApi({ token })
+        const transactionId =
+            new Date().valueOf().toString() +
+            '-' +
+            CryptoJS.lib.WordArray.random(128 / 8).toString();
+
+        dispatch({ type: 'CREATE_NOTE_REQUEST', note, transactionId });
+        const { aesPassphrase } = state.currentUser;
+        if (!aesPassphrase) {
+            dispatch({
+                type: 'CREATE_NOTE_FAILURE',
+                transactionId,
+                error: 'No aes passphrase in state',
+            });
+            return;
+        }
+        try {
+            const { createNote } = await api.createNote({
+                input: {
+                    ...note,
+                    text: encrypt(note.text, aesPassphrase),
+                    tags: note.tags.map(tag => ({ id: tag.id })),
+                },
+            });
+            dispatch({
+                type: 'CREATE_NOTE_SUCCESS',
+                note: {
+                    ...createNote,
+                    text: decrypt(createNote.text, aesPassphrase),
+                },
+                transactionId,
+            });
+        } catch (error) {
+            console.error(error);
+            dispatch({
+                type: 'CREATE_NOTE_FAILURE',
+                transactionId,
+                error,
+            });
+        }
+    };

@@ -43,7 +43,10 @@ export const NoteCard: React.SFC<NoteCardProps> = props => {
             <CardHeader
                 style={{ paddingBottom: 0 }}
                 title={
-                    <Typography className='NoteCard_CardHeader_Typography'>
+                    <Typography
+                        variant='body2'
+                        className='NoteCard_CardHeader_Typography'
+                    >
                         {formatDistance(
                             new Date(props.note.createdAt),
                             new Date(),

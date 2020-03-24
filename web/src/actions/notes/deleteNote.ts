@@ -1,5 +1,8 @@
 import { ThunkDispatch } from 'redux-thunk';
-import { api } from '../../helpers';
+import { getApi } from '../../helpers';
+import { RootState } from '../../reducers';
+import { push, RouterAction } from 'connected-react-router';
+import { routerUri } from '../../config';
 
 export interface DeleteNotesActionFetching {
     type: 'DELETE_NOTE_REQUEST';
@@ -18,13 +21,23 @@ export interface DeleteNotesActionError {
 }
 
 export type DeleteNoteAction =
+    | RouterAction
     | DeleteNotesActionFetching
     | DeleteNotesActionSuccess
     | DeleteNotesActionError;
 
 export const deleteNote = (id: string) => async (
     dispatch: ThunkDispatch<{}, {}, DeleteNoteAction>,
+    getState: () => RootState,
 ) => {
+    const state = getState();
+
+    const token = state.currentUser.token
+    if (!token) {
+        dispatch(push(routerUri.signIn))
+        return;
+    }
+    const api = getApi({ token })
     dispatch({ type: 'DELETE_NOTE_REQUEST', id });
     try {
         const { deleteNote } = await api.deleteNote({ id });

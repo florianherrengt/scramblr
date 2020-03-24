@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider, useDispatch } from 'react-redux';
 import {
-    BrowserRouter as Router,
+    // BrowserRouter as Router,
     Redirect,
     Route,
     Switch,
@@ -21,11 +21,14 @@ import { TagsPage } from './pages/Tags';
 import { TnCPage } from './pages/TnC';
 import { configureStore } from './store';
 import { deviceInfo } from './helpers';
+import { ConnectedRouter as Router } from 'connected-react-router';
+import { history } from './helpers/history';
 
 const store = configureStore({
     currentUser: {
         aesPassphrase:
             localStorage.getItem(localStorageKeys.aesPassphrase) || undefined,
+        token: localStorage.getItem(localStorageKeys.token) || undefined,
         fetched: false,
         isFetching: false,
     },
@@ -59,7 +62,7 @@ function App() {
             <Provider store={store}>
                 <FetchData />
 
-                <Router>
+                <Router history={history}>
                     <Switch>
                         <Route path={routerUri.signUp}>
                             <SignUpPage />

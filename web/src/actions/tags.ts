@@ -1,7 +1,7 @@
 import CryptoJS from 'crypto-js';
 import { ThunkDispatch } from 'redux-thunk';
 import {
-    api,
+    getApi,
     CreateTagInput,
     CreateTagMutation,
     decrypt,
@@ -15,6 +15,8 @@ import {
     MutationUpdateTagArgs,
 } from '../helpers';
 import { RootState } from '../reducers';
+import { push, RouterAction } from 'connected-react-router';
+import { routerUri } from '../config';
 
 export interface GetTagsActionFetching {
     type: 'GET_CURRENT_USER_TAGS_REQUEST';
@@ -35,6 +37,7 @@ export interface GetTagsActionFailure {
 }
 
 export type GetTagsAction =
+    | RouterAction
     | GetTagsActionFetching
     | GetTagsActionSuccess
     | GetTagsActionFailure;
@@ -58,6 +61,7 @@ export interface CreateTagsActionFailure {
 }
 
 export type CreateTagsAction =
+    | RouterAction
     | CreateTagsActionFetching
     | CreateTagsActionSuccess
     | CreateTagsActionFailure;
@@ -81,6 +85,7 @@ export interface UpdateTagsActionFailure {
 }
 
 export type UpdateTagsAction =
+    | RouterAction
     | UpdateTagsActionFetching
     | UpdateTagsActionSuccess
     | UpdateTagsActionFailure;
@@ -104,6 +109,7 @@ export interface DeleteTagsActionFailure {
 }
 
 export type DeleteTagsAction =
+    | RouterAction
     | DeleteTagsActionFetching
     | DeleteTagsActionSuccess
     | DeleteTagsActionFailure;
@@ -124,61 +130,73 @@ export const fetchCurrentUserTags = (
 ) => async (
     dispatch: ThunkDispatch<{}, {}, GetTagsAction>,
     getState: () => RootState,
-) => {
-    const state = getState();
-    const { aesPassphrase } = state.currentUser;
-
-    if (!options?.forceReload) {
-        if (
-            state.currentUserTags.isFetching ||
-            state.currentUserTags.fetched ||
-            state.currentUserTags.error
-        ) {
+    ) => {
+        const state = getState();
+        const token = state.currentUser.token
+        if (!token) {
+            dispatch(push(routerUri.signIn))
             return;
         }
-    }
+        const api = getApi({ token })
+        const { aesPassphrase } = state.currentUser;
 
-    dispatch({
-        type: 'GET_CURRENT_USER_TAGS_REQUEST',
-        isFetching: true,
-    });
-    try {
-        const { currentUserTags } = await api.getCurrentUserTags(
-            options?.variables,
-        );
-        if (!currentUserTags) {
-            return dispatch({
+        if (!options?.forceReload) {
+            if (
+                state.currentUserTags.isFetching ||
+                state.currentUserTags.fetched ||
+                state.currentUserTags.error
+            ) {
+                return;
+            }
+        }
+
+        dispatch({
+            type: 'GET_CURRENT_USER_TAGS_REQUEST',
+            isFetching: true,
+        });
+        try {
+            const { currentUserTags } = await api.getCurrentUserTags(
+                options?.variables,
+            );
+            if (!currentUserTags) {
+                return dispatch({
+                    type: 'GET_CURRENT_USER_TAGS_FAILURE',
+                    error: 'No user returned',
+                    isFetching: false,
+                });
+            }
+            dispatch({
+                type: 'GET_CURRENT_USER_TAGS_SUCCESS',
+                tags: currentUserTags.map(tag => ({
+                    ...tag,
+                    label: aesPassphrase
+                        ? decrypt(tag.label, aesPassphrase)
+                        : tag.label,
+                })),
+                aesPassphrase: state.currentUser.aesPassphrase,
+                isFetching: false,
+            });
+        } catch (error) {
+            console.error(error);
+            dispatch({
                 type: 'GET_CURRENT_USER_TAGS_FAILURE',
-                error: 'No user returned',
+                error,
                 isFetching: false,
             });
         }
-        dispatch({
-            type: 'GET_CURRENT_USER_TAGS_SUCCESS',
-            tags: currentUserTags.map(tag => ({
-                ...tag,
-                label: aesPassphrase
-                    ? decrypt(tag.label, aesPassphrase)
-                    : tag.label,
-            })),
-            aesPassphrase: state.currentUser.aesPassphrase,
-            isFetching: false,
-        });
-    } catch (error) {
-        console.error(error);
-        dispatch({
-            type: 'GET_CURRENT_USER_TAGS_FAILURE',
-            error,
-            isFetching: false,
-        });
-    }
-};
+    };
 
 export const createTag = (variables: MutationCreateTagArgs) => async (
     dispatch: ThunkDispatch<{}, {}, CreateTagsAction>,
     getState: () => RootState,
 ) => {
     const state = getState();
+    const token = state.currentUser.token
+    if (!token) {
+        dispatch(push(routerUri.signIn))
+        return;
+    }
+    const api = getApi({ token })
     const { aesPassphrase } = state.currentUser;
     const transactionId =
         new Date().valueOf().toString() +
@@ -229,6 +247,12 @@ export const updateTag = (variables: MutationUpdateTagArgs) => async (
     getState: () => RootState,
 ) => {
     const state = getState();
+    const token = state.currentUser.token
+    if (!token) {
+        dispatch(push(routerUri.signIn))
+        return;
+    }
+    const api = getApi({ token })
     const { aesPassphrase } = state.currentUser;
     const transactionId =
         new Date().valueOf().toString() +
@@ -279,7 +303,15 @@ export const updateTag = (variables: MutationUpdateTagArgs) => async (
 
 export const deleteTag = (variables: MutationDeleteTagArgs) => async (
     dispatch: ThunkDispatch<{}, {}, DeleteTagsAction>,
+    getState: () => RootState
 ) => {
+    const state = getState()
+    const token = state.currentUser.token
+    if (!token) {
+        dispatch(push(routerUri.signIn))
+        return;
+    }
+    const api = getApi({ token })
     const transactionId =
         new Date().valueOf().toString() +
         '-' +

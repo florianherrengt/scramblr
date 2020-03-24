@@ -1,7 +1,9 @@
 import { ThunkDispatch } from 'redux-thunk';
-import { api, decrypt, GetCurrentUserNotesQuery, Tag } from '../../helpers';
+import { decrypt, GetCurrentUserNotesQuery, Tag, getApi } from '../../helpers';
 import { RootState } from '../../reducers';
 import { isEmpty } from 'lodash';
+import { routerUri } from '../../config';
+import { push, RouterAction } from 'connected-react-router';
 
 export interface SearchNotesActionReset {
     type: 'SEARCH_NOTES_RESET';
@@ -24,6 +26,7 @@ export interface SearchNotesActionFailure {
 }
 
 export type SearchNoteAction =
+    | RouterAction
     | SearchNotesActionReset
     | SearchNotesActionFetching
     | SearchNotesActionSuccess
@@ -54,6 +57,13 @@ export const searchNotes = (options: SearchOptions) => async (
     getState: () => RootState,
 ) => {
     const state = getState();
+
+    const token = state.currentUser.token
+    if (!token) {
+        dispatch(push(routerUri.signIn))
+        return;
+    }
+    const api = getApi({ token })
     if (isEmpty(options.searchValue)) {
         dispatch({
             type: 'SEARCH_NOTES_RESET',

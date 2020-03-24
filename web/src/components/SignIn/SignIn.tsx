@@ -7,7 +7,7 @@ import { routerUri } from '../../config/routerUri';
 import { LineSpacer } from '../LineSpacer';
 
 interface SignInProps {
-    errors?: string[];
+    error?: string;
     loading: boolean;
     onSubmit(input: { username: string; password: string }): void;
 }
@@ -53,15 +53,14 @@ export const SignIn = (props: SignInProps) => {
                 >
                     Sign In
                 </Button>
-                {props.errors &&
-                    props.errors.map(error => (
-                        <div key={btoa(error)}>
-                            <LineSpacer />
-                            <Typography className='text-center text-error'>
-                                {error}
-                            </Typography>
-                        </div>
-                    ))}
+                {props.error && (
+                    <div>
+                        <LineSpacer />
+                        <Typography className='text-center text-error'>
+                            {props.error}
+                        </Typography>
+                    </div>
+                )}
                 <LineSpacer />
                 <div className='text-center'>
                     <Typography variant='body2'>

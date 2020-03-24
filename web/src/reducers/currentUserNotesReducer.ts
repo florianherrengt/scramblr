@@ -55,7 +55,7 @@ export const currentUserNotes = (
                 isFetching: false,
             };
         case 'GET_CURRENT_USER_NOTES_FAILURE':
-            return { ...state, ...action, fetched: true, isFetching: false };
+            return { ...state, fetched: true, isFetching: false };
 
         case 'DELETE_NOTE_REQUEST':
             return {
@@ -119,13 +119,13 @@ export const currentUserNotes = (
                 notes: state.notes.map(note =>
                     note.id === action.note.id
                         ? {
-                              ...note,
-                              text: action.note.text || note.text,
-                              tags: action.note.tags || note.tags,
-                              isLoading: true,
-                              transactionId: action.transactionId,
-                              revert: note,
-                          }
+                            ...note,
+                            text: action.note.text || note.text,
+                            tags: action.note.tags || note.tags,
+                            isLoading: true,
+                            transactionId: action.transactionId,
+                            revert: note,
+                        }
                         : note,
                 ),
             };
