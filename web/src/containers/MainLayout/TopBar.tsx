@@ -92,7 +92,7 @@ export const TopBar: React.SFC<TopBarProps> = props => {
                         startIcon={<AccountIcon />}
                         color='inherit'
                     >
-                        Settings
+                        Account
                     </Button>
                 </Toolbar>
             </AppBar>

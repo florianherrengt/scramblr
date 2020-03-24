@@ -1,6 +1,7 @@
 import {
     CurrentUserActionSetAesPassphrase,
     SearchNoteAction,
+    NotesAction,
 } from '../actions';
 import { decrypt } from '../helpers';
 import { CurrentUserNotesState } from './currentUserNotesReducer';
@@ -18,7 +19,7 @@ const defaultState: SearchNotesState = {
 
 export const searchNotes = (
     state: SearchNotesState = defaultState,
-    action: SearchNoteAction | CurrentUserActionSetAesPassphrase,
+    action: SearchNoteAction | CurrentUserActionSetAesPassphrase | NotesAction,
 ): SearchNotesState => {
     switch (action.type) {
         case 'SET_AES_PASSPHRASE':
@@ -51,6 +52,22 @@ export const searchNotes = (
             };
         case 'SEARCH_NOTES_FAILURE':
             return { ...state, ...action, fetched: true, isFetching: false };
+
+        case 'DELETE_NOTE_SUCCESS':
+            return {
+                ...state,
+                notes: state.notes.filter(note => note.id !== action.id),
+            };
+
+        case 'UPDATE_NOTE_SUCCESS':
+            return {
+                ...state,
+                notes: state.notes.map(note =>
+                    note.id === action.note.id
+                        ? { ...action.note, isLoading: false }
+                        : note,
+                ),
+            };
         default:
             return state;
     }
