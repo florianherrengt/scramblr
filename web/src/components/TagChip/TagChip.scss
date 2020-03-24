@@ -3,6 +3,7 @@
     font-weight: bold;
     &--neutral {
         border-color: $color-grey !important;
+        color: grey !important;
         svg {
             color: $color-grey !important;
         }
