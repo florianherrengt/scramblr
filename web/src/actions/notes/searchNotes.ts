@@ -11,7 +11,6 @@ export interface SearchNotesActionReset {
 
 export interface SearchNotesActionFetching {
     type: 'SEARCH_NOTES_REQUEST';
-    searchValue: string;
 }
 
 export interface SearchNotesActionSuccess {
@@ -55,7 +54,7 @@ export const resetSearchNotes = () => async (
     dispatch({ type: 'SEARCH_NOTES_RESET' })
 }
 interface SearchOptions {
-    searchValue: string;
+    tagsId: string[];
 }
 
 export const searchNotes = (options: SearchOptions) => async (
@@ -71,7 +70,7 @@ export const searchNotes = (options: SearchOptions) => async (
         return;
     }
     const api = getApi({ token });
-    if (isEmpty(options.searchValue)) {
+    if (isEmpty(options.tagsId)) {
         dispatch({
             type: 'SEARCH_NOTES_RESET',
         });
@@ -81,16 +80,12 @@ export const searchNotes = (options: SearchOptions) => async (
     if (state.currentUserNotes.isFetching) {
         return;
     }
-    const tagsId = getTagsIdFromSearch(
-        state.currentUserTags.tags,
-        options.searchValue,
-    );
+
     dispatch({
         type: 'SEARCH_NOTES_REQUEST',
-        searchValue: options.searchValue,
     });
-    console.log(tagsId);
-    if (isEmpty(tagsId)) {
+
+    if (isEmpty(options.tagsId)) {
         dispatch({
             type: 'SEARCH_NOTES_SUCCESS',
             notes: {
@@ -103,8 +98,8 @@ export const searchNotes = (options: SearchOptions) => async (
 
     try {
         const { currentUserNotes } = await api.getCurrentUserNotes({
-            tagsId,
-            limit: 9999,
+            tagsId: options.tagsId,
+            limit: 10,
         });
 
         dispatch({

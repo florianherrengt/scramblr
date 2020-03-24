@@ -1,26 +1,44 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { LineSpacer } from '../../components';
+import { LineSpacer, SelectTag, SelectTagProps } from '../../components';
 import { RootState } from '../../reducers';
 import { NoteListContainer } from '../../containers/NoteListContainer';
-import { fetchCurrentUserNotes, resetSearchNotes } from '../../actions';
+import {
+    fetchCurrentUserNotes,
+    resetSearchNotes,
+    searchNotes,
+} from '../../actions';
+import { SelectTagContainer } from '../../containers/SelectTagContainer';
+import { Card, CardContent, Typography } from '@material-ui/core';
 
 export const SearchPage = () => {
     const dispatch = useDispatch();
+
+    const displayedNotes = useSelector((state: RootState) => state.searchNotes);
+    const [tagsId, setTagsId] = useState<string[]>([]);
+
     useEffect(() => {
+        if (tagsId.length) {
+            dispatch(
+                searchNotes({
+                    tagsId,
+                }),
+            );
+        }
         return () => {
             dispatch(resetSearchNotes());
         };
-    }, [dispatch]);
-    const searchNotes = useSelector((state: RootState) => state.searchNotes);
+    }, [dispatch, setTagsId, tagsId]);
+
     const loadMore = () => {
-        if (!searchNotes.isFetching && searchNotes.hasMore) {
+        if (!displayedNotes.isFetching && displayedNotes.hasMore) {
             dispatch(
                 fetchCurrentUserNotes({
                     forceReload: true,
                     variables: {
+                        tagsId,
                         limit: 100,
-                        skip: searchNotes.notes.length,
+                        skip: displayedNotes.notes.length,
                     },
                 }),
             );
@@ -29,10 +47,20 @@ export const SearchPage = () => {
     return (
         <Fragment>
             <LineSpacer />
+            <SelectTagContainer
+                onChange={tags => setTagsId(tags.map(tag => tag.id))}
+            />
+            <LineSpacer />
             <NoteListContainer
-                displayedNotes={searchNotes}
+                displayedNotes={displayedNotes}
                 loadMore={loadMore}
             />
+            {displayedNotes.fetched && !displayedNotes.notes.length && (
+                <Fragment>
+                    <LineSpacer />
+                    <p className='text-center'>No results</p>
+                </Fragment>
+            )}
         </Fragment>
     );
 };

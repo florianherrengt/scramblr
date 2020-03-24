@@ -6,7 +6,6 @@ import { decrypt } from '../helpers';
 import { CurrentUserNotesState } from './currentUserNotesReducer';
 
 interface SearchNotesState extends CurrentUserNotesState {
-    searchValue: string;
 }
 
 const defaultState: SearchNotesState = {
@@ -15,7 +14,6 @@ const defaultState: SearchNotesState = {
     fetched: false,
     hasMore: false,
 
-    searchValue: '',
 };
 
 export const searchNotes = (
@@ -38,7 +36,6 @@ export const searchNotes = (
                 ...state,
                 ...action,
                 isFetching: true,
-                searchValue: action.searchValue,
             };
         case 'SEARCH_NOTES_SUCCESS':
             const notes = action.notes.items.map(note => ({
