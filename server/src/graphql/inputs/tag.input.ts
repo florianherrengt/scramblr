@@ -5,7 +5,7 @@ import { Tag, TagEmotion } from '../../entities';
 @InputType()
 export class CreateTagInput implements Partial<Tag> {
     @Field({ nullable: false })
-    @MaxLength(50)
+    @MaxLength(500)
     label: string;
 
     @Field({ defaultValue: TagEmotion.neutral })
@@ -19,7 +19,7 @@ export class UpdateTagInput implements Partial<Tag> {
     id: string;
 
     @Field({ nullable: false })
-    @MaxLength(50)
+    @MaxLength(500)
     label: string;
 
     @Field({ defaultValue: TagEmotion.neutral })

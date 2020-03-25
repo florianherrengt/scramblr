@@ -31,7 +31,7 @@ export class Tag {
     id: string;
 
     @Field()
-    @Column({ length: 50 })
+    @Column({ length: 500 })
     label: string;
 
     @Field({ defaultValue: TagEmotion.neutral })
