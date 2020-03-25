@@ -1,0 +1,19 @@
+query getInsights {
+    insights {
+        week {
+            label
+            positive
+            negative
+        }
+        month {
+            label
+            positive
+            negative
+        }
+        year {
+            label
+            positive
+            negative
+        }
+    }
+}

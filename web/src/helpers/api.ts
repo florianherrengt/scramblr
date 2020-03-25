@@ -23,6 +23,20 @@ export type CreateTagInput = {
 };
 
 
+export type Insight = {
+   __typename?: 'Insight';
+  week: Array<InsightData>;
+  month: Array<InsightData>;
+  year: Array<InsightData>;
+};
+
+export type InsightData = {
+   __typename?: 'InsightData';
+  label: Scalars['String'];
+  positive: Scalars['Int'];
+  negative: Scalars['Int'];
+};
+
 export type Mutation = {
    __typename?: 'Mutation';
   deleteNote: Note;
@@ -97,6 +111,7 @@ export type Query = {
   userExists: Scalars['Int'];
   currentUser?: Maybe<User>;
   currentUserTags: Array<Tag>;
+  insights: Insight;
 };
 
 
@@ -141,12 +156,33 @@ export type UpdateNoteInput = {
 export type UpdateTagInput = {
   id: Scalars['String'];
   label: Scalars['String'];
+  emotion?: Maybe<Scalars['String']>;
 };
 
 export type User = {
    __typename?: 'User';
   username: Scalars['ID'];
 };
+
+export type GetInsightsQueryVariables = {};
+
+
+export type GetInsightsQuery = (
+  { __typename?: 'Query' }
+  & { insights: (
+    { __typename?: 'Insight' }
+    & { week: Array<(
+      { __typename?: 'InsightData' }
+      & Pick<InsightData, 'label' | 'positive' | 'negative'>
+    )>, month: Array<(
+      { __typename?: 'InsightData' }
+      & Pick<InsightData, 'label' | 'positive' | 'negative'>
+    )>, year: Array<(
+      { __typename?: 'InsightData' }
+      & Pick<InsightData, 'label' | 'positive' | 'negative'>
+    )> }
+  ) }
+);
 
 export type GetCurrentUserNotesQueryVariables = {
   skip?: Maybe<Scalars['Int']>;
@@ -343,6 +379,27 @@ export const UserFieldsFragmentDoc = gql`
   username
 }
     `;
+export const GetInsightsDocument = gql`
+    query getInsights {
+  insights {
+    week {
+      label
+      positive
+      negative
+    }
+    month {
+      label
+      positive
+      negative
+    }
+    year {
+      label
+      positive
+      negative
+    }
+  }
+}
+    `;
 export const GetCurrentUserNotesDocument = gql`
     query getCurrentUserNotes($skip: Int, $limit: Int, $tagsId: [String!]) {
   currentUserNotes(skip: $skip, limit: $limit, tagsId: $tagsId) {
@@ -436,6 +493,9 @@ export const SignUpDocument = gql`
     `;
 export function getSdk(client: GraphQLClient) {
   return {
+    getInsights(variables?: GetInsightsQueryVariables): Promise<GetInsightsQuery> {
+      return client.request<GetInsightsQuery>(print(GetInsightsDocument), variables);
+    },
     getCurrentUserNotes(variables?: GetCurrentUserNotesQueryVariables): Promise<GetCurrentUserNotesQuery> {
       return client.request<GetCurrentUserNotesQuery>(print(GetCurrentUserNotesDocument), variables);
     },

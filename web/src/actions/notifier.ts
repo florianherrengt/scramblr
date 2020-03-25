@@ -31,7 +31,8 @@ export const enqueueSnackbar = (
     notification: EnqueueSnackbarOptions,
 ): EnqueueSnackbarAction => {
     if (notification.options?.variant === 'success') {
-        notification.options.autoHideDuration = notification.options.autoHideDuration || 2000
+        notification.options.autoHideDuration =
+            notification.options.autoHideDuration || 2000;
     }
     return {
         type: 'ENQUEUE_SNACKBAR',

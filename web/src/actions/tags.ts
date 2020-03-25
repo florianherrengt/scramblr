@@ -132,61 +132,61 @@ export const fetchCurrentUserTags = (
 ) => async (
     dispatch: ThunkDispatch<{}, {}, GetTagsAction>,
     getState: () => RootState,
-    ) => {
-        const state = getState();
-        const token = state.currentUser.token;
-        if (!token) {
-            dispatch(push(routerUri.signIn));
+) => {
+    const state = getState();
+    const token = state.currentUser.token;
+    if (!token) {
+        dispatch(push(routerUri.signIn));
+        return;
+    }
+    const api = getApi({ token });
+    const { aesPassphrase } = state.currentUser;
+
+    if (!options?.forceReload) {
+        if (
+            state.currentUserTags.isFetching ||
+            state.currentUserTags.fetched ||
+            state.currentUserTags.error
+        ) {
             return;
         }
-        const api = getApi({ token });
-        const { aesPassphrase } = state.currentUser;
+    }
 
-        if (!options?.forceReload) {
-            if (
-                state.currentUserTags.isFetching ||
-                state.currentUserTags.fetched ||
-                state.currentUserTags.error
-            ) {
-                return;
-            }
-        }
-
-        dispatch({
-            type: 'GET_CURRENT_USER_TAGS_REQUEST',
-            isFetching: true,
-        });
-        try {
-            const { currentUserTags } = await api.getCurrentUserTags(
-                options?.variables,
-            );
-            if (!currentUserTags) {
-                return dispatch({
-                    type: 'GET_CURRENT_USER_TAGS_FAILURE',
-                    error: 'No user returned',
-                    isFetching: false,
-                });
-            }
-            dispatch({
-                type: 'GET_CURRENT_USER_TAGS_SUCCESS',
-                tags: currentUserTags.map(tag => ({
-                    ...tag,
-                    label: aesPassphrase
-                        ? decrypt(tag.label, aesPassphrase)
-                        : tag.label,
-                })),
-                aesPassphrase: state.currentUser.aesPassphrase,
-                isFetching: false,
-            });
-        } catch (error) {
-            console.error(error);
-            dispatch({
+    dispatch({
+        type: 'GET_CURRENT_USER_TAGS_REQUEST',
+        isFetching: true,
+    });
+    try {
+        const { currentUserTags } = await api.getCurrentUserTags(
+            options?.variables,
+        );
+        if (!currentUserTags) {
+            return dispatch({
                 type: 'GET_CURRENT_USER_TAGS_FAILURE',
-                error,
+                error: 'No user returned',
                 isFetching: false,
             });
         }
-    };
+        dispatch({
+            type: 'GET_CURRENT_USER_TAGS_SUCCESS',
+            tags: currentUserTags.map(tag => ({
+                ...tag,
+                label: aesPassphrase
+                    ? decrypt(tag.label, aesPassphrase)
+                    : tag.label,
+            })),
+            aesPassphrase: state.currentUser.aesPassphrase,
+            isFetching: false,
+        });
+    } catch (error) {
+        console.error(error);
+        dispatch({
+            type: 'GET_CURRENT_USER_TAGS_FAILURE',
+            error,
+            isFetching: false,
+        });
+    }
+};
 
 export const createTag = (variables: MutationCreateTagArgs) => async (
     dispatch: ThunkDispatch<{}, {}, CreateTagsAction>,
@@ -235,7 +235,12 @@ export const createTag = (variables: MutationCreateTagArgs) => async (
             tag: { ...createTag, label: variables.input.label },
             transactionId,
         });
-        dispatch(enqueueSnackbar({ message: 'Tag created', options: { variant: 'success' } }));
+        dispatch(
+            enqueueSnackbar({
+                message: 'Tag created',
+                options: { variant: 'success' },
+            }),
+        );
     } catch (error) {
         console.error(error);
         dispatch({
@@ -243,7 +248,12 @@ export const createTag = (variables: MutationCreateTagArgs) => async (
             error,
             transactionId,
         });
-        dispatch(enqueueSnackbar({ message: 'Error creating tag', options: { variant: 'error' } }));
+        dispatch(
+            enqueueSnackbar({
+                message: 'Error creating tag',
+                options: { variant: 'error' },
+            }),
+        );
     }
 };
 

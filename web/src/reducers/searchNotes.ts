@@ -6,15 +6,14 @@ import {
 import { decrypt } from '../helpers';
 import { CurrentUserNotesState } from './currentUserNotesReducer';
 
-interface SearchNotesState extends CurrentUserNotesState {
-}
+interface SearchNotesState extends CurrentUserNotesState {}
 
 const defaultState: SearchNotesState = {
     notes: [],
     isFetching: false,
     fetched: false,
     hasMore: false,
-    total: 0
+    total: 0,
 };
 
 export const searchNotes = (
@@ -36,7 +35,7 @@ export const searchNotes = (
             return {
                 ...state,
                 ...action,
-                isFetching: true
+                isFetching: true,
             };
         case 'SEARCH_NOTES_SUCCESS':
             const notes = action.notes.items.map(note => ({
@@ -49,7 +48,7 @@ export const searchNotes = (
                 hasMore: action.notes.hasMore,
                 fetched: true,
                 isFetching: false,
-                total: action.notes.total
+                total: action.notes.total,
             };
         case 'SEARCH_NOTES_FAILURE':
             return { ...state, ...action, fetched: true, isFetching: false };
@@ -58,7 +57,7 @@ export const searchNotes = (
             return {
                 ...state,
                 notes: state.notes.filter(note => note.id !== action.id),
-                total: state.total - 1
+                total: state.total - 1,
             };
 
         case 'UPDATE_NOTE_SUCCESS':

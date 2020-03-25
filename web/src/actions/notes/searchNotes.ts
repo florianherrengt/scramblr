@@ -51,8 +51,8 @@ export const resetSearchNotes = () => async (
     dispatch: ThunkDispatch<{}, {}, SearchNoteAction>,
     getState: () => RootState,
 ) => {
-    dispatch({ type: 'SEARCH_NOTES_RESET' })
-}
+    dispatch({ type: 'SEARCH_NOTES_RESET' });
+};
 interface SearchOptions {
     tagsId: string[];
 }
@@ -65,7 +65,7 @@ export const searchNotes = (options: SearchOptions) => async (
 
     const token = state.currentUser.token;
     if (!token) {
-        console.debug('Undefined token. Redirecting to /sign-in')
+        console.debug('Undefined token. Redirecting to /sign-in');
         dispatch(push(routerUri.signIn));
         return;
     }
@@ -84,7 +84,6 @@ export const searchNotes = (options: SearchOptions) => async (
     dispatch({
         type: 'SEARCH_NOTES_REQUEST',
     });
-
 
     try {
         const { currentUserNotes } = await api.getCurrentUserNotes({

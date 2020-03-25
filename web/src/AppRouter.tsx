@@ -13,6 +13,7 @@ const SignInPage = lazy(() => import('./pages/SignIn'));
 const SignUpPage = lazy(() => import('./pages/SignUp'));
 const TermAndConditionsPage = lazy(() => import('./pages/TermAndConditions'));
 const SearchPage = lazy(() => import('./pages/Search'));
+const InsightsPage = lazy(() => import('./pages/Insights'));
 
 export const AppRouter = () => {
     return (
@@ -55,6 +56,11 @@ export const AppRouter = () => {
                     <Route path={routerUri.tags} exact>
                         <Suspense fallback={<CircularProgress />}>
                             <TagsPage />
+                        </Suspense>
+                    </Route>
+                    <Route path={routerUri.insights} exact>
+                        <Suspense fallback={<CircularProgress />}>
+                            <InsightsPage />
                         </Suspense>
                     </Route>
                 </MainLayout>

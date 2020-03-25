@@ -39,53 +39,53 @@ export const fetchCurrentUserNotes = (
 ): ThunkAction<Promise<void>, RootState, Options, GetNoteAction> => async (
     dispatch,
     getState,
-    ) => {
-        console.debug('action.fetchCurrentUserNotes')
-        const state = getState();
+) => {
+    console.debug('action.fetchCurrentUserNotes');
+    const state = getState();
 
-        const token = state.currentUser.token;
+    const token = state.currentUser.token;
 
-        if (!token) {
-            console.debug('Undefined token. Redirecting to /sign-in')
-            dispatch(push(routerUri.signIn));
-            return;
-        }
-        if (!token) {
-            console.debug('Undefined token. Redirecting to /sign-in')
-            dispatch(push(routerUri.signIn));
-            return;
-        }
+    if (!token) {
+        console.debug('Undefined token. Redirecting to /sign-in');
+        dispatch(push(routerUri.signIn));
+        return;
+    }
+    if (!token) {
+        console.debug('Undefined token. Redirecting to /sign-in');
+        dispatch(push(routerUri.signIn));
+        return;
+    }
 
-        if (state.currentUserNotes.fetched && !options?.forceReload) {
-            return;
-        }
-        const api = getApi({ token });
+    if (state.currentUserNotes.fetched && !options?.forceReload) {
+        return;
+    }
+    const api = getApi({ token });
 
+    dispatch({
+        type: 'GET_CURRENT_USER_NOTES_REQUEST',
+        isFetching: true,
+    });
+    try {
+        const { currentUserNotes } = await api.getCurrentUserNotes(
+            options?.variables,
+        );
         dispatch({
-            type: 'GET_CURRENT_USER_NOTES_REQUEST',
-            isFetching: true,
+            type: 'GET_CURRENT_USER_NOTES_SUCCESS',
+            notes: {
+                ...currentUserNotes,
+                items: currentUserNotes.items.map(note => ({
+                    ...note,
+                    text: state.currentUser.aesPassphrase
+                        ? decrypt(note.text, state.currentUser.aesPassphrase)
+                        : note.text,
+                })),
+            },
+            aesPassphrase: state.currentUser.aesPassphrase,
         });
-        try {
-            const { currentUserNotes } = await api.getCurrentUserNotes(
-                options?.variables,
-            );
-            dispatch({
-                type: 'GET_CURRENT_USER_NOTES_SUCCESS',
-                notes: {
-                    ...currentUserNotes,
-                    items: currentUserNotes.items.map(note => ({
-                        ...note,
-                        text: state.currentUser.aesPassphrase
-                            ? decrypt(note.text, state.currentUser.aesPassphrase)
-                            : note.text,
-                    })),
-                },
-                aesPassphrase: state.currentUser.aesPassphrase,
-            });
-        } catch (error) {
-            console.error(error)
-            dispatch({
-                type: 'GET_CURRENT_USER_NOTES_FAILURE',
-            });
-        }
-    };
+    } catch (error) {
+        console.error(error);
+        dispatch({
+            type: 'GET_CURRENT_USER_NOTES_FAILURE',
+        });
+    }
+};

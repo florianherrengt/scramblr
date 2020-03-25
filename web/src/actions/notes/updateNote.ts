@@ -42,66 +42,66 @@ export const updateNote = (
 ) => async (
     dispatch: ThunkDispatch<{}, {}, UpdateNoteAction>,
     getState: () => RootState,
-    ) => {
-        const state = getState();
+) => {
+    const state = getState();
 
-        const token = state.currentUser.token;
-        if (!token) {
-            console.debug('Undefined token. Redirecting to /sign-in')
-            dispatch(push(routerUri.signIn));
-            return;
-        }
-        const api = getApi({ token });
-        const transactionId =
-            new Date().valueOf().toString() +
-            '-' +
-            CryptoJS.lib.WordArray.random(128 / 8).toString();
+    const token = state.currentUser.token;
+    if (!token) {
+        console.debug('Undefined token. Redirecting to /sign-in');
+        dispatch(push(routerUri.signIn));
+        return;
+    }
+    const api = getApi({ token });
+    const transactionId =
+        new Date().valueOf().toString() +
+        '-' +
+        CryptoJS.lib.WordArray.random(128 / 8).toString();
 
-        dispatch({ type: 'UPDATE_NOTE_REQUEST', note, transactionId });
-        const { aesPassphrase } = state.currentUser;
-        if (!aesPassphrase) {
-            dispatch({
-                type: 'UPDATE_NOTE_FAILURE',
-                transactionId,
-                error: 'No aes passphrase in state',
-            });
-            return;
-        }
-        try {
-            const { updateNote } = await api.updateNote({
-                input: Object.assign(
-                    {},
-                    note,
-                    note.text && { text: encrypt(note.text, aesPassphrase) },
-                    note.tags && { tags: note.tags.map(tag => ({ id: tag.id })) },
-                ),
-            });
-            dispatch(
-                enqueueSnackbar({
-                    message: 'Note updated',
-                    options: { variant: 'success' },
-                }),
-            );
-            dispatch({
-                type: 'UPDATE_NOTE_SUCCESS',
-                note: {
-                    ...updateNote,
-                    text: decrypt(updateNote.text, aesPassphrase),
-                },
-                transactionId,
-            });
-        } catch (error) {
-            console.error(error);
-            dispatch(
-                enqueueSnackbar({
-                    message: 'Error updating note',
-                    options: { variant: 'error' },
-                }),
-            );
-            dispatch({
-                type: 'UPDATE_NOTE_FAILURE',
-                transactionId,
-                error,
-            });
-        }
-    };
+    dispatch({ type: 'UPDATE_NOTE_REQUEST', note, transactionId });
+    const { aesPassphrase } = state.currentUser;
+    if (!aesPassphrase) {
+        dispatch({
+            type: 'UPDATE_NOTE_FAILURE',
+            transactionId,
+            error: 'No aes passphrase in state',
+        });
+        return;
+    }
+    try {
+        const { updateNote } = await api.updateNote({
+            input: Object.assign(
+                {},
+                note,
+                note.text && { text: encrypt(note.text, aesPassphrase) },
+                note.tags && { tags: note.tags.map(tag => ({ id: tag.id })) },
+            ),
+        });
+        dispatch(
+            enqueueSnackbar({
+                message: 'Note updated',
+                options: { variant: 'success' },
+            }),
+        );
+        dispatch({
+            type: 'UPDATE_NOTE_SUCCESS',
+            note: {
+                ...updateNote,
+                text: decrypt(updateNote.text, aesPassphrase),
+            },
+            transactionId,
+        });
+    } catch (error) {
+        console.error(error);
+        dispatch(
+            enqueueSnackbar({
+                message: 'Error updating note',
+                options: { variant: 'error' },
+            }),
+        );
+        dispatch({
+            type: 'UPDATE_NOTE_FAILURE',
+            transactionId,
+            error,
+        });
+    }
+};

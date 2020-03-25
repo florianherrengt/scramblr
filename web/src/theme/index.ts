@@ -4,13 +4,12 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import common from '@material-ui/core/colors/common';
 
-
 export const theme = createMuiTheme({
     palette: {
         primary: blueGrey,
         background: {
             default: common.white,
-            paper: common.white
+            paper: common.white,
         },
         // text: {
         //     primary: common.black,

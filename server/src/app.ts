@@ -6,7 +6,12 @@ import * as TypeORM from 'typeorm';
 import { Container } from 'typedi';
 import * as jwt from 'jsonwebtoken';
 import { User, Note, Tag } from './entities';
-import { NoteResolver, UserResolver, TagResolver } from './graphql/resolvers';
+import {
+    NoteResolver,
+    UserResolver,
+    TagResolver,
+    InsightResolver,
+} from './graphql/resolvers';
 import { JwtObject, createContext, getDbConnectionOptions } from './helpers';
 import * as cors from 'cors';
 import * as path from 'path';
@@ -23,7 +28,7 @@ export const createApp = async () => {
     });
 
     const schema = await buildSchema({
-        resolvers: [UserResolver, NoteResolver, TagResolver],
+        resolvers: [UserResolver, NoteResolver, TagResolver, InsightResolver],
         container: Container,
     });
 

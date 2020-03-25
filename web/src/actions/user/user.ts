@@ -41,7 +41,7 @@ export const fetchCurrentUser = (options?: { forceReload: boolean }) => async (
     const token = state.currentUser.token;
 
     if (!token) {
-        console.debug('Undefined token. Redirecting to /sign-in')
+        console.debug('Undefined token. Redirecting to /sign-in');
         dispatch(push(routerUri.signIn));
         return;
     }
@@ -84,28 +84,36 @@ export const setAesPassphrase = (
     aesPassphrase: string,
     shouldSaveToLocalstorage: boolean,
 ) => async (
-    dispatch: ThunkDispatch<{}, {}, CurrentUserActionSetAesPassphrase | SharedActions>,
+    dispatch: ThunkDispatch<
+        {},
+        {},
+        CurrentUserActionSetAesPassphrase | SharedActions
+    >,
     getState: () => RootState,
-    ) => {
-        const state = getState()
-        const isDifferent = state.currentUser.aesPassphrase !== aesPassphrase
-        if (isDifferent) {
-            if (!window.confirm('Are you sure you want to change your passphrase?')) {
-                return
-            }
+) => {
+    const state = getState();
+    const isDifferent = state.currentUser.aesPassphrase !== aesPassphrase;
+    if (isDifferent) {
+        if (
+            !window.confirm('Are you sure you want to change your passphrase?')
+        ) {
+            return;
         }
-        dispatch({ type: 'SET_AES_PASSPHRASE', user: { aesPassphrase } });
-        if (shouldSaveToLocalstorage) {
-            localStorage.setItem(localStorageKeys.aesPassphrase, aesPassphrase);
-        }
-        dispatch(enqueueSnackbar({
+    }
+    dispatch({ type: 'SET_AES_PASSPHRASE', user: { aesPassphrase } });
+    if (shouldSaveToLocalstorage) {
+        localStorage.setItem(localStorageKeys.aesPassphrase, aesPassphrase);
+    }
+    dispatch(
+        enqueueSnackbar({
             message: 'AES Passphrase updated',
-            options: { variant: 'success' }
-        }))
-        if (isDifferent) {
-            setTimeout(() => window.location.reload(), 0)
-        }
-    };
+            options: { variant: 'success' },
+        }),
+    );
+    if (isDifferent) {
+        setTimeout(() => window.location.reload(), 0);
+    }
+};
 
 export const signUp = async (variables: MutationSignUpArgs['input']) => {
     // const { signUp: token } = await api.signUp({ input: variables });

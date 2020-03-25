@@ -21,13 +21,15 @@ export class User {
 
     @OneToMany(
         type => Note,
-        note => note.id, { onDelete: 'CASCADE' },
+        note => note.id,
+        { onDelete: 'CASCADE' },
     )
     notes: Note[];
 
     @OneToMany(
         type => Tag,
-        tag => tag.id, { onDelete: 'CASCADE' },
+        tag => tag.id,
+        { onDelete: 'CASCADE' },
     )
     tags: Tag[];
 }

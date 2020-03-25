@@ -29,25 +29,25 @@ export const signIn = (
 ): ThunkAction<Promise<void>, RootState, {}, SignInAction> => async (
     dispatch,
     getState,
-    ) => {
-        const api = getApi();
-        dispatch({ type: 'SIGN_IN_REQUEST' });
-        try {
-            const { signIn: token } = await api.signIn({ input: variables });
-            if (!token) {
-                dispatch({
-                    type: 'SIGN_IN_FAILURE',
-                    error: 'Wrong username or password',
-                });
-                return;
-            }
-            dispatch({ type: 'SIGN_IN_SUCCESS', token });
-            console.debug('Signed In. Redirecting to /notes')
-            dispatch(push(routerUri.notes));
-        } catch (error) {
+) => {
+    const api = getApi();
+    dispatch({ type: 'SIGN_IN_REQUEST' });
+    try {
+        const { signIn: token } = await api.signIn({ input: variables });
+        if (!token) {
             dispatch({
                 type: 'SIGN_IN_FAILURE',
                 error: 'Wrong username or password',
             });
+            return;
         }
-    };
+        dispatch({ type: 'SIGN_IN_SUCCESS', token });
+        console.debug('Signed In. Redirecting to /notes');
+        dispatch(push(routerUri.notes));
+    } catch (error) {
+        dispatch({
+            type: 'SIGN_IN_FAILURE',
+            error: 'Wrong username or password',
+        });
+    }
+};

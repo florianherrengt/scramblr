@@ -10,17 +10,17 @@ import {
 import { User } from './user.entity';
 import { Note } from './note.entity';
 
-import { registerEnumType } from "type-graphql";
+import { registerEnumType } from 'type-graphql';
 
 export enum TagEmotion {
-    positive = "positive",
-    neutral = "neutral",
-    negative = "negative",
+    positive = 'positive',
+    neutral = 'neutral',
+    negative = 'negative',
 }
 
 registerEnumType(TagEmotion, {
-    name: 'TagEmotion'
-})
+    name: 'TagEmotion',
+});
 
 @Entity()
 @ObjectType()

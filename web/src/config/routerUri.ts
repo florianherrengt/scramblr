@@ -7,5 +7,5 @@ export const routerUri = {
     settings: '/settings',
     tags: '/tags',
     search: '/search',
-    insights: '/insights'
+    insights: '/insights',
 };
