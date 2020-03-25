@@ -9,3 +9,5 @@ Database:
     host: null
     port: null
     ssl: 1
+Populate:
+    demo: 0

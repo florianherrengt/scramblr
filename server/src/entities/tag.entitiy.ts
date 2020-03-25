@@ -6,6 +6,7 @@ import {
     PrimaryGeneratedColumn,
     Column,
     ManyToOne,
+    CreateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Note } from './note.entity';
@@ -40,10 +41,14 @@ export class Tag {
     @ManyToMany(type => Note)
     notes: Note[];
 
+    @Field()
+    @CreateDateColumn()
+    createdAt: Date;
+
     @ManyToOne(
         type => User,
         user => user.username,
-        { onDelete: 'CASCADE' },
+        { onDelete: 'CASCADE', nullable: false },
     )
     user: User;
 }

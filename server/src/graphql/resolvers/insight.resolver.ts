@@ -8,7 +8,7 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Tag } from '../../entities';
 import { Note } from '../../entities/note.entity';
 import { getInsightDates } from '../../helpers/getInsightDates';
-import * as dateFns from 'date-fns'
+import * as dateFns from 'date-fns';
 
 @Resolver(Insight)
 export class InsightResolver {
@@ -16,7 +16,7 @@ export class InsightResolver {
         @InjectRepository(Note)
         private readonly noteRepository: Repository<Note>,
         @InjectRepository(Tag) private readonly tagRepository: Repository<Tag>,
-    ) { }
+    ) {}
 
     @Query(returns => Insight)
     async insights(@Ctx() context: AppContext): Promise<Insight> {

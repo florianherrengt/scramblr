@@ -8,3 +8,5 @@ Database:
     host: DATABASE_HOST
     port: DATABASE_PORT
     ssl: DATABASE_SSL
+Populate:
+    demo: POPULATE_DEMO

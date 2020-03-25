@@ -12,7 +12,12 @@ import {
     TagResolver,
     InsightResolver,
 } from './graphql/resolvers';
-import { JwtObject, createContext, getDbConnectionOptions } from './helpers';
+import {
+    PopulateDemo,
+    JwtObject,
+    createContext,
+    getDbConnectionOptions,
+} from './helpers';
 import * as cors from 'cors';
 import * as path from 'path';
 
@@ -21,7 +26,7 @@ export const createApp = async () => {
     app.use(cors());
     TypeORM.useContainer(Container);
 
-    await TypeORM.createConnection({
+    const connection = await TypeORM.createConnection({
         ...getDbConnectionOptions(),
         synchronize: true,
         entities: [User, Note, Tag],
@@ -31,6 +36,11 @@ export const createApp = async () => {
         resolvers: [UserResolver, NoteResolver, TagResolver, InsightResolver],
         container: Container,
     });
+
+    if (parseInt(config.get('Populate.demo'), 10)) {
+        const populateDemo = new PopulateDemo(connection, TypeORM.getRepository(Note), TypeORM.getRepository(User), TypeORM.getRepository(Tag));
+        await populateDemo.populate();
+    }
 
     const apolloServer = new ApolloServer({
         schema,

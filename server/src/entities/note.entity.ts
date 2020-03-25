@@ -29,7 +29,7 @@ export class Note {
     @ManyToOne(
         type => User,
         user => user.username,
-        { onDelete: 'CASCADE' },
+        { onDelete: 'CASCADE', nullable: false },
     )
     user: User;
 
