@@ -1,4 +1,4 @@
-import { Router, Switch, Route } from 'react-router';
+import { Redirect, Router, Switch, Route } from 'react-router';
 import React, { Suspense, lazy } from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { routerUri } from './config';
@@ -64,7 +64,9 @@ export const AppRouter = () => {
                         </Suspense>
                     </Route>
                 </MainLayout>
-                <Route path='/' exact></Route>
+                <Route path='*' exact>
+                    <Redirect to={routerUri.notes} />
+                </Route>
             </Switch>
         </Router>
     );

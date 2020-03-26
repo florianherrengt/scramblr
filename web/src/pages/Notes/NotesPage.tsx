@@ -46,6 +46,7 @@ export const NotesPage = () => {
             )}
             <LineSpacer />
             <NoteListContainer
+                isLoading={currentUserNotes.isFetching}
                 displayedNotes={currentUserNotes}
                 loadMore={loadMore}
             />

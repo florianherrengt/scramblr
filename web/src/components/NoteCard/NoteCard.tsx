@@ -26,6 +26,7 @@ export interface NoteCardProps {
     tags: Array<Optional<ValuesType<RootState['currentUserTags']['tags']>>>;
     onEditClick(noteId: string): void;
     onDeleteClick(noteId: string): void;
+    isPlaceholder?: boolean;
 }
 
 export const NoteCard: React.SFC<NoteCardProps> = props => {
@@ -36,7 +37,10 @@ export const NoteCard: React.SFC<NoteCardProps> = props => {
         <Card
             className={classNames([
                 'NoteCard',
-                { 'NoteCard--loading': props.note.isLoading },
+                {
+                    'NoteCard--loading': props.note.isLoading,
+                    'NoteCard--placeholder': props.isPlaceholder,
+                },
             ])}
             variant='outlined'
         >
@@ -88,6 +92,9 @@ export const NoteCard: React.SFC<NoteCardProps> = props => {
                         __html: text.replace(/\n/gi, '<br />').trim(),
                     }}
                 />
+                {props.isPlaceholder && (
+                    <Typography variant='body1'>Loading</Typography>
+                )}
             </CardContent>
             <Menu
                 anchorEl={anchorEl}

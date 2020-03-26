@@ -8,6 +8,7 @@ import { RootState } from '../reducers';
 interface NoteListContainerProps {
     loadMore(): void;
     displayedNotes: RootState['currentUserNotes'] | RootState['searchNotes'];
+    isLoading?: boolean;
 }
 
 export const NoteListContainer: React.SFC<NoteListContainerProps> = props => {
@@ -22,6 +23,7 @@ export const NoteListContainer: React.SFC<NoteListContainerProps> = props => {
             <div>
                 {
                     <NoteList
+                        isLoading={props.isLoading}
                         editingNoteId={editingNoteId}
                         onEditClick={noteId => {
                             setEditingNoteId(noteId);

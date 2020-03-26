@@ -4,6 +4,15 @@
     &--loading {
         opacity: 0.5;
     }
+
+    &--placeholder {
+        p {
+            background-color: lightgrey;
+            color: lightgrey;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    }
 }
 
 .NoteCard_CircularProgress {
