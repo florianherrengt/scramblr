@@ -31,24 +31,26 @@ export const ListTags: React.SFC<ListTagsProps> = props => {
                     });
                 }}
             />
-            {props.tags.map(tag => (
-                <TagChip
-                    tag={tag}
-                    key={tag.id}
-                    style={{ margin: '10px 10px 0 0' }}
-                    clickable
-                    size='medium'
-                    deleteIcon={<EditIcon fontSize='small' />}
-                    onClick={event => {
-                        setClickedTagId(tag.id);
-                        setAnchorEl(event.currentTarget);
-                    }}
-                    onDelete={event => {
-                        setClickedTagId(tag.id);
-                        setAnchorEl(event.currentTarget);
-                    }}
-                />
-            ))}
+            <div style={{ textAlign: 'center' }}>
+                {props.tags.map(tag => (
+                    <TagChip
+                        tag={tag}
+                        key={tag.id}
+                        style={{ margin: '10px 10px 0 0' }}
+                        clickable
+                        size='medium'
+                        deleteIcon={<EditIcon fontSize='small' />}
+                        onClick={event => {
+                            setClickedTagId(tag.id);
+                            setAnchorEl(event.currentTarget);
+                        }}
+                        onDelete={event => {
+                            setClickedTagId(tag.id);
+                            setAnchorEl(event.currentTarget);
+                        }}
+                    />
+                ))}
+            </div>
             <Menu
                 id='simple-menu'
                 anchorEl={anchorEl}

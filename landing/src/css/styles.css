@@ -1,0 +1,212 @@
+body {
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
+
+b {
+    font-weight: bold;
+}
+a {
+    color: black;
+    text-decoration: none;
+}
+
+.flex {
+    display: flex;
+}
+.flex--reverse {
+    flex-direction: row-reverse;
+}
+
+.flex-grow {
+    flex: 1;
+    flex-grow: 1;
+}
+
+.button {
+    display: block;
+    padding: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.12);
+    border-radius: 5px;
+}
+
+.button:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.top-bar {
+    display: flex;
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.top-bar-logo {
+    font-size: 20px;
+    line-height: 1.5;
+}
+
+.spacer {
+    width: 20px;
+}
+
+.content {
+    margin-top: 40px;
+    max-width: 960px;
+    margin: auto;
+}
+
+.content .section {
+    margin-top: 10vh;
+    padding: 20px 20px 0;
+}
+
+.margin-auto {
+    margin: auto;
+}
+.text-center {
+    text-align: center;
+}
+h1 {
+    font-size: 3em;
+}
+h2 {
+    font-size: 3em;
+}
+@media only screen and (max-width: 800px) {
+    .content .section {
+        display: block;
+        text-align: center;
+    }
+    .no-flex--mobile {
+        display: block;
+    }
+    .no-flex--mobile div {
+        width: 100% !important;
+        margin-top: 20px;
+    }
+    .spacer {
+        width: 10px;
+    }
+}
+
+.content .section-1 .pitch {
+    margin: auto;
+}
+
+.content .section .pitch h2 {
+    font-size: 2em;
+}
+.content .section .pitch p {
+    margin-top: 20px;
+    font-size: 20px;
+    color: gray;
+    line-height: 1.2;
+}
+@media only screen and (max-width: 800px) {
+    .content .section .pitch {
+        width: 100%;
+    }
+}
+
+.section-1 .app-screenshot {
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+}
+
+.section-1-actions {
+    display: flex;
+    margin-top: 40px;
+}
+
+@media only screen and (max-width: 800px) {
+    .section-1-actions {
+        display: block;
+    }
+    .section-1 .button {
+        margin-top: 20px;
+    }
+}
+
+.app-screenshot {
+    width: 50%;
+}
+
+.content .section-1 .app-screenshot {
+    margin: auto;
+    text-align: center;
+}
+
+@media only screen and (max-width: 800px) {
+    .content .section .app-screenshot {
+        width: 100%;
+        margin-top: 40px;
+    }
+}
+.app-screenshot--max img {
+    max-width: 400px;
+}
+.content .section .app-screenshot img {
+    width: 100%;
+    height: auto;
+}
+
+.section-2 {
+    text-align: center;
+}
+
+.section-2 h2 {
+    font-size: 2em;
+}
+
+.section-2 p {
+    margin-top: 10px;
+    color: gray;
+}
+
+.content .section-more .app-screenshot {
+    text-align: right;
+}
+.content .section-more .app-screenshot img {
+    /* margin-right: 40px; */
+}
+
+.section-more .pitch {
+    /* margin-left: 40px; */
+}
+
+.section-more {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.section-more.flex--reverse .app-screenshot {
+    text-align: left;
+}
+
+.section-more .pitch {
+    width: 50%;
+}
+
+@media only screen and (max-width: 800px) {
+    .content .section-more .app-screenshot img,
+    .section-more .pitch {
+        margin: 0;
+    }
+    .section-more .pitch {
+        margin-top: 20px;
+    }
+}
+.bottom-bar {
+    padding: 20px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.hosting {
+    text-align: center;
+}
+.hosting p {
+    color: gray;
+    margin-top: 10px;
+    line-height: 1.5;
+}

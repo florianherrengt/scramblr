@@ -1,6 +1,10 @@
 .NoteCard {
     position: relative;
 
+    p {
+        overflow: hidden;
+    }
+
     &--loading {
         opacity: 0.5;
     }
