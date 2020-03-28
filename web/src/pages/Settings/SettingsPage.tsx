@@ -1,7 +1,6 @@
 import React from 'react';
 import { LineSpacer, Settings } from '../../components';
 import { AesPassphraseContainer } from '../Notes/AesPassphraseContainer';
-import { Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { signOut } from '../../actions';
 
