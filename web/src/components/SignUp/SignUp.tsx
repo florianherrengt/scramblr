@@ -35,6 +35,9 @@ export const SignUp = (props: SignUpProps) => {
             >
                 <div>
                     <TextField
+                        autoComplete='off'
+                        autoCapitalize='none'
+                        type='url'
                         className='SignUp_TextField_Username width-100'
                         autoFocus
                         onChange={({ target }) => {
@@ -56,6 +59,7 @@ export const SignUp = (props: SignUpProps) => {
                 <LineSpacer />
                 <div>
                     <TextField
+                        autoComplete='password'
                         className='SignUp_TextField_Password width-100'
                         onChange={({ target }) => setPassword(target.value)}
                         variant='outlined'

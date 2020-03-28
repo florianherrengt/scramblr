@@ -25,6 +25,9 @@ export const SignIn = (props: SignInProps) => {
             >
                 <div>
                     <TextField
+                        autoComplete='off'
+                        autoCapitalize='none'
+                        type='url'
                         className='SignIn_TextField_Username width-100'
                         autoFocus
                         disabled={props.loading}
@@ -36,6 +39,7 @@ export const SignIn = (props: SignInProps) => {
                 <LineSpacer />
                 <div>
                     <TextField
+                        autoComplete='password'
                         className='SignIn_TextField_Password width-100'
                         disabled={props.loading}
                         onChange={({ target }) => setPassword(target.value)}

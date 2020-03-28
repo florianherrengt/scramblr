@@ -1,7 +1,7 @@
 import { push } from 'connected-react-router';
 import { ThunkDispatch } from 'redux-thunk';
 import { routerUri } from '../../config';
-import { getApi, GetInsightsQuery } from '../../helpers';
+import { getApi, GetInsightsQuery, formatGraphqlErrors } from '../../helpers';
 import { RootState } from '../../reducers';
 import { enqueueSnackbar } from '../notifier';
 import { SharedActions } from '../shared';
@@ -29,19 +29,7 @@ export const fetchInsights = () => async (
     dispatch: ThunkDispatch<{}, {}, InsightsAction>,
     getState: () => RootState,
 ) => {
-    const state = getState();
-
-    if (state.insights.fetched) {
-        return;
-    }
-
-    const token = state.currentUser.token;
-    if (!token) {
-        console.debug('Unauthenticated. Redirect to sign in');
-        dispatch(push(routerUri.signIn));
-        return;
-    }
-    const api = getApi({ token });
+    const api = getApi();
 
     dispatch({ type: 'GET_INSIGHTS_REQUEST' });
     try {
@@ -51,7 +39,12 @@ export const fetchInsights = () => async (
             insights,
         });
     } catch (error) {
-        console.error(error);
+        if (formatGraphqlErrors(error)?.isUnauthenticated) {
+            console.debug('Unauthenticated. Redirect to sign in');
+            dispatch(push(routerUri.signIn));
+            return;
+        }
+        console.log(error);
         const errorMessage = 'Error fetching insights';
         dispatch(
             enqueueSnackbar({

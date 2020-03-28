@@ -79,12 +79,12 @@ export const createNote = (
             transactionId,
         });
     } catch (error) {
-        console.log(error);
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
             return;
         }
+        console.log(error);
         dispatch(
             enqueueSnackbar({
                 message: 'Error creating note',

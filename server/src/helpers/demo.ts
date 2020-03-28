@@ -23,7 +23,7 @@ export class PopulateDemo {
         private readonly userRepository: Repository<User>,
         @InjectRepository(Tag)
         private readonly tagRepository: Repository<Tag>,
-    ) { }
+    ) {}
     async populate(): Promise<void> {
         console.log('populating...');
 
@@ -38,7 +38,6 @@ export class PopulateDemo {
                 password: bcrypt.hashSync('demo'),
             });
             await manager.save(User, user);
-
 
             const tags = {
                 happy: await manager.save(
@@ -89,42 +88,50 @@ export class PopulateDemo {
                         TagEmotion.neutral,
                         TagEmotion.negative,
                     ]),
-                    label: encrypt(faker.random.word()),
+                    label: encrypt(faker.random.word().toLowerCase()),
                     user,
                 }),
             );
 
             await manager.insert(Tag, randomTags);
 
-            await manager.save(Note,
+            await manager.save(
+                Note,
                 [
                     ...range(1, 10).map(() => ({
                         text: encrypt(
                             faker.hacker.adjective() +
-                            ' ' +
-                            faker.hacker.noun(),
+                                ' ' +
+                                faker.hacker.noun(),
                         ),
                         tags: [tags.startupIdea],
-                        createdAt: new Date()
+                        createdAt: new Date(),
                     })),
-                ].map(note => this.noteRepository.create({ ...note, user })),
+                ].map((note) => this.noteRepository.create({ ...note, user })),
             );
 
-            const randomNotes = range(1, 100).map(() => ({
-                text: encrypt(faker.hacker.phrase()),
-                tags: range(0, 2).map(() =>
-                    faker.random.arrayElement(randomTags),
-                ),
-                createdAt: faker.date.between(
-                    startOfYear(new Date()),
-                    new Date(),
-                ),
-            })).map(note => this.noteRepository.create({ ...note, user }))
+            const randomNotes = range(1, 100)
+                .map(() => ({
+                    text: encrypt(faker.hacker.phrase()),
+                    tags: range(0, 2).map(() =>
+                        faker.random.arrayElement(randomTags),
+                    ),
+                    createdAt: faker.date.between(
+                        startOfYear(new Date()),
+                        new Date(),
+                    ),
+                }))
+                .map((note) => this.noteRepository.create({ ...note, user }));
 
-            await manager.insert(Note, randomNotes)
-            await Promise.all(randomNotes.map(note => manager.save(Note, {
-                ...note, tags: [faker.random.arrayElement(randomTags)]
-            })))
+            await manager.insert(Note, randomNotes);
+            await Promise.all(
+                randomNotes.map((note) =>
+                    manager.save(Note, {
+                        ...note,
+                        tags: [faker.random.arrayElement(randomTags)],
+                    }),
+                ),
+            );
 
             const notes: Partial<Note>[] = [
                 {
@@ -151,8 +158,9 @@ export class PopulateDemo {
                     tags: [tags.happy, tags.family, tags.mom],
                 },
             ];
-            await manager.save(Note,
-                notes.map(note =>
+            await manager.save(
+                Note,
+                notes.map((note) =>
                     this.noteRepository.create({
                         ...note,
                         text: encrypt(note.text),
