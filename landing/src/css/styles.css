@@ -25,12 +25,20 @@ a {
 .button {
     display: block;
     padding: 20px;
-    border: 2px solid rgba(0, 0, 0, 0.12);
+    border: 2px solid #e0e0e0;
     border-radius: 5px;
 }
 
 .button:hover {
     background-color: rgba(0, 0, 0, 0.06);
+}
+
+.create-account-button {
+    background-color: #42a5f5;
+    border: 2px solid #42a5f5;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 1.1x;
 }
 
 .top-bar {
@@ -98,7 +106,7 @@ h2 {
 .content .section .pitch p {
     margin-top: 20px;
     font-size: 20px;
-    color: gray;
+    color: #757575;
     line-height: 1.2;
 }
 @media only screen and (max-width: 800px) {
@@ -160,7 +168,7 @@ h2 {
 
 .section-2 p {
     margin-top: 10px;
-    color: gray;
+    color: #757575;
 }
 
 .content .section-more .app-screenshot {
@@ -206,7 +214,7 @@ h2 {
     text-align: center;
 }
 .hosting p {
-    color: gray;
+    color: #757575;
     margin-top: 10px;
     line-height: 1.5;
 }

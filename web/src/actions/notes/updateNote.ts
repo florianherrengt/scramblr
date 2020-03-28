@@ -6,6 +6,7 @@ import {
     decrypt,
     encrypt,
     getApi,
+    formatGraphqlErrors,
 } from '../../helpers';
 import { RootState } from '../../reducers';
 import { push } from 'connected-react-router';
@@ -44,14 +45,7 @@ export const updateNote = (
     getState: () => RootState,
 ) => {
     const state = getState();
-
-    const token = state.currentUser.token;
-    if (!token) {
-        console.debug('Undefined token. Redirecting to /sign-in');
-        dispatch(push(routerUri.signIn));
-        return;
-    }
-    const api = getApi({ token });
+    const api = getApi();
     const transactionId =
         new Date().valueOf().toString() +
         '-' +
@@ -91,6 +85,11 @@ export const updateNote = (
             transactionId,
         });
     } catch (error) {
+        if (formatGraphqlErrors(error)?.isUnauthenticated) {
+            console.debug('Unauthenticated. Redirect to sign in');
+            dispatch(push(routerUri.signIn));
+            return;
+        }
         console.error(error);
         dispatch(
             enqueueSnackbar({

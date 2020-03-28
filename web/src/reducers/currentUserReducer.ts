@@ -9,6 +9,7 @@ interface CurrentUserState {
     isFetching: boolean;
     error?: string;
     fetched: boolean;
+    demo?: boolean;
 }
 
 const defaultState: CurrentUserState = { isFetching: false, fetched: false };
@@ -35,13 +36,13 @@ export const currentUser = (
         case 'SIGN_IN_REQUEST':
             return { ...state, isFetching: true, error: '' };
         case 'SIGN_IN_SUCCESS':
-            localStorage.setItem(localStorageKeys.token, action.token);
             return {
                 ...state,
                 token: action.token,
                 fetched: true,
                 isFetching: false,
                 error: '',
+                demo: action.demo,
             };
         case 'SIGN_IN_FAILURE':
             return {
@@ -50,6 +51,8 @@ export const currentUser = (
                 isFetching: false,
                 error: action.error,
             };
+        case 'SIGN_OUT_SUCCESS':
+            return defaultState;
         default:
             return state;
     }

@@ -1,21 +1,25 @@
 query getCurrentUser {
-  currentUser {
-    ...UserFields
-  }
+    currentUser {
+        ...UserFields
+    }
 }
 
 mutation signIn($input: SignInInput!) {
-  signIn(input: $input)
+    signIn(input: $input)
+}
+
+mutation signOut {
+    signOut
 }
 
 query userExists($username: String!) {
-  userExists(username: $username)
+    userExists(username: $username)
 }
 
 mutation signUp($input: SignUpInput!) {
-  signUp(input: $input)
+    signUp(input: $input)
 }
 
 fragment UserFields on User {
-  username
+    username
 }

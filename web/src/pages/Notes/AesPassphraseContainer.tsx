@@ -11,9 +11,8 @@ interface AesPassphraseContainerProps {
 
 export const AesPassphraseContainer: React.SFC<AesPassphraseContainerProps> = props => {
     const dispatch = useDispatch();
-    const aesPassphrase = useSelector(
-        (state: RootState) => state.currentUser.aesPassphrase,
-    );
+
+    const currentUser = useSelector((state: RootState) => state.currentUser);
     const currentUserNotes = useSelector(
         (state: RootState) => state.currentUserNotes,
     );
@@ -21,6 +20,8 @@ export const AesPassphraseContainer: React.SFC<AesPassphraseContainerProps> = pr
     if (currentUserNotes.isFetching) {
         return <CircularProgress />;
     }
+
+    const aesPassphrase = currentUser.demo ? 'demo' : currentUser.aesPassphrase;
     return (
         <AesPassphraseForm
             defaultValue={aesPassphrase}
@@ -34,7 +35,6 @@ export const AesPassphraseContainer: React.SFC<AesPassphraseContainerProps> = pr
                 dispatch(
                     setAesPassphrase(passphrase, shouldSaveToLocalstorage),
                 );
-                // window.location.replace(routerUri.notes);
             }}
         />
     );

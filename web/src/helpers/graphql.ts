@@ -32,18 +32,12 @@ export const formatGraphqlErrors = (
     }
 };
 
-interface GetApiOptions {
-    token?: string;
-}
+interface GetApiOptions {}
 
-export const getApi = ({ token }: GetApiOptions = {}) => {
+export const getApi = (_: GetApiOptions = {}) => {
     const client = new GraphQLClient('/api/graphql', {
-        headers: Object.assign(
-            {},
-            token ? { authorization: `Bearer ${token}` } : null,
-        ),
         cache: 'no-cache',
-        credentials: 'omit',
+        credentials: 'include',
     });
     return getSdk(client);
 };

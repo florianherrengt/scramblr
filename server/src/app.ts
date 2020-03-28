@@ -20,9 +20,24 @@ import {
 } from './helpers';
 import * as cors from 'cors';
 import * as path from 'path';
+import * as session from 'express-session';
+import { exportRouter } from './exportData';
 
 export const createApp = async () => {
     const app = express();
+    app.set('trust proxy', 1);
+    app.use(
+        session({
+            secret: config.get('Jwt.secret'),
+            cookie: { httpOnly: true, secure: false },
+            saveUninitialized: true,
+        }),
+    );
+    // app.use((request, _, next) => {
+    //     console.log(request.session?.username);
+    //     request.session!.username = 'sdf';
+    //     request.session?.save(next);
+    // });
     app.use(cors());
     TypeORM.useContainer(Container);
 
@@ -38,7 +53,12 @@ export const createApp = async () => {
     });
 
     if (parseInt(config.get('Populate.demo'), 10)) {
-        const populateDemo = new PopulateDemo(connection, TypeORM.getRepository(Note), TypeORM.getRepository(User), TypeORM.getRepository(Tag));
+        const populateDemo = new PopulateDemo(
+            connection,
+            TypeORM.getRepository(Note),
+            TypeORM.getRepository(User),
+            TypeORM.getRepository(Tag),
+        );
         await populateDemo.populate();
     }
 
@@ -46,22 +66,10 @@ export const createApp = async () => {
         schema,
         tracing: true,
         context: async ({ req }) => {
-            const token = (req.header('Authorization') || '').split(' ')[1];
-            if (!token) {
-                return {};
-            }
-            try {
-                const user = jwt.verify(
-                    token,
-                    config.get('Jwt.secret'),
-                ) as JwtObject;
-                const context = await createContext({
-                    username: user.username,
-                });
-                return context;
-            } catch (e) {
-                return {};
-            }
+            const context = await createContext({
+                request: req,
+            });
+            return { ...context };
         },
     });
 
@@ -71,10 +79,11 @@ export const createApp = async () => {
         response.sendStatus(200);
     });
 
+    app.use('/api/export/:entity', exportRouter);
+
     app.use(express.static(path.join(__dirname + '/../assets')));
     app.get('*', (_, res) => {
         res.sendFile(path.join(__dirname + '/../assets/index.html'));
     });
-
     return app;
 };

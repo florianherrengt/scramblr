@@ -1,5 +1,5 @@
 import { ThunkDispatch } from 'redux-thunk';
-import { getApi } from '../../helpers';
+import { getApi, formatGraphqlErrors } from '../../helpers';
 import { RootState } from '../../reducers';
 import { push } from 'connected-react-router';
 import { routerUri } from '../../config';
@@ -32,14 +32,7 @@ export const deleteNote = (id: string) => async (
     dispatch: ThunkDispatch<{}, {}, DeleteNoteAction>,
     getState: () => RootState,
 ) => {
-    const state = getState();
-
-    const token = state.currentUser.token;
-    if (!token) {
-        dispatch(push(routerUri.signIn));
-        return;
-    }
-    const api = getApi({ token });
+    const api = getApi();
     dispatch({ type: 'DELETE_NOTE_REQUEST', id });
     try {
         const { deleteNote } = await api.deleteNote({ id });
@@ -55,6 +48,11 @@ export const deleteNote = (id: string) => async (
         });
     } catch (error) {
         console.error(error);
+        if (formatGraphqlErrors(error)?.isUnauthenticated) {
+            console.debug('Unauthenticated. Redirect to sign in');
+            dispatch(push(routerUri.signIn));
+            return;
+        }
         dispatch(
             enqueueSnackbar({
                 message: 'Error deleting note',

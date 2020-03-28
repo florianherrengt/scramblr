@@ -6,7 +6,7 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { User } from '../../entities/user.entity';
 import { createJwt } from '../../helpers/jwt';
 import { SignInInput, SignUpInput } from '../inputs/user.input';
-import { AppContext } from 'src/helpers';
+import { AppContext, appSession } from '../../helpers';
 
 @Resolver(User)
 export class UserResolver {
@@ -15,13 +15,13 @@ export class UserResolver {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    @Query(returns => Int, { nullable: false })
+    @Query((returns) => Int, { nullable: false })
     async userExists(@Arg('username') username: string): Promise<boolean> {
         const user = await this.userRepository.findOne(username);
         return !!user;
     }
 
-    @Query(returns => User, { nullable: true })
+    @Query((returns) => User, { nullable: true })
     async currentUser(@Ctx() context: AppContext): Promise<User | undefined> {
         if (!context.user) {
             return;
@@ -30,19 +30,27 @@ export class UserResolver {
         return user;
     }
 
-    @Mutation(returns => String, { nullable: true })
-    async signIn(@Arg('input') input: SignInInput): Promise<string> {
+    @Mutation((returns) => String, { nullable: true })
+    async signIn(
+        @Arg('input') input: SignInInput,
+        @Ctx() context: AppContext,
+    ): Promise<string> {
         const user = await this.userRepository.findOne({
             where: { username: input.username },
         });
         if (!user || !bcrypt.compareSync(input.password, user.password)) {
             throw new UserInputError('Incorrect username/password');
         }
+        const { session } = context.request;
+        await appSession.setUsername({ session, username: user.username });
 
         return createJwt(user);
     }
-    @Mutation(returns => String)
-    async signUp(@Arg('input') input: SignUpInput): Promise<string> {
+    @Mutation((returns) => String)
+    async signUp(
+        @Arg('input') input: SignUpInput,
+        @Ctx() context: AppContext,
+    ): Promise<string> {
         if (await this.userRepository.findOne(input.username)) {
             throw new Error('Username already exists');
         }
@@ -54,9 +62,20 @@ export class UserResolver {
         if (!newUser) {
             throw new Error('cannot create new user');
         }
+
+        const { session } = context.request;
+        await appSession.setUsername({ session, username: newUser.username });
+
         return createJwt(newUser);
     }
-    @Mutation(returns => Int)
+    @Mutation((returns) => Int)
+    async signOut(@Ctx() context: AppContext): Promise<boolean> {
+        const { session } = context.request;
+        await appSession.destroy({ session });
+
+        return true;
+    }
+    @Mutation((returns) => Int)
     async deleteAccount(@Ctx() context: AppContext) {
         if (!context.user) {
             throw new Error('cannot delete user');

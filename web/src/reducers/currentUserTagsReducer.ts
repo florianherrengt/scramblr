@@ -21,6 +21,8 @@ export const currentUserTags = (
     action: TagsAction | CurrentUserActionSetAesPassphrase,
 ): CurrentUserTagsState => {
     switch (action.type) {
+        case 'SIGN_OUT_SUCCESS':
+            return defaultState;
         case 'SET_AES_PASSPHRASE':
             return {
                 ...state,
@@ -56,6 +58,7 @@ export const currentUserTags = (
                         id: action.transactionId,
                         transactionId: action.transactionId,
                         isLoading: true,
+                        createdAt: new Date(),
                     },
                     ...state.tags,
                 ],

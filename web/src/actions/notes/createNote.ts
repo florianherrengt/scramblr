@@ -6,6 +6,7 @@ import {
     CreateNoteMutationVariables,
     decrypt,
     encrypt,
+    formatGraphqlErrors,
 } from '../../helpers';
 import { RootState } from '../../reducers';
 import { push } from 'connected-react-router';
@@ -45,12 +46,7 @@ export const createNote = (
 ) => {
     const state = getState();
 
-    const token = state.currentUser.token;
-    if (!token) {
-        dispatch(push(routerUri.signIn));
-        return;
-    }
-    const api = getApi({ token });
+    const api = getApi();
     const transactionId =
         new Date().valueOf().toString() +
         '-' +
@@ -83,7 +79,12 @@ export const createNote = (
             transactionId,
         });
     } catch (error) {
-        console.error(error);
+        console.log(error);
+        if (formatGraphqlErrors(error)?.isUnauthenticated) {
+            console.debug('Unauthenticated. Redirect to sign in');
+            dispatch(push(routerUri.signIn));
+            return;
+        }
         dispatch(
             enqueueSnackbar({
                 message: 'Error creating note',

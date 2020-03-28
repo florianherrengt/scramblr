@@ -1,5 +1,11 @@
 import { ThunkDispatch } from 'redux-thunk';
-import { decrypt, GetCurrentUserNotesQuery, Tag, getApi } from '../../helpers';
+import {
+    decrypt,
+    GetCurrentUserNotesQuery,
+    Tag,
+    getApi,
+    formatGraphqlErrors,
+} from '../../helpers';
 import { RootState } from '../../reducers';
 import { isEmpty } from 'lodash';
 import { routerUri } from '../../config';
@@ -63,13 +69,7 @@ export const searchNotes = (options: SearchOptions) => async (
 ) => {
     const state = getState();
 
-    const token = state.currentUser.token;
-    if (!token) {
-        console.debug('Undefined token. Redirecting to /sign-in');
-        dispatch(push(routerUri.signIn));
-        return;
-    }
-    const api = getApi({ token });
+    const api = getApi();
     if (isEmpty(options.tagsId)) {
         dispatch({
             type: 'SEARCH_NOTES_RESET',
@@ -106,6 +106,11 @@ export const searchNotes = (options: SearchOptions) => async (
         });
     } catch (error) {
         console.error(error);
+        if (formatGraphqlErrors(error)?.isUnauthenticated) {
+            console.debug('Unauthenticated. Redirect to sign in');
+            dispatch(push(routerUri.signIn));
+            return;
+        }
         dispatch({
             type: 'SEARCH_NOTES_FAILURE',
             error,

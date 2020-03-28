@@ -32,7 +32,6 @@ const AesPassphraseForm = (props: AesPassphraseFormProps) => {
     >(true);
 
     const submit = () => {
-        console.log(aesPassphrase);
         props.onSubmit({ passphrase: aesPassphrase, shouldSaveToLocalstorage });
     };
 
@@ -64,6 +63,7 @@ const AesPassphraseForm = (props: AesPassphraseFormProps) => {
                                 value={aesPassphrase}
                                 style={{ width: '100%' }}
                                 variant='outlined'
+                                label='AES Passphrase'
                                 placeholder='Enter you AES secret passphrase'
                                 onKeyDown={event => {
                                     setError('');

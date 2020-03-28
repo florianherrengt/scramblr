@@ -4,6 +4,7 @@ import {
     GetCurrentUserNotesQuery,
     GetCurrentUserNotesQueryVariables,
     getApi,
+    formatGraphqlErrors,
 } from '../../helpers';
 import { RootState } from '../../reducers';
 import { routerUri } from '../../config';
@@ -43,23 +44,10 @@ export const fetchCurrentUserNotes = (
     console.debug('action.fetchCurrentUserNotes');
     const state = getState();
 
-    const token = state.currentUser.token;
-
-    if (!token) {
-        console.debug('Undefined token. Redirecting to /sign-in');
-        dispatch(push(routerUri.signIn));
-        return;
-    }
-    if (!token) {
-        console.debug('Undefined token. Redirecting to /sign-in');
-        dispatch(push(routerUri.signIn));
-        return;
-    }
-
     if (state.currentUserNotes.fetched && !options?.forceReload) {
         return;
     }
-    const api = getApi({ token });
+    const api = getApi();
 
     dispatch({
         type: 'GET_CURRENT_USER_NOTES_REQUEST',
@@ -84,6 +72,11 @@ export const fetchCurrentUserNotes = (
         });
     } catch (error) {
         console.error(error);
+        if (formatGraphqlErrors(error)?.isUnauthenticated) {
+            console.debug('[FetchNotes] Unauthenticated. Redirect to sign in');
+            dispatch(push(routerUri.signIn));
+            return;
+        }
         dispatch({
             type: 'GET_CURRENT_USER_NOTES_FAILURE',
         });

@@ -2,7 +2,7 @@ import { InsightsAction } from '../actions';
 import { GetInsightsQuery } from '../helpers';
 
 export interface InsightsState {
-    insights: GetInsightsQuery['insights']
+    insights: GetInsightsQuery['insights'];
     isFetching: boolean;
     error?: string;
     fetched: boolean;
@@ -19,6 +19,8 @@ export const insights = (
     action: InsightsAction,
 ): InsightsState => {
     switch (action.type) {
+        case 'SIGN_OUT_SUCCESS':
+            return defaultState;
         case 'GET_INSIGHTS_REQUEST':
             return {
                 ...state,

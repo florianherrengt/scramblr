@@ -15,6 +15,7 @@ export const decrypt = (str: string, secret: string): string => {
         }
         return decrypted;
     } catch (error) {
+        console.error(error);
         return 'Invalid passphrase';
     }
 };

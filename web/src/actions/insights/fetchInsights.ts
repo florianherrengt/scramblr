@@ -12,7 +12,7 @@ export interface FetchInsightsActionFetching {
 
 export interface FetchInsightsActionSuccess {
     type: 'GET_INSIGHTS_SUCCESS';
-    insights: GetInsightsQuery['insights']
+    insights: GetInsightsQuery['insights'];
 }
 
 export interface FetchInsightsActionError {
@@ -37,6 +37,7 @@ export const fetchInsights = () => async (
 
     const token = state.currentUser.token;
     if (!token) {
+        console.debug('Unauthenticated. Redirect to sign in');
         dispatch(push(routerUri.signIn));
         return;
     }
@@ -47,11 +48,11 @@ export const fetchInsights = () => async (
         const { insights } = await api.getInsights();
         dispatch({
             type: 'GET_INSIGHTS_SUCCESS',
-            insights
+            insights,
         });
     } catch (error) {
         console.error(error);
-        const errorMessage = 'Error fetching insights'
+        const errorMessage = 'Error fetching insights';
         dispatch(
             enqueueSnackbar({
                 message: errorMessage,
@@ -59,7 +60,7 @@ export const fetchInsights = () => async (
             }),
         );
         dispatch({
-            type: 'GET_INSIGHTS_FAILURE'
+            type: 'GET_INSIGHTS_FAILURE',
         });
     }
 };

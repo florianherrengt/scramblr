@@ -21,6 +21,8 @@ export const searchNotes = (
     action: SearchNoteAction | CurrentUserActionSetAesPassphrase | NotesAction,
 ): SearchNotesState => {
     switch (action.type) {
+        case 'SIGN_OUT_SUCCESS':
+            return defaultState;
         case 'SET_AES_PASSPHRASE':
             return {
                 ...state,

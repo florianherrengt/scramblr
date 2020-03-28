@@ -44,6 +44,7 @@ export type Mutation = {
   createNote: Note;
   signIn?: Maybe<Scalars['String']>;
   signUp: Scalars['String'];
+  signOut: Scalars['Int'];
   deleteAccount: Scalars['Int'];
   createTag: Tag;
   updateTag: Tag;
@@ -141,6 +142,7 @@ export type Tag = {
   id: Scalars['ID'];
   label: Scalars['String'];
   emotion?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
 };
 
 export type TagNote = {
@@ -311,7 +313,7 @@ export type DeleteTagMutation = (
 
 export type TagFieldsFragment = (
   { __typename?: 'Tag' }
-  & Pick<Tag, 'id' | 'label' | 'emotion'>
+  & Pick<Tag, 'id' | 'label' | 'emotion' | 'createdAt'>
 );
 
 export type GetCurrentUserQueryVariables = {};
@@ -333,6 +335,14 @@ export type SignInMutationVariables = {
 export type SignInMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'signIn'>
+);
+
+export type SignOutMutationVariables = {};
+
+
+export type SignOutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'signOut'>
 );
 
 export type UserExistsQueryVariables = {
@@ -372,6 +382,7 @@ export const TagFieldsFragmentDoc = gql`
   id
   label
   emotion
+  createdAt
 }
     `;
 export const UserFieldsFragmentDoc = gql`
@@ -481,6 +492,11 @@ export const SignInDocument = gql`
   signIn(input: $input)
 }
     `;
+export const SignOutDocument = gql`
+    mutation signOut {
+  signOut
+}
+    `;
 export const UserExistsDocument = gql`
     query userExists($username: String!) {
   userExists(username: $username)
@@ -525,6 +541,9 @@ export function getSdk(client: GraphQLClient) {
     },
     signIn(variables: SignInMutationVariables): Promise<SignInMutation> {
       return client.request<SignInMutation>(print(SignInDocument), variables);
+    },
+    signOut(variables?: SignOutMutationVariables): Promise<SignOutMutation> {
+      return client.request<SignOutMutation>(print(SignOutDocument), variables);
     },
     userExists(variables: UserExistsQueryVariables): Promise<UserExistsQuery> {
       return client.request<UserExistsQuery>(print(UserExistsDocument), variables);

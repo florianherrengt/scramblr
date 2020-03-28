@@ -14,7 +14,6 @@ const store = configureStore({
     currentUser: {
         aesPassphrase:
             localStorage.getItem(localStorageKeys.aesPassphrase) || undefined,
-        token: localStorage.getItem(localStorageKeys.token) || undefined,
         fetched: false,
         isFetching: false,
     },

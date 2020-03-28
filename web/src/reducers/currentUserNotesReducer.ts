@@ -30,6 +30,8 @@ export const currentUserNotes = (
     action: NotesAction | CurrentUserActionSetAesPassphrase,
 ): CurrentUserNotesState => {
     switch (action.type) {
+        case 'SIGN_OUT_SUCCESS':
+            return defaultState;
         case 'SET_AES_PASSPHRASE':
             return {
                 ...state,
