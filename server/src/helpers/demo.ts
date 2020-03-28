@@ -107,7 +107,7 @@ export class PopulateDemo {
                         tags: [tags.startupIdea],
                         createdAt: new Date(),
                     })),
-                ].map((note) => this.noteRepository.create({ ...note, user })),
+                ].map(note => this.noteRepository.create({ ...note, user })),
             );
 
             const randomNotes = range(1, 100)
@@ -121,11 +121,11 @@ export class PopulateDemo {
                         new Date(),
                     ),
                 }))
-                .map((note) => this.noteRepository.create({ ...note, user }));
+                .map(note => this.noteRepository.create({ ...note, user }));
 
             await manager.insert(Note, randomNotes);
             await Promise.all(
-                randomNotes.map((note) =>
+                randomNotes.map(note =>
                     manager.save(Note, {
                         ...note,
                         tags: [faker.random.arrayElement(randomTags)],
@@ -160,7 +160,7 @@ export class PopulateDemo {
             ];
             await manager.save(
                 Note,
-                notes.map((note) =>
+                notes.map(note =>
                     this.noteRepository.create({
                         ...note,
                         text: encrypt(note.text),

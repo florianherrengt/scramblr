@@ -11,7 +11,7 @@ export const appSession = {
         return await new Promise((resolve, reject) => {
             if (session) {
                 session.username = username;
-                session.save((error) => (error ? reject(error) : resolve()));
+                session.save(error => (error ? reject(error) : resolve()));
             } else {
                 reject('session is not defined');
             }
@@ -20,7 +20,7 @@ export const appSession = {
     async destroy({ session }: { session?: Request['session'] }) {
         return await new Promise((resolve, reject) => {
             if (session) {
-                session.destroy((error) => (error ? reject(error) : resolve()));
+                session.destroy(error => (error ? reject(error) : resolve()));
             } else {
                 reject('session is not defined');
             }

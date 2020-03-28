@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-
-import { Button, Modal, Backdrop, Slide, TextField } from '@material-ui/core/';
-import { CreateTagForm, CreateTagFormProps } from '../CreateTagForm';
-import { RootState } from '../../reducers';
+import { Backdrop, Modal, Slide } from '@material-ui/core/';
+import React from 'react';
 import { ValuesType } from 'utility-types';
+import { RootState } from '../../reducers';
+import { CreateTagForm, CreateTagFormProps } from '../CreateTagForm';
 
 interface EditTagModalProps {
     open: boolean;

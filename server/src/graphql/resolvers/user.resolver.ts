@@ -15,13 +15,13 @@ export class UserResolver {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    @Query((returns) => Int, { nullable: false })
+    @Query(returns => Int, { nullable: false })
     async userExists(@Arg('username') username: string): Promise<boolean> {
         const user = await this.userRepository.findOne(username);
         return !!user;
     }
 
-    @Query((returns) => User, { nullable: true })
+    @Query(returns => User, { nullable: true })
     async currentUser(@Ctx() context: AppContext): Promise<User | undefined> {
         if (!context.user) {
             return;
@@ -30,7 +30,7 @@ export class UserResolver {
         return user;
     }
 
-    @Mutation((returns) => String, { nullable: true })
+    @Mutation(returns => String, { nullable: true })
     async signIn(
         @Arg('input') input: SignInInput,
         @Ctx() context: AppContext,
@@ -46,7 +46,7 @@ export class UserResolver {
 
         return createJwt(user);
     }
-    @Mutation((returns) => String)
+    @Mutation(returns => String)
     async signUp(
         @Arg('input') input: SignUpInput,
         @Ctx() context: AppContext,
@@ -68,14 +68,14 @@ export class UserResolver {
 
         return createJwt(newUser);
     }
-    @Mutation((returns) => Int)
+    @Mutation(returns => Int)
     async signOut(@Ctx() context: AppContext): Promise<boolean> {
         const { session } = context.request;
         await appSession.destroy({ session });
 
         return true;
     }
-    @Mutation((returns) => Int)
+    @Mutation(returns => Int)
     async deleteAccount(@Ctx() context: AppContext) {
         if (!context.user) {
             throw new Error('cannot delete user');

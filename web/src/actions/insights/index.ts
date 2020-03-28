@@ -1,1 +1,1 @@
-export * from './fetchInsights'
+export * from './fetchInsights';

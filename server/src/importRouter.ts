@@ -41,7 +41,7 @@ export const importRouter = async (request: Request, response: Response) => {
 
     if (request.param('entity') === 'notes') {
         lineReader
-            .on('line', async (rawNote) => {
+            .on('line', async rawNote => {
                 try {
                     lineReader.pause();
                     const note: ExportedNote = JSON.parse(rawNote);
@@ -64,7 +64,7 @@ export const importRouter = async (request: Request, response: Response) => {
                     if (
                         note.tagId &&
                         !existingNote.tags
-                            .map((tag) => tag.id)
+                            .map(tag => tag.id)
                             .includes(note.tagId)
                     ) {
                         const tag = await tagRepository.findOne({
@@ -93,7 +93,7 @@ export const importRouter = async (request: Request, response: Response) => {
     }
     if (request.param('entity') === 'tags') {
         lineReader
-            .on('line', async (rawTag) => {
+            .on('line', async rawTag => {
                 try {
                     const tag: ExportedTag = JSON.parse(rawTag);
                     if (!(await tagRepository.findOne({ id: tag.id }))) {

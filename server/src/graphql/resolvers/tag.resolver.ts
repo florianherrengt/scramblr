@@ -12,7 +12,7 @@ export class TagResolver {
         @InjectRepository(Tag) private readonly tagRepository: Repository<Tag>,
     ) {}
 
-    @Query((returns) => [Tag])
+    @Query(returns => [Tag])
     async currentUserTags(@Ctx() context: AppContext): Promise<Tag[]> {
         if (!context.user) {
             throw new ForbiddenError('User not logged in');
@@ -23,7 +23,7 @@ export class TagResolver {
             order: { createdAt: 'DESC' },
         });
     }
-    @Mutation((returns) => Tag)
+    @Mutation(returns => Tag)
     async createTag(
         @Arg('input') input: CreateTagInput,
         @Ctx() context: AppContext,
@@ -38,7 +38,7 @@ export class TagResolver {
         await this.tagRepository.save(newTag);
         return newTag;
     }
-    @Mutation((returns) => Tag)
+    @Mutation(returns => Tag)
     async updateTag(
         @Arg('input') tag: UpdateTagInput,
         @Ctx() context: AppContext,
@@ -50,7 +50,7 @@ export class TagResolver {
         await this.tagRepository.update({ id: tag.id }, { ...tag, user });
         return this.tagRepository.findOne(tag.id);
     }
-    @Mutation((returns) => Tag)
+    @Mutation(returns => Tag)
     async deleteTag(
         @Arg('id') id: string,
         @Ctx() context: AppContext,

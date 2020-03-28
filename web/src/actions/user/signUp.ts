@@ -11,7 +11,7 @@ export interface SignUpActionFetching {
 export interface SignUpActionSuccess {
     type: 'SIGN_IN_SUCCESS';
     token: string;
-    demo?: boolean
+    demo?: boolean;
 }
 
 export interface SignUpActionFailure {
@@ -27,20 +27,19 @@ export type SignUpAction =
 
 export const signUp = (
     variables: MutationSignUpArgs['input'],
-    demo?: boolean
+    demo?: boolean,
 ): ThunkAction<Promise<void>, RootState, {}, SignUpAction> => async (
     dispatch,
     getState,
-    ) => {
-        const api = getApi();
-        dispatch({ type: 'SIGN_IN_REQUEST' });
-        try {
-            const { signUp: token } = await api.signUp({ input: variables });
-            dispatch({ type: 'SIGN_IN_SUCCESS', token });
-            console.debug('Signed In. Redirecting to /notes');
-            dispatch(push(routerUri.notes));
-        } catch (error) {
-
-            console.log(error)
-        }
-    };
+) => {
+    const api = getApi();
+    dispatch({ type: 'SIGN_IN_REQUEST' });
+    try {
+        const { signUp: token } = await api.signUp({ input: variables });
+        dispatch({ type: 'SIGN_IN_SUCCESS', token });
+        console.debug('Signed In. Redirecting to /notes');
+        dispatch(push(routerUri.notes));
+    } catch (error) {
+        console.log(error);
+    }
+};
