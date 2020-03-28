@@ -1,23 +1,16 @@
 require('dotenv').config();
 
-import 'reflect-metadata';
 import * as config from 'config';
-import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
-import * as pem from 'pem';
+import 'reflect-metadata';
 import { createApp } from './app';
+import { generateHttpsCertificate } from './helpers';
 
 (async () => {
     const port = process.env.PORT || 8080;
-    const {
-        serviceKey,
-        certificate,
-    }: pem.CertificateCreationResult = await new Promise((resolve, reject) =>
-        pem.createCertificate({ selfSigned: true }, (error, keys) =>
-            error ? reject(error) : resolve(keys),
-        ),
-    );
+
+    const { serviceKey, certificate } = await generateHttpsCertificate();
     const app = await createApp();
     const server =
         config.get('Env') === 'development'
