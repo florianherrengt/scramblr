@@ -1,10 +1,4 @@
-import {
-    Button,
-    Card,
-    CardContent,
-    CardHeader,
-    Typography,
-} from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader } from '@material-ui/core';
 import React from 'react';
 import { LineSpacer } from '../LineSpacer';
 
@@ -19,7 +13,6 @@ export const Settings: React.SFC<SettingsProps> = props => {
             <Card>
                 <CardHeader title='Data' />
                 <CardContent>
-                    <LineSpacer />
                     <Button
                         className='Settings_Button_Export_Notes'
                         onClick={() => props.onExportClick('notes')}
@@ -40,7 +33,6 @@ export const Settings: React.SFC<SettingsProps> = props => {
             <Card>
                 <CardHeader title='Account' />
                 <CardContent>
-                    <LineSpacer />
                     <Button
                         className='Settings_Button_Logout'
                         onClick={props.onLogoutClick}
