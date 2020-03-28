@@ -12,3 +12,7 @@ Database:
 Populate:
     demo: 0
 Env: development
+Redis:
+    host: null
+    password: null
+    port: 6379

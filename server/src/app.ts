@@ -1,8 +1,10 @@
 import { ApolloServer } from 'apollo-server-express';
 import * as config from 'config';
+import * as connectRedis from 'connect-redis';
 import * as express from 'express';
 import * as session from 'express-session';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import * as multer from 'multer';
 import * as path from 'path';
 import { buildSchema } from 'type-graphql';
 import { Container } from 'typedi';
@@ -15,15 +17,16 @@ import {
     TagResolver,
     UserResolver,
 } from './graphql/resolvers';
-import { createContext, getDbConnectionOptions, PopulateDemo } from './helpers';
-import * as multer from 'multer';
+import {
+    createContext,
+    getDbConnectionOptions,
+    PopulateDemo,
+    redisClient,
+} from './helpers';
 import { importRouter } from './importRouter';
-import * as redis from 'redis';
-import * as connectRedis from 'connect-redis';
 
-const redisClient = redis.createClient();
 const RedisStore = connectRedis(session);
-
+new session.MemoryStore();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 10000000 } });
 
 export const createApp = async () => {

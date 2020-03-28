@@ -11,3 +11,7 @@ Database:
 Populate:
     demo: POPULATE_DEMO
 Env: NODE_ENV
+Redis:
+    host: REDIS_HOST
+    password: REDIS_PASSWORD
+    port: REDIS_PORT
