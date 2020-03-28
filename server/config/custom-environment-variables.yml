@@ -10,3 +10,4 @@ Database:
     ssl: DATABASE_SSL
 Populate:
     demo: POPULATE_DEMO
+Env: NODE_ENV

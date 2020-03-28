@@ -1,27 +1,21 @@
+import { ApolloServer } from 'apollo-server-express';
 import * as config from 'config';
 import * as express from 'express';
-import { ApolloServer } from 'apollo-server-express';
-import { buildSchema } from 'type-graphql';
-import * as TypeORM from 'typeorm';
-import { Container } from 'typedi';
-import * as jwt from 'jsonwebtoken';
-import { User, Note, Tag } from './entities';
-import {
-    NoteResolver,
-    UserResolver,
-    TagResolver,
-    InsightResolver,
-} from './graphql/resolvers';
-import {
-    PopulateDemo,
-    JwtObject,
-    createContext,
-    getDbConnectionOptions,
-} from './helpers';
-import * as cors from 'cors';
-import * as path from 'path';
 import * as session from 'express-session';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import * as path from 'path';
+import { buildSchema } from 'type-graphql';
+import { Container } from 'typedi';
+import * as TypeORM from 'typeorm';
+import { Note, Tag, User } from './entities';
 import { exportRouter } from './exportData';
+import {
+    InsightResolver,
+    NoteResolver,
+    TagResolver,
+    UserResolver,
+} from './graphql/resolvers';
+import { createContext, getDbConnectionOptions, PopulateDemo } from './helpers';
 
 export const createApp = async () => {
     const app = express();
@@ -33,12 +27,7 @@ export const createApp = async () => {
             saveUninitialized: true,
         }),
     );
-    // app.use((request, _, next) => {
-    //     console.log(request.session?.username);
-    //     request.session!.username = 'sdf';
-    //     request.session?.save(next);
-    // });
-    app.use(cors());
+
     TypeORM.useContainer(Container);
 
     const connection = await TypeORM.createConnection({
@@ -89,9 +78,20 @@ export const createApp = async () => {
             path.join(__dirname + '/../assets/landing', request.originalUrl),
         );
     });
-    app.use(express.static('assets'));
-    app.get('*', (_, response) => {
-        response.sendFile(path.join(__dirname + '/../assets/index.html'));
-    });
+
+    if (config.get('Env') === 'development') {
+        app.use(
+            '*',
+            createProxyMiddleware({
+                target: 'http://localhost:3000',
+                changeOrigin: true,
+            }),
+        );
+    } else {
+        app.use(express.static('assets'));
+        app.get('*', (_, response) => {
+            response.sendFile(path.join(__dirname + '/../assets/index.html'));
+        });
+    }
     return app;
 };

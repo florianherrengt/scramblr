@@ -11,3 +11,4 @@ Database:
     ssl: 1
 Populate:
     demo: 0
+Env: development

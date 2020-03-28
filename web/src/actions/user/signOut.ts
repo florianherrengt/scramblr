@@ -20,8 +20,8 @@ export const signOut = (): ThunkAction<
 > => async (dispatch, getState) => {
     const api = getApi();
     try {
-        await api.signOut();
         localStorage.removeItem(localStorageKeys.aesPassphrase);
+        await api.signOut();
         dispatch({ type: 'SIGN_OUT_SUCCESS' });
         dispatch(push(routerUri.signIn));
     } catch (error) {

@@ -1,3 +1,16 @@
-.Settings_Button_Logout {
-    width: 100%;
+.Settings {
+    .Settings_Button_Logout {
+        width: 100%;
+    }
+
+    .MuiCardContent-root {
+        padding-top: 0;
+    }
+    .Settings_Button_Export_Notes,
+    .Settings_Button_Export_Tags {
+        width: 47.5%;
+    }
+    .Settings_Button_Export_Notes {
+        margin-right: 5%;
+    }
 }

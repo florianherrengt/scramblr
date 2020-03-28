@@ -9,15 +9,18 @@ interface SettingsPageProps {}
 
 export const SettingsPage: React.SFC<SettingsPageProps> = props => {
     const dispatch = useDispatch();
-    const logout = () => {
-        dispatch(signOut());
-    };
+
     return (
         <div className='SettingsPage'>
             <LineSpacer />
             <AesPassphraseContainer submitLabel='Save' />
             <LineSpacer />
-            <Settings onLogout={logout} />
+            <Settings
+                onLogoutClick={() => dispatch(signOut())}
+                onExportClick={entity =>
+                    window.open(`/api/export/${entity}`, '_blank')
+                }
+            />
             <Button
                 onClick={async () => {
                     window.open('/api/export/notes', '_blank');

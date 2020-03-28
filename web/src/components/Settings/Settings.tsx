@@ -1,20 +1,49 @@
-import { Button, Card, CardContent } from '@material-ui/core';
+import {
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    Typography,
+} from '@material-ui/core';
 import React from 'react';
 import { LineSpacer } from '../LineSpacer';
 
 interface SettingsProps {
-    onLogout(): void;
+    onLogoutClick(): void;
+    onExportClick(entity: 'notes' | 'tags'): void;
 }
 
 export const Settings: React.SFC<SettingsProps> = props => {
     return (
         <div className='Settings'>
             <Card>
+                <CardHeader title='Data' />
+                <CardContent>
+                    <LineSpacer />
+                    <Button
+                        className='Settings_Button_Export_Notes'
+                        onClick={() => props.onExportClick('notes')}
+                        variant='outlined'
+                    >
+                        Export Notes
+                    </Button>
+                    <Button
+                        className='Settings_Button_Export_Tags'
+                        onClick={() => props.onExportClick('tags')}
+                        variant='outlined'
+                    >
+                        Export Tags
+                    </Button>
+                </CardContent>
+            </Card>
+            <LineSpacer />
+            <Card>
+                <CardHeader title='Account' />
                 <CardContent>
                     <LineSpacer />
                     <Button
                         className='Settings_Button_Logout'
-                        onClick={props.onLogout}
+                        onClick={props.onLogoutClick}
                         variant='outlined'
                         color='secondary'
                     >

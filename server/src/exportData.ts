@@ -3,7 +3,6 @@ import * as jwt from 'jsonwebtoken';
 import { Note, Tag } from './entities';
 import { getRepository } from 'typeorm';
 import { Request, Response } from 'express';
-import { JwtObject } from './helpers';
 
 interface RawNote {
     Note_id: string;
@@ -29,15 +28,11 @@ export const exportRouter = async (request: Request, response: Response) => {
     if (!['tags', 'notes'].includes(request.param('entity'))) {
         return response.status(400).send('Invalid entitty');
     }
-    const token = (request.header('Authorization') || '').split(' ')[1];
-    if (!token) {
+    const username = request.session?.username;
+    if (!username) {
         return response.sendStatus(401);
     }
     try {
-        const { username } = jwt.verify(
-            token,
-            config.get('Jwt.secret'),
-        ) as JwtObject;
         response.setHeader('Content-Disposition', 'attachment');
         response.setHeader('Content-Type', 'text/plain');
 
