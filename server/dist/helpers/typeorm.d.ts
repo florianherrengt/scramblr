@@ -1,1 +1,0 @@
-export declare const getDbConnectionOptions: () => import("typeorm/driver/postgres/PostgresConnectionOptions").PostgresConnectionOptions | import("typeorm/driver/sqlite/SqliteConnectionOptions").SqliteConnectionOptions;
