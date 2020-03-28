@@ -21,13 +21,6 @@ export const SettingsPage: React.SFC<SettingsPageProps> = props => {
                     window.open(`/api/export/${entity}`, '_blank')
                 }
             />
-            <Button
-                onClick={async () => {
-                    window.open('/api/export/notes', '_blank');
-                }}
-            >
-                Export Notes
-            </Button>
         </div>
     );
 };

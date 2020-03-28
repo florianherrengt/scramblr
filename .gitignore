@@ -24,3 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 web/cypress/videos
 server/httpsCertificate
+server/uploads/**/*

@@ -14,7 +14,7 @@ import { Tag } from './tag.entitiy';
 @Entity()
 @ObjectType()
 export class Note {
-    @Field(type => ID)
+    @Field((type) => ID)
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -26,15 +26,20 @@ export class Note {
     @CreateDateColumn()
     createdAt: Date;
 
-    @ManyToOne(
-        type => User,
-        user => user.username,
-        { onDelete: 'CASCADE', nullable: false },
-    )
+    @ManyToOne((type) => User, (user) => user.username, {
+        onDelete: 'CASCADE',
+        nullable: false,
+    })
     user: User;
 
-    @Field(type => [Tag])
-    @ManyToMany(type => Tag)
+    @Field((type) => [Tag])
+    @ManyToMany((type) => Tag)
     @JoinTable()
     tags: Tag[];
+}
+
+export interface ExportedNote
+    extends Omit<Omit<Omit<Note, 'user'>, 'tags'>, 'createdAt'> {
+    tagId: string;
+    createdAt: string;
 }

@@ -1,6 +1,6 @@
 import * as config from 'config';
 import * as jwt from 'jsonwebtoken';
-import { Note, Tag } from './entities';
+import { Note, Tag, ExportedNote, ExportedTag } from './entities';
 import { getRepository } from 'typeorm';
 import { Request, Response } from 'express';
 
@@ -25,6 +25,7 @@ interface RawTag {
 }
 
 export const exportRouter = async (request: Request, response: Response) => {
+    console.log('exportRouter', request.originalUrl);
     if (!['tags', 'notes'].includes(request.param('entity'))) {
         return response.status(400).send('Invalid entitty');
     }
@@ -52,10 +53,13 @@ export const exportRouter = async (request: Request, response: Response) => {
                         Tag_emotion: emotion,
                         Tag_label: label,
                     } = data;
-                    response.write(
-                        JSON.stringify({ id, label, emotion, createdAt }) +
-                            '\n',
-                    );
+                    const exportedTag: ExportedTag = {
+                        id,
+                        label,
+                        emotion,
+                        createdAt,
+                    };
+                    response.write(JSON.stringify(exportedTag) + '\n');
                 })
                 .on('close', () => {
                     response.end();
@@ -78,9 +82,13 @@ export const exportRouter = async (request: Request, response: Response) => {
                         Note_createdAt: createdAt,
                         tag_id: tagId,
                     } = data;
-                    response.write(
-                        JSON.stringify({ id, text, createdAt, tagId }) + '\n',
-                    );
+                    const exportedNote: ExportedNote = {
+                        id,
+                        text,
+                        createdAt,
+                        tagId,
+                    };
+                    response.write(JSON.stringify(exportedNote) + '\n');
                 })
                 .on('close', () => response.end());
         }

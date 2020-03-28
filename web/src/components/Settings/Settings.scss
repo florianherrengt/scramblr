@@ -3,11 +3,11 @@
         width: 100%;
     }
 
-    .Settings_Button_Export_Notes,
-    .Settings_Button_Export_Tags {
-        width: 47.5%;
-    }
-    .Settings_Button_Export_Notes {
-        margin-right: 5%;
+    .Settings_Export,
+    .Settings_Import {
+        button {
+            display: block;
+            width: 100%;
+        }
     }
 }

@@ -8,7 +8,7 @@ import { buildSchema } from 'type-graphql';
 import { Container } from 'typedi';
 import * as TypeORM from 'typeorm';
 import { Note, Tag, User } from './entities';
-import { exportRouter } from './exportData';
+import { exportRouter } from './exportRouter';
 import {
     InsightResolver,
     NoteResolver,
@@ -16,6 +16,15 @@ import {
     UserResolver,
 } from './graphql/resolvers';
 import { createContext, getDbConnectionOptions, PopulateDemo } from './helpers';
+import * as multer from 'multer';
+import { importRouter } from './importRouter';
+import * as redis from 'redis';
+import * as connectRedis from 'connect-redis';
+
+const redisClient = redis.createClient();
+const RedisStore = connectRedis(session);
+
+const upload = multer({ dest: 'uploads/', limits: { fileSize: 10000000 } });
 
 export const createApp = async () => {
     const app = express();
@@ -23,8 +32,10 @@ export const createApp = async () => {
     app.use(
         session({
             secret: config.get('Jwt.secret'),
+            store: new RedisStore({ client: redisClient }),
             cookie: { httpOnly: true, secure: false },
             saveUninitialized: true,
+            resave: false,
         }),
     );
 
@@ -68,7 +79,8 @@ export const createApp = async () => {
         response.sendStatus(200);
     });
 
-    app.use('/api/export/:entity', exportRouter);
+    app.get('/api/export/:entity', exportRouter);
+    app.use('/api/import/:entity', upload.single('data'), importRouter);
 
     app.get('/', (_, res) => {
         res.sendFile(path.join(__dirname + '/../assets/landing/index.html'));
@@ -86,6 +98,7 @@ export const createApp = async () => {
                 target: 'http://localhost:3000',
                 changeOrigin: true,
                 ws: true,
+                logLevel: 'error',
             }),
         );
     } else {
