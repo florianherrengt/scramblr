@@ -1,9 +1,14 @@
 import { TagsAction, CurrentUserActionSetAesPassphrase } from '../actions';
-import { Tag, decrypt } from '../helpers/';
+import { Tag, decrypt, TagEmotion } from '../helpers/';
 
 interface CurrentUserTagsState {
     tags: Array<
-        Tag & { isLoading?: boolean; transactionId?: string; revert?: Tag }
+        Omit<Tag, 'emotion'> & {
+            isLoading?: boolean;
+            transactionId?: string;
+            revert?: Tag;
+            emotion: TagEmotion;
+        }
     >;
     isFetching: boolean;
     error?: string;
@@ -14,6 +19,17 @@ const defaultState: CurrentUserTagsState = {
     tags: [],
     isFetching: false,
     fetched: false,
+};
+
+export const getEmotion = (emotion?: string | null): TagEmotion => {
+    switch (emotion) {
+        case TagEmotion.positive:
+            return TagEmotion.positive;
+        case TagEmotion.negative:
+            return TagEmotion.negative;
+        default:
+            return TagEmotion.neutral;
+    }
 };
 
 export const currentUserTags = (
@@ -39,7 +55,10 @@ export const currentUserTags = (
         case 'GET_CURRENT_USER_TAGS_SUCCESS':
             return {
                 ...state,
-                tags: action.tags,
+                tags: action.tags.map(tag => ({
+                    ...tag,
+                    emotion: getEmotion(tag.emotion),
+                })),
                 fetched: true,
                 isFetching: false,
             };
@@ -59,6 +78,7 @@ export const currentUserTags = (
                         transactionId: action.transactionId,
                         isLoading: true,
                         createdAt: new Date(),
+                        emotion: getEmotion(action.tag.emotion),
                     },
                     ...state.tags,
                 ],
@@ -68,7 +88,10 @@ export const currentUserTags = (
                 ...state,
                 tags: state.tags.map(tag =>
                     tag.transactionId === action.transactionId
-                        ? action.tag
+                        ? {
+                              ...action.tag,
+                              emotion: getEmotion(action.tag.emotion),
+                          }
                         : tag,
                 ),
             };
@@ -94,6 +117,7 @@ export const currentUserTags = (
                               transactionId: action.transactionId,
                               isLoading: true,
                               revert: tag,
+                              emotion: getEmotion(tag.emotion),
                           }
                         : tag,
                 ),
@@ -103,7 +127,10 @@ export const currentUserTags = (
                 ...state,
                 tags: state.tags.map(tag =>
                     tag.transactionId === action.transactionId
-                        ? action.tag
+                        ? {
+                              ...action.tag,
+                              emotion: getEmotion(action.tag.emotion),
+                          }
                         : tag,
                 ),
             };
@@ -112,7 +139,7 @@ export const currentUserTags = (
                 ...state,
                 tags: state.tags.map(tag =>
                     tag.transactionId === action.transactionId
-                        ? tag.revert!
+                        ? { ...tag.revert!, emotion: getEmotion(tag.emotion) }
                         : tag,
                 ),
             };

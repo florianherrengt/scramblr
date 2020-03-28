@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 
 import { Button, Modal, Backdrop, Slide, TextField } from '@material-ui/core/';
+import { CreateTagForm, CreateTagFormProps } from '../CreateTagForm';
+import { RootState } from '../../reducers';
+import { ValuesType } from 'utility-types';
 
 interface EditTagModalProps {
     open: boolean;
-    label: string;
+    tag?: ValuesType<RootState['currentUserTags']['tags']>;
     onClose(): void;
-    onSubmit(label: string): void;
+    onSubmit: CreateTagFormProps['onSubmit'];
 }
 
 export const EditTagModal: React.SFC<EditTagModalProps> = props => {
-    const [value, setValue] = useState('');
     return (
         <Modal
             className='EditTagModal'
@@ -31,19 +33,11 @@ export const EditTagModal: React.SFC<EditTagModalProps> = props => {
         >
             <Slide direction='up' in={props.open}>
                 <div className='EditTagModal_Content'>
-                    <form
-                        onSubmit={event => {
-                            event.preventDefault();
-                            setValue('');
-                            props.onSubmit(value);
-                        }}
-                    >
-                        <TextField
-                            onChange={event => setValue(event.target.value)}
-                            defaultValue={props.label}
-                        />
-                        <Button type='submit'>Save</Button>
-                    </form>
+                    <CreateTagForm
+                        tag={props.tag}
+                        submitLabel='Save'
+                        onSubmit={props.onSubmit}
+                    />
                 </div>
             </Slide>
         </Modal>

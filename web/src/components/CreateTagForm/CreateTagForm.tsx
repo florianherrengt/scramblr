@@ -10,19 +10,25 @@ import React, { useState } from 'react';
 import { TagEmotion } from '../../helpers';
 import classNames from 'classnames';
 import { LineSpacer } from '../LineSpacer';
+import { RootState } from '../../reducers';
+import { ValuesType } from 'utility-types';
 
 interface SubmitValues {
     label: string;
     emotion: string;
 }
 
-interface CreateTagFormProps {
+export interface CreateTagFormProps {
+    tag?: ValuesType<RootState['currentUserTags']['tags']>;
+    submitLabel?: string;
     onSubmit(values: SubmitValues): void;
 }
 
 export const CreateTagForm: React.SFC<CreateTagFormProps> = props => {
-    const [label, setLabel] = useState<string>('');
-    const [emotion, setEmotion] = useState<TagEmotion>(TagEmotion.neutral);
+    const [label, setLabel] = useState<string>(props.tag?.label || '');
+    const [emotion, setEmotion] = useState<TagEmotion>(
+        props.tag?.emotion || TagEmotion.neutral,
+    );
     const theme = useTheme();
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -87,7 +93,7 @@ export const CreateTagForm: React.SFC<CreateTagFormProps> = props => {
                     </MenuItem>
                 </Select>
                 <Button className='CreateTagForm_Button_Submit' type='submit'>
-                    Add
+                    {props.submitLabel || 'Add'}
                 </Button>
             </div>
         </form>

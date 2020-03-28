@@ -25,7 +25,10 @@ export const TagsListContainer: React.SFC<TagsListContainerProps> = props => {
     return (
         <div>
             <ListTags
-                onUpdate={tag => dispatch(updateTag({ input: tag }))}
+                onUpdate={tag => {
+                    Reflect.deleteProperty(tag, 'createdAt');
+                    dispatch(updateTag({ input: tag }));
+                }}
                 onDelete={id => dispatch(deleteTag({ id }))}
                 tags={currentUserTags.tags}
             />

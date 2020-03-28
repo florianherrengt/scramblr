@@ -1,14 +1,13 @@
 import { ListItemIcon, Menu, MenuItem, Typography } from '@material-ui/core';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@material-ui/icons';
 import React from 'react';
-import { ValuesType } from 'utility-types';
+import { UpdateTagMutationVariables } from '../../helpers';
 import { EditTagModal } from '../EditTagModal';
 import { SelectTagProps } from '../SelectTag';
 import { TagChip } from '../TagChip';
-
 interface ListTagsProps {
     tags: SelectTagProps['tags'];
-    onUpdate(tag: ValuesType<SelectTagProps['tags']>): void;
+    onUpdate(tag: UpdateTagMutationVariables['input']): void;
     onDelete(id: string): void;
 }
 
@@ -21,13 +20,13 @@ export const ListTags: React.SFC<ListTagsProps> = props => {
         <div className='ListTags'>
             <EditTagModal
                 open={isEditing}
-                label={props.tags.find(t => t.id === clickedTagId)?.label || ''}
+                tag={props.tags.find(t => t.id === clickedTagId)}
                 onClose={() => setIsEditing(false)}
-                onSubmit={label => {
+                onSubmit={input => {
                     setIsEditing(false);
                     props.onUpdate({
                         ...props.tags.find(t => t.id === clickedTagId)!,
-                        label,
+                        ...input,
                     });
                 }}
             />
