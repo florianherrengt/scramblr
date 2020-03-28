@@ -1,6 +1,5 @@
 import { UserAction } from '../actions';
 import { User } from '../helpers/';
-import { localStorageKeys } from '../config';
 
 interface CurrentUserState {
     user?: User;

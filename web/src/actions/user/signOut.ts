@@ -1,7 +1,7 @@
-import { push, RouterAction } from 'connected-react-router';
+import { push } from 'connected-react-router';
 import { ThunkAction } from 'redux-thunk';
-import { routerUri, localStorageKeys } from '../../config';
-import { getApi, MutationSignInArgs } from '../../helpers';
+import { localStorageKeys, routerUri } from '../../config';
+import { getApi } from '../../helpers';
 import { RootState } from '../../reducers';
 import { enqueueSnackbar } from '../notifier';
 import { SharedActions } from '../shared';
@@ -23,7 +23,6 @@ export const signOut = (): ThunkAction<
         await api.signOut();
         localStorage.removeItem(localStorageKeys.aesPassphrase);
         dispatch({ type: 'SIGN_OUT_SUCCESS' });
-        console.debug('Unauthenticated. Redirect to sign in');
         dispatch(push(routerUri.signIn));
     } catch (error) {
         console.error(error);

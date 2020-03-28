@@ -1,5 +1,3 @@
-import { getRepository } from 'typeorm';
-import { User } from '../entities';
 import { Request } from 'express';
 
 export interface AppContext {
@@ -12,11 +10,11 @@ export const createContext = async ({
 }: {
     request: Request;
 }): Promise<AppContext> => {
-    const userRepository = getRepository(User);
     const context = { request };
     if (request.session?.username) {
-        const user = await userRepository.findOne(request.session.username);
-        Object.assign(context, { user });
+        Object.assign(context, {
+            user: { username: request.session.username },
+        });
     }
     return context;
 };

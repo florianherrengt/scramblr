@@ -81,9 +81,17 @@ export const createApp = async () => {
 
     app.use('/api/export/:entity', exportRouter);
 
-    app.use(express.static(path.join(__dirname + '/../assets')));
-    app.get('*', (_, res) => {
-        res.sendFile(path.join(__dirname + '/../assets/index.html'));
+    app.get('/', (_, res) => {
+        res.sendFile(path.join(__dirname + '/../assets/landing/index.html'));
+    });
+    app.use('/landing*', (request, response) => {
+        response.sendFile(
+            path.join(__dirname + '/../assets/landing', request.originalUrl),
+        );
+    });
+    app.use(express.static('assets'));
+    app.get('*', (_, response) => {
+        response.sendFile(path.join(__dirname + '/../assets/index.html'));
     });
     return app;
 };
