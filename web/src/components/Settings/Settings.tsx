@@ -5,15 +5,10 @@ import {
     CardHeader,
     TextField,
     Typography,
-    useMediaQuery,
-    useTheme,
-    CircularProgress,
 } from '@material-ui/core';
-
-import classNames from 'classnames';
-import React, { Fragment, useState } from 'react';
-import { LineSpacer } from '../LineSpacer';
+import React, { Fragment } from 'react';
 import { RootState } from '../../reducers';
+import { LineSpacer } from '../LineSpacer';
 import { EmailSettings } from './EmailSetting';
 
 export interface SettingsProps {

@@ -116,8 +116,11 @@ export class UserResolver {
         if (!user) {
             throw new Error('User not found');
         }
-        const results = await sendConfirmEmail(user);
-        console.log(results);
+        if (!user.emailConfirmed) {
+            throw new Error('Email already confirmed');
+        }
+        await sendConfirmEmail(user);
+
         return user;
     }
     @Mutation((returns) => Int)
