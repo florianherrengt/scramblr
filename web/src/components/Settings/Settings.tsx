@@ -1,8 +1,25 @@
-import { Button, Card, CardContent, CardHeader } from '@material-ui/core';
-import React from 'react';
-import { LineSpacer } from '../LineSpacer';
+import {
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    TextField,
+    Typography,
+    useMediaQuery,
+    useTheme,
+    CircularProgress,
+} from '@material-ui/core';
 
-interface SettingsProps {
+import classNames from 'classnames';
+import React, { Fragment, useState } from 'react';
+import { LineSpacer } from '../LineSpacer';
+import { RootState } from '../../reducers';
+import { EmailSettings } from './EmailSetting';
+
+export interface SettingsProps {
+    currentUser: RootState['currentUser'];
+    onUpdateEmail(input: { email: string }): void;
+    onResendEmailClick(): void;
     onLogoutClick(): void;
     onExportClick(entity: 'notes' | 'tags'): void;
 }
@@ -13,6 +30,30 @@ export const Settings: React.SFC<SettingsProps> = props => {
             <Card variant='outlined'>
                 <CardHeader title='Account' />
                 <CardContent>
+                    <TextField
+                        className='width-100'
+                        disabled
+                        label='Username'
+                        variant='outlined'
+                        value={props.currentUser.user?.username || ''}
+                    />
+                    <LineSpacer />
+                    <EmailSettings {...props} />
+
+                    {props.currentUser.user?.email &&
+                        !props.currentUser.user?.emailConfirmed && (
+                            <Fragment>
+                                <LineSpacer variant='small' />
+                                <Typography color='secondary'>
+                                    You need to confirm your email address.
+                                    <Button onClick={props.onResendEmailClick}>
+                                        Resend email
+                                    </Button>
+                                </Typography>
+                            </Fragment>
+                        )}
+
+                    <LineSpacer />
                     <Button
                         className='Settings_Button_Logout'
                         onClick={props.onLogoutClick}

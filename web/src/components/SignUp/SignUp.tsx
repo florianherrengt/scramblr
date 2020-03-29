@@ -37,7 +37,6 @@ export const SignUp = (props: SignUpProps) => {
                     <TextField
                         autoComplete='off'
                         autoCapitalize='none'
-                        type='url'
                         className='SignUp_TextField_Username width-100'
                         autoFocus
                         onChange={({ target }) => {

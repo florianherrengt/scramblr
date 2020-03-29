@@ -27,7 +27,6 @@ export const SignIn = (props: SignInProps) => {
                     <TextField
                         autoComplete='off'
                         autoCapitalize='none'
-                        type='url'
                         className='SignIn_TextField_Username width-100'
                         autoFocus
                         disabled={props.loading}

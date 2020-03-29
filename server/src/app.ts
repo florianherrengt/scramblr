@@ -22,11 +22,13 @@ import {
     getDbConnectionOptions,
     PopulateDemo,
     redisClient,
+    AppRoutes,
 } from './helpers';
 import { importRouter } from './importRouter';
+import { confirmEmailHandler } from './handlers';
 
 const RedisStore = connectRedis(session);
-new session.MemoryStore();
+
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 10000000 } });
 
 export const createApp = async () => {
@@ -81,6 +83,8 @@ export const createApp = async () => {
     app.use('/healthz', (_, response) => {
         response.sendStatus(200);
     });
+
+    app.get(AppRoutes.confirmEmail, confirmEmailHandler);
 
     app.get('/api/export/:entity', exportRouter);
     app.use('/api/import/:entity', upload.single('data'), importRouter);

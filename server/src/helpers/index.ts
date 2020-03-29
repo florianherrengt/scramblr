@@ -5,3 +5,5 @@ export * from './demo';
 export * from './session';
 export * from './generateHttpsCertificate';
 export * from './redisClient';
+export * from './email';
+export * from './routes';

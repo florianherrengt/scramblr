@@ -4,567 +4,611 @@ import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-    ID: string;
-    String: string;
-    Boolean: boolean;
-    Int: number;
-    Float: number;
-    DateTime: any;
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  DateTime: any;
 };
 
 export type CreateNoteInput = {
-    text: Scalars['String'];
-    tags: Array<TagNote>;
+  text: Scalars['String'];
+  tags: Array<TagNote>;
 };
 
 export type CreateTagInput = {
-    label: Scalars['String'];
-    emotion?: Maybe<Scalars['String']>;
+  label: Scalars['String'];
+  emotion?: Maybe<Scalars['String']>;
 };
 
+
 export type Insight = {
-    __typename?: 'Insight';
-    week: Array<InsightData>;
-    month: Array<InsightData>;
-    year: Array<InsightData>;
+   __typename?: 'Insight';
+  week: Array<InsightData>;
+  month: Array<InsightData>;
+  year: Array<InsightData>;
 };
 
 export type InsightData = {
-    __typename?: 'InsightData';
-    label: Scalars['String'];
-    positive: Scalars['Int'];
-    negative: Scalars['Int'];
+   __typename?: 'InsightData';
+  label: Scalars['String'];
+  positive: Scalars['Int'];
+  negative: Scalars['Int'];
 };
 
 export type Mutation = {
-    __typename?: 'Mutation';
-    deleteNote: Note;
-    updateNote: Note;
-    createNote: Note;
-    signIn?: Maybe<Scalars['String']>;
-    signUp: Scalars['String'];
-    signOut: Scalars['Int'];
-    deleteAccount: Scalars['Int'];
-    createTag: Tag;
-    updateTag: Tag;
-    deleteTag: Tag;
+   __typename?: 'Mutation';
+  deleteNote: Note;
+  updateNote: Note;
+  createNote: Note;
+  signIn?: Maybe<Scalars['String']>;
+  signUp: Scalars['String'];
+  signOut: Scalars['Int'];
+  updateEmail: User;
+  resendConfirmEmail: User;
+  deleteAccount: Scalars['Int'];
+  createTag: Tag;
+  updateTag: Tag;
+  deleteTag: Tag;
 };
+
 
 export type MutationDeleteNoteArgs = {
-    id: Scalars['String'];
+  id: Scalars['String'];
 };
+
 
 export type MutationUpdateNoteArgs = {
-    input: UpdateNoteInput;
+  input: UpdateNoteInput;
 };
+
 
 export type MutationCreateNoteArgs = {
-    input: CreateNoteInput;
+  input: CreateNoteInput;
 };
+
 
 export type MutationSignInArgs = {
-    input: SignInInput;
+  input: SignInInput;
 };
+
 
 export type MutationSignUpArgs = {
-    input: SignUpInput;
+  input: SignUpInput;
 };
+
+
+export type MutationUpdateEmailArgs = {
+  input: UpdateEmailInput;
+};
+
 
 export type MutationCreateTagArgs = {
-    input: CreateTagInput;
+  input: CreateTagInput;
 };
+
 
 export type MutationUpdateTagArgs = {
-    input: UpdateTagInput;
+  input: UpdateTagInput;
 };
 
+
 export type MutationDeleteTagArgs = {
-    id: Scalars['String'];
+  id: Scalars['String'];
 };
 
 export type Note = {
-    __typename?: 'Note';
-    id: Scalars['ID'];
-    text: Scalars['String'];
-    createdAt: Scalars['DateTime'];
-    tags: Array<Tag>;
+   __typename?: 'Note';
+  id: Scalars['ID'];
+  text: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  tags: Array<Tag>;
 };
 
 export type PaginatedNoteResponse = {
-    __typename?: 'PaginatedNoteResponse';
-    items: Array<Note>;
-    total: Scalars['Int'];
-    hasMore: Scalars['Boolean'];
+   __typename?: 'PaginatedNoteResponse';
+  items: Array<Note>;
+  total: Scalars['Int'];
+  hasMore: Scalars['Boolean'];
 };
 
 export type Query = {
-    __typename?: 'Query';
-    currentUserNotes: PaginatedNoteResponse;
-    userExists: Scalars['Int'];
-    currentUser?: Maybe<User>;
-    currentUserTags: Array<Tag>;
-    insights: Insight;
+   __typename?: 'Query';
+  currentUserNotes: PaginatedNoteResponse;
+  userExists: Scalars['Int'];
+  currentUser?: Maybe<User>;
+  currentUserTags: Array<Tag>;
+  insights: Insight;
 };
+
 
 export type QueryCurrentUserNotesArgs = {
-    skip?: Maybe<Scalars['Int']>;
-    limit?: Maybe<Scalars['Int']>;
-    tagsId?: Maybe<Array<Scalars['String']>>;
+  skip?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  tagsId?: Maybe<Array<Scalars['String']>>;
 };
 
+
 export type QueryUserExistsArgs = {
-    username: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type SignInInput = {
-    username: Scalars['String'];
-    password?: Maybe<Scalars['String']>;
+  username: Scalars['String'];
+  password?: Maybe<Scalars['String']>;
 };
 
 export type SignUpInput = {
-    username: Scalars['String'];
-    password?: Maybe<Scalars['String']>;
+  username: Scalars['String'];
+  password?: Maybe<Scalars['String']>;
 };
 
 export type Tag = {
-    __typename?: 'Tag';
-    id: Scalars['ID'];
-    label: Scalars['String'];
-    emotion?: Maybe<Scalars['String']>;
-    createdAt: Scalars['DateTime'];
+   __typename?: 'Tag';
+  id: Scalars['ID'];
+  label: Scalars['String'];
+  emotion?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
 };
 
 export type TagNote = {
-    id: Scalars['String'];
+  id: Scalars['String'];
+};
+
+export type UpdateEmailInput = {
+  email: Scalars['String'];
 };
 
 export type UpdateNoteInput = {
-    id: Scalars['String'];
-    text?: Maybe<Scalars['String']>;
-    tags?: Maybe<Array<TagNote>>;
+  id: Scalars['String'];
+  text?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<TagNote>>;
 };
 
 export type UpdateTagInput = {
-    id: Scalars['String'];
-    label: Scalars['String'];
-    emotion?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  label: Scalars['String'];
+  emotion?: Maybe<Scalars['String']>;
 };
 
 export type User = {
-    __typename?: 'User';
-    username: Scalars['ID'];
+   __typename?: 'User';
+  username: Scalars['ID'];
+  email?: Maybe<Scalars['String']>;
+  emailConfirmed?: Maybe<Scalars['Int']>;
 };
 
 export type GetInsightsQueryVariables = {};
 
-export type GetInsightsQuery = { __typename?: 'Query' } & {
-    insights: { __typename?: 'Insight' } & {
-        week: Array<
-            { __typename?: 'InsightData' } & Pick<
-                InsightData,
-                'label' | 'positive' | 'negative'
-            >
-        >;
-        month: Array<
-            { __typename?: 'InsightData' } & Pick<
-                InsightData,
-                'label' | 'positive' | 'negative'
-            >
-        >;
-        year: Array<
-            { __typename?: 'InsightData' } & Pick<
-                InsightData,
-                'label' | 'positive' | 'negative'
-            >
-        >;
-    };
-};
+
+export type GetInsightsQuery = (
+  { __typename?: 'Query' }
+  & { insights: (
+    { __typename?: 'Insight' }
+    & { week: Array<(
+      { __typename?: 'InsightData' }
+      & Pick<InsightData, 'label' | 'positive' | 'negative'>
+    )>, month: Array<(
+      { __typename?: 'InsightData' }
+      & Pick<InsightData, 'label' | 'positive' | 'negative'>
+    )>, year: Array<(
+      { __typename?: 'InsightData' }
+      & Pick<InsightData, 'label' | 'positive' | 'negative'>
+    )> }
+  ) }
+);
 
 export type GetCurrentUserNotesQueryVariables = {
-    skip?: Maybe<Scalars['Int']>;
-    limit?: Maybe<Scalars['Int']>;
-    tagsId?: Maybe<Array<Scalars['String']>>;
+  skip?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  tagsId?: Maybe<Array<Scalars['String']>>;
 };
 
-export type GetCurrentUserNotesQuery = { __typename?: 'Query' } & {
-    currentUserNotes: { __typename?: 'PaginatedNoteResponse' } & Pick<
-        PaginatedNoteResponse,
-        'hasMore' | 'total'
-    > & {
-            items: Array<
-                { __typename?: 'Note' } & {
-                    tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id'>>;
-                } & NoteFieldsFragment
-            >;
-        };
-};
+
+export type GetCurrentUserNotesQuery = (
+  { __typename?: 'Query' }
+  & { currentUserNotes: (
+    { __typename?: 'PaginatedNoteResponse' }
+    & Pick<PaginatedNoteResponse, 'hasMore' | 'total'>
+    & { items: Array<(
+      { __typename?: 'Note' }
+      & { tags: Array<(
+        { __typename?: 'Tag' }
+        & Pick<Tag, 'id'>
+      )> }
+      & NoteFieldsFragment
+    )> }
+  ) }
+);
 
 export type DeleteNoteMutationVariables = {
-    id: Scalars['String'];
+  id: Scalars['String'];
 };
 
-export type DeleteNoteMutation = { __typename?: 'Mutation' } & {
-    deleteNote: { __typename?: 'Note' } & Pick<Note, 'id'>;
-};
+
+export type DeleteNoteMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteNote: (
+    { __typename?: 'Note' }
+    & Pick<Note, 'id'>
+  ) }
+);
 
 export type CreateNoteMutationVariables = {
-    input: CreateNoteInput;
+  input: CreateNoteInput;
 };
 
-export type CreateNoteMutation = { __typename?: 'Mutation' } & {
-    createNote: { __typename?: 'Note' } & {
-        tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id'>>;
-    } & NoteFieldsFragment;
-};
+
+export type CreateNoteMutation = (
+  { __typename?: 'Mutation' }
+  & { createNote: (
+    { __typename?: 'Note' }
+    & { tags: Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id'>
+    )> }
+    & NoteFieldsFragment
+  ) }
+);
 
 export type UpdateNoteMutationVariables = {
-    input: UpdateNoteInput;
+  input: UpdateNoteInput;
 };
 
-export type UpdateNoteMutation = { __typename?: 'Mutation' } & {
-    updateNote: { __typename?: 'Note' } & {
-        tags: Array<{ __typename?: 'Tag' } & Pick<Tag, 'id'>>;
-    } & NoteFieldsFragment;
-};
 
-export type NoteFieldsFragment = { __typename?: 'Note' } & Pick<
-    Note,
-    'id' | 'text' | 'createdAt'
->;
+export type UpdateNoteMutation = (
+  { __typename?: 'Mutation' }
+  & { updateNote: (
+    { __typename?: 'Note' }
+    & { tags: Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id'>
+    )> }
+    & NoteFieldsFragment
+  ) }
+);
+
+export type NoteFieldsFragment = (
+  { __typename?: 'Note' }
+  & Pick<Note, 'id' | 'text' | 'createdAt'>
+);
 
 export type GetCurrentUserTagsQueryVariables = {};
 
-export type GetCurrentUserTagsQuery = { __typename?: 'Query' } & {
-    currentUserTags: Array<{ __typename?: 'Tag' } & TagFieldsFragment>;
-};
+
+export type GetCurrentUserTagsQuery = (
+  { __typename?: 'Query' }
+  & { currentUserTags: Array<(
+    { __typename?: 'Tag' }
+    & TagFieldsFragment
+  )> }
+);
 
 export type CreateTagMutationVariables = {
-    input: CreateTagInput;
+  input: CreateTagInput;
 };
 
-export type CreateTagMutation = { __typename?: 'Mutation' } & {
-    createTag: { __typename?: 'Tag' } & TagFieldsFragment;
-};
+
+export type CreateTagMutation = (
+  { __typename?: 'Mutation' }
+  & { createTag: (
+    { __typename?: 'Tag' }
+    & TagFieldsFragment
+  ) }
+);
 
 export type UpdateTagMutationVariables = {
-    input: UpdateTagInput;
+  input: UpdateTagInput;
 };
 
-export type UpdateTagMutation = { __typename?: 'Mutation' } & {
-    updateTag: { __typename?: 'Tag' } & TagFieldsFragment;
-};
+
+export type UpdateTagMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTag: (
+    { __typename?: 'Tag' }
+    & TagFieldsFragment
+  ) }
+);
 
 export type DeleteTagMutationVariables = {
-    id: Scalars['String'];
+  id: Scalars['String'];
 };
 
-export type DeleteTagMutation = { __typename?: 'Mutation' } & {
-    deleteTag: { __typename?: 'Tag' } & Pick<Tag, 'id'>;
-};
 
-export type TagFieldsFragment = { __typename?: 'Tag' } & Pick<
-    Tag,
-    'id' | 'label' | 'emotion' | 'createdAt'
->;
+export type DeleteTagMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteTag: (
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'id'>
+  ) }
+);
+
+export type TagFieldsFragment = (
+  { __typename?: 'Tag' }
+  & Pick<Tag, 'id' | 'label' | 'emotion' | 'createdAt'>
+);
 
 export type GetCurrentUserQueryVariables = {};
 
-export type GetCurrentUserQuery = { __typename?: 'Query' } & {
-    currentUser: Maybe<{ __typename?: 'User' } & UserFieldsFragment>;
-};
+
+export type GetCurrentUserQuery = (
+  { __typename?: 'Query' }
+  & { currentUser: Maybe<(
+    { __typename?: 'User' }
+    & UserFieldsFragment
+  )> }
+);
 
 export type SignInMutationVariables = {
-    input: SignInInput;
+  input: SignInInput;
 };
 
-export type SignInMutation = { __typename?: 'Mutation' } & Pick<
-    Mutation,
-    'signIn'
->;
+
+export type SignInMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'signIn'>
+);
 
 export type SignOutMutationVariables = {};
 
-export type SignOutMutation = { __typename?: 'Mutation' } & Pick<
-    Mutation,
-    'signOut'
->;
+
+export type SignOutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'signOut'>
+);
 
 export type UserExistsQueryVariables = {
-    username: Scalars['String'];
+  username: Scalars['String'];
 };
 
-export type UserExistsQuery = { __typename?: 'Query' } & Pick<
-    Query,
-    'userExists'
->;
+
+export type UserExistsQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'userExists'>
+);
 
 export type SignUpMutationVariables = {
-    input: SignUpInput;
+  input: SignUpInput;
 };
 
-export type SignUpMutation = { __typename?: 'Mutation' } & Pick<
-    Mutation,
-    'signUp'
->;
 
-export type UserFieldsFragment = { __typename?: 'User' } & Pick<
-    User,
-    'username'
->;
+export type SignUpMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'signUp'>
+);
+
+export type UpdateEmailMutationVariables = {
+  input: UpdateEmailInput;
+};
+
+
+export type UpdateEmailMutation = (
+  { __typename?: 'Mutation' }
+  & { updateEmail: (
+    { __typename?: 'User' }
+    & Pick<User, 'username'>
+  ) }
+);
+
+export type ResendConfirmEmailMutationVariables = {};
+
+
+export type ResendConfirmEmailMutation = (
+  { __typename?: 'Mutation' }
+  & { resendConfirmEmail: (
+    { __typename?: 'User' }
+    & UserFieldsFragment
+  ) }
+);
+
+export type UserFieldsFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'username' | 'email' | 'emailConfirmed'>
+);
 
 export const NoteFieldsFragmentDoc = gql`
     fragment NoteFields on Note {
-        id
-        text
-        createdAt
-    }
-`;
+  id
+  text
+  createdAt
+}
+    `;
 export const TagFieldsFragmentDoc = gql`
     fragment TagFields on Tag {
-        id
-        label
-        emotion
-        createdAt
-    }
-`;
+  id
+  label
+  emotion
+  createdAt
+}
+    `;
 export const UserFieldsFragmentDoc = gql`
     fragment UserFields on User {
-        username
-    }
-`;
+  username
+  email
+  emailConfirmed
+}
+    `;
 export const GetInsightsDocument = gql`
     query getInsights {
-        insights {
-            week {
-                label
-                positive
-                negative
-            }
-            month {
-                label
-                positive
-                negative
-            }
-            year {
-                label
-                positive
-                negative
-            }
-        }
+  insights {
+    week {
+      label
+      positive
+      negative
     }
-`;
+    month {
+      label
+      positive
+      negative
+    }
+    year {
+      label
+      positive
+      negative
+    }
+  }
+}
+    `;
 export const GetCurrentUserNotesDocument = gql`
     query getCurrentUserNotes($skip: Int, $limit: Int, $tagsId: [String!]) {
-        currentUserNotes(skip: $skip, limit: $limit, tagsId: $tagsId) {
-            items {
-                ...NoteFields
-                tags {
-                    id
-                }
-            }
-            hasMore
-            total
-        }
+  currentUserNotes(skip: $skip, limit: $limit, tagsId: $tagsId) {
+    items {
+      ...NoteFields
+      tags {
+        id
+      }
     }
-    ${NoteFieldsFragmentDoc}
-`;
+    hasMore
+    total
+  }
+}
+    ${NoteFieldsFragmentDoc}`;
 export const DeleteNoteDocument = gql`
     mutation deleteNote($id: String!) {
-        deleteNote(id: $id) {
-            id
-        }
-    }
-`;
+  deleteNote(id: $id) {
+    id
+  }
+}
+    `;
 export const CreateNoteDocument = gql`
     mutation createNote($input: CreateNoteInput!) {
-        createNote(input: $input) {
-            ...NoteFields
-            tags {
-                id
-            }
-        }
+  createNote(input: $input) {
+    ...NoteFields
+    tags {
+      id
     }
-    ${NoteFieldsFragmentDoc}
-`;
+  }
+}
+    ${NoteFieldsFragmentDoc}`;
 export const UpdateNoteDocument = gql`
     mutation updateNote($input: UpdateNoteInput!) {
-        updateNote(input: $input) {
-            ...NoteFields
-            tags {
-                id
-            }
-        }
+  updateNote(input: $input) {
+    ...NoteFields
+    tags {
+      id
     }
-    ${NoteFieldsFragmentDoc}
-`;
+  }
+}
+    ${NoteFieldsFragmentDoc}`;
 export const GetCurrentUserTagsDocument = gql`
     query getCurrentUserTags {
-        currentUserTags {
-            ...TagFields
-        }
-    }
-    ${TagFieldsFragmentDoc}
-`;
+  currentUserTags {
+    ...TagFields
+  }
+}
+    ${TagFieldsFragmentDoc}`;
 export const CreateTagDocument = gql`
     mutation createTag($input: CreateTagInput!) {
-        createTag(input: $input) {
-            ...TagFields
-        }
-    }
-    ${TagFieldsFragmentDoc}
-`;
+  createTag(input: $input) {
+    ...TagFields
+  }
+}
+    ${TagFieldsFragmentDoc}`;
 export const UpdateTagDocument = gql`
     mutation updateTag($input: UpdateTagInput!) {
-        updateTag(input: $input) {
-            ...TagFields
-        }
-    }
-    ${TagFieldsFragmentDoc}
-`;
+  updateTag(input: $input) {
+    ...TagFields
+  }
+}
+    ${TagFieldsFragmentDoc}`;
 export const DeleteTagDocument = gql`
     mutation deleteTag($id: String!) {
-        deleteTag(id: $id) {
-            id
-        }
-    }
-`;
+  deleteTag(id: $id) {
+    id
+  }
+}
+    `;
 export const GetCurrentUserDocument = gql`
     query getCurrentUser {
-        currentUser {
-            ...UserFields
-        }
-    }
-    ${UserFieldsFragmentDoc}
-`;
+  currentUser {
+    ...UserFields
+  }
+}
+    ${UserFieldsFragmentDoc}`;
 export const SignInDocument = gql`
     mutation signIn($input: SignInInput!) {
-        signIn(input: $input)
-    }
-`;
+  signIn(input: $input)
+}
+    `;
 export const SignOutDocument = gql`
     mutation signOut {
-        signOut
-    }
-`;
+  signOut
+}
+    `;
 export const UserExistsDocument = gql`
     query userExists($username: String!) {
-        userExists(username: $username)
-    }
-`;
+  userExists(username: $username)
+}
+    `;
 export const SignUpDocument = gql`
     mutation signUp($input: SignUpInput!) {
-        signUp(input: $input)
-    }
-`;
+  signUp(input: $input)
+}
+    `;
+export const UpdateEmailDocument = gql`
+    mutation updateEmail($input: UpdateEmailInput!) {
+  updateEmail(input: $input) {
+    username
+  }
+}
+    `;
+export const ResendConfirmEmailDocument = gql`
+    mutation resendConfirmEmail {
+  resendConfirmEmail {
+    ...UserFields
+  }
+}
+    ${UserFieldsFragmentDoc}`;
 export function getSdk(client: GraphQLClient) {
-    return {
-        getInsights(
-            variables?: GetInsightsQueryVariables,
-        ): Promise<GetInsightsQuery> {
-            return client.request<GetInsightsQuery>(
-                print(GetInsightsDocument),
-                variables,
-            );
-        },
-        getCurrentUserNotes(
-            variables?: GetCurrentUserNotesQueryVariables,
-        ): Promise<GetCurrentUserNotesQuery> {
-            return client.request<GetCurrentUserNotesQuery>(
-                print(GetCurrentUserNotesDocument),
-                variables,
-            );
-        },
-        deleteNote(
-            variables: DeleteNoteMutationVariables,
-        ): Promise<DeleteNoteMutation> {
-            return client.request<DeleteNoteMutation>(
-                print(DeleteNoteDocument),
-                variables,
-            );
-        },
-        createNote(
-            variables: CreateNoteMutationVariables,
-        ): Promise<CreateNoteMutation> {
-            return client.request<CreateNoteMutation>(
-                print(CreateNoteDocument),
-                variables,
-            );
-        },
-        updateNote(
-            variables: UpdateNoteMutationVariables,
-        ): Promise<UpdateNoteMutation> {
-            return client.request<UpdateNoteMutation>(
-                print(UpdateNoteDocument),
-                variables,
-            );
-        },
-        getCurrentUserTags(
-            variables?: GetCurrentUserTagsQueryVariables,
-        ): Promise<GetCurrentUserTagsQuery> {
-            return client.request<GetCurrentUserTagsQuery>(
-                print(GetCurrentUserTagsDocument),
-                variables,
-            );
-        },
-        createTag(
-            variables: CreateTagMutationVariables,
-        ): Promise<CreateTagMutation> {
-            return client.request<CreateTagMutation>(
-                print(CreateTagDocument),
-                variables,
-            );
-        },
-        updateTag(
-            variables: UpdateTagMutationVariables,
-        ): Promise<UpdateTagMutation> {
-            return client.request<UpdateTagMutation>(
-                print(UpdateTagDocument),
-                variables,
-            );
-        },
-        deleteTag(
-            variables: DeleteTagMutationVariables,
-        ): Promise<DeleteTagMutation> {
-            return client.request<DeleteTagMutation>(
-                print(DeleteTagDocument),
-                variables,
-            );
-        },
-        getCurrentUser(
-            variables?: GetCurrentUserQueryVariables,
-        ): Promise<GetCurrentUserQuery> {
-            return client.request<GetCurrentUserQuery>(
-                print(GetCurrentUserDocument),
-                variables,
-            );
-        },
-        signIn(variables: SignInMutationVariables): Promise<SignInMutation> {
-            return client.request<SignInMutation>(
-                print(SignInDocument),
-                variables,
-            );
-        },
-        signOut(
-            variables?: SignOutMutationVariables,
-        ): Promise<SignOutMutation> {
-            return client.request<SignOutMutation>(
-                print(SignOutDocument),
-                variables,
-            );
-        },
-        userExists(
-            variables: UserExistsQueryVariables,
-        ): Promise<UserExistsQuery> {
-            return client.request<UserExistsQuery>(
-                print(UserExistsDocument),
-                variables,
-            );
-        },
-        signUp(variables: SignUpMutationVariables): Promise<SignUpMutation> {
-            return client.request<SignUpMutation>(
-                print(SignUpDocument),
-                variables,
-            );
-        },
-    };
+  return {
+    getInsights(variables?: GetInsightsQueryVariables): Promise<GetInsightsQuery> {
+      return client.request<GetInsightsQuery>(print(GetInsightsDocument), variables);
+    },
+    getCurrentUserNotes(variables?: GetCurrentUserNotesQueryVariables): Promise<GetCurrentUserNotesQuery> {
+      return client.request<GetCurrentUserNotesQuery>(print(GetCurrentUserNotesDocument), variables);
+    },
+    deleteNote(variables: DeleteNoteMutationVariables): Promise<DeleteNoteMutation> {
+      return client.request<DeleteNoteMutation>(print(DeleteNoteDocument), variables);
+    },
+    createNote(variables: CreateNoteMutationVariables): Promise<CreateNoteMutation> {
+      return client.request<CreateNoteMutation>(print(CreateNoteDocument), variables);
+    },
+    updateNote(variables: UpdateNoteMutationVariables): Promise<UpdateNoteMutation> {
+      return client.request<UpdateNoteMutation>(print(UpdateNoteDocument), variables);
+    },
+    getCurrentUserTags(variables?: GetCurrentUserTagsQueryVariables): Promise<GetCurrentUserTagsQuery> {
+      return client.request<GetCurrentUserTagsQuery>(print(GetCurrentUserTagsDocument), variables);
+    },
+    createTag(variables: CreateTagMutationVariables): Promise<CreateTagMutation> {
+      return client.request<CreateTagMutation>(print(CreateTagDocument), variables);
+    },
+    updateTag(variables: UpdateTagMutationVariables): Promise<UpdateTagMutation> {
+      return client.request<UpdateTagMutation>(print(UpdateTagDocument), variables);
+    },
+    deleteTag(variables: DeleteTagMutationVariables): Promise<DeleteTagMutation> {
+      return client.request<DeleteTagMutation>(print(DeleteTagDocument), variables);
+    },
+    getCurrentUser(variables?: GetCurrentUserQueryVariables): Promise<GetCurrentUserQuery> {
+      return client.request<GetCurrentUserQuery>(print(GetCurrentUserDocument), variables);
+    },
+    signIn(variables: SignInMutationVariables): Promise<SignInMutation> {
+      return client.request<SignInMutation>(print(SignInDocument), variables);
+    },
+    signOut(variables?: SignOutMutationVariables): Promise<SignOutMutation> {
+      return client.request<SignOutMutation>(print(SignOutDocument), variables);
+    },
+    userExists(variables: UserExistsQueryVariables): Promise<UserExistsQuery> {
+      return client.request<UserExistsQuery>(print(UserExistsDocument), variables);
+    },
+    signUp(variables: SignUpMutationVariables): Promise<SignUpMutation> {
+      return client.request<SignUpMutation>(print(SignUpDocument), variables);
+    },
+    updateEmail(variables: UpdateEmailMutationVariables): Promise<UpdateEmailMutation> {
+      return client.request<UpdateEmailMutation>(print(UpdateEmailDocument), variables);
+    },
+    resendConfirmEmail(variables?: ResendConfirmEmailMutationVariables): Promise<ResendConfirmEmailMutation> {
+      return client.request<ResendConfirmEmailMutation>(print(ResendConfirmEmailDocument), variables);
+    }
+  };
 }

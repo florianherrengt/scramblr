@@ -18,3 +18,9 @@ export class SignInInput implements Partial<User> {
     @Field({ nullable: true })
     password: string;
 }
+
+@InputType()
+export class UpdateEmailInput implements Partial<User> {
+    @Field({ nullable: false })
+    email: string;
+}

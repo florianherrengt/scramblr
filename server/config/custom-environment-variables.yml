@@ -1,3 +1,7 @@
+App:
+    protocol: APP_PROTOCOL
+    domain: APP_DOMAIN
+    registrationDisabled: DISABLE_REGISTRATION
 Jwt:
     secret: JWT_SECRET
 Database:
@@ -13,3 +17,13 @@ Populate:
 Env: NODE_ENV
 Redis:
     connectionString: REDIS_CONNECTION_STRING
+Stripe:
+    key: STRIPE_KEY
+    planId: STRIPE_PLAN_ID
+Smtp:
+    domain: SMTP_DOMAIN
+    host: SMTP_HOST
+    port: SMTP_PORT
+    username: SMTP_USERNAME
+    password: SMTP_PASSWORD
+    secure: SMTP_SECURE

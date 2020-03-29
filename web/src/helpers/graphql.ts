@@ -22,13 +22,17 @@ export const formatGraphqlErrors = (
     { response }: GraphQLError,
     { checks }: GraphQLErrorOptions = defaultOptions,
 ): GraphQLErrorOptions['checks'] => {
-    if (checks?.isUnauthenticated) {
-        const isUnauthenticated: boolean = !!response.errors.find(
-            error => error.extensions.code === 'UNAUTHENTICATED',
-        );
-        return {
-            isUnauthenticated,
-        };
+    try {
+        if (checks?.isUnauthenticated) {
+            const isUnauthenticated: boolean = !!response.errors.find(
+                error => error.extensions.code === 'UNAUTHENTICATED',
+            );
+            return {
+                isUnauthenticated,
+            };
+        }
+    } catch (error) {
+        console.error(error);
     }
 };
 

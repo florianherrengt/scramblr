@@ -33,6 +33,7 @@ export const signIn = (
     dispatch,
     getState,
 ) => {
+    console.debug('action.signIn', { variables });
     const api = getApi();
     dispatch({ type: 'SIGN_IN_REQUEST' });
     try {

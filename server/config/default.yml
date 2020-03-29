@@ -1,3 +1,7 @@
+App:
+    protocol: https
+    domain: localhost:8081
+    registrationDisabled: 0
 Jwt:
     secret: JWT_SECRET
 LogLevel: debug
@@ -14,3 +18,13 @@ Populate:
 Env: development
 Redis:
     connectionString: null
+Stripe:
+    key: null
+    planId: null
+Smtp:
+    domain: null
+    host: null
+    port: null
+    username: null
+    password: null
+    secure: false

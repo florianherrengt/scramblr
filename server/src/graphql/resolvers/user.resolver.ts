@@ -1,12 +1,21 @@
-import { UserInputError } from 'apollo-server-express';
+import * as config from 'config';
+import { UserInputError, AuthenticationError } from 'apollo-server-express';
 import * as bcrypt from 'bcryptjs';
 import { Arg, Mutation, Query, Resolver, Ctx, Int } from 'type-graphql';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { User } from '../../entities/user.entity';
-import { createJwt } from '../../helpers/jwt';
-import { SignInInput, SignUpInput } from '../inputs/user.input';
-import { AppContext, appSession } from '../../helpers';
+import {
+    SignInInput,
+    SignUpInput,
+    UpdateEmailInput,
+} from '../inputs/user.input';
+import {
+    AppContext,
+    appSession,
+    sendConfirmEmail,
+    createJwt,
+} from '../../helpers';
 
 @Resolver(User)
 export class UserResolver {
@@ -15,22 +24,22 @@ export class UserResolver {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    @Query(returns => Int, { nullable: false })
+    @Query((returns) => Int, { nullable: false })
     async userExists(@Arg('username') username: string): Promise<boolean> {
         const user = await this.userRepository.findOne(username);
         return !!user;
     }
 
-    @Query(returns => User, { nullable: true })
+    @Query((returns) => User, { nullable: true })
     async currentUser(@Ctx() context: AppContext): Promise<User | undefined> {
-        if (!context.user) {
-            return;
+        const { username } = context.user || {};
+        if (!username) {
+            throw new AuthenticationError('User not logged in');
         }
-        const user = await this.userRepository.findOne(context.user.username);
-        return user;
+        return this.userRepository.findOne({ username });
     }
 
-    @Mutation(returns => String, { nullable: true })
+    @Mutation((returns) => String, { nullable: true })
     async signIn(
         @Arg('input') input: SignInInput,
         @Ctx() context: AppContext,
@@ -46,11 +55,14 @@ export class UserResolver {
 
         return createJwt(user);
     }
-    @Mutation(returns => String)
+    @Mutation((returns) => String)
     async signUp(
         @Arg('input') input: SignUpInput,
         @Ctx() context: AppContext,
     ): Promise<string> {
+        if (parseInt(config.get('App.registrationDisabled'))) {
+            throw new Error('Registration disabled');
+        }
         if (await this.userRepository.findOne(input.username)) {
             throw new Error('Username already exists');
         }
@@ -68,14 +80,47 @@ export class UserResolver {
 
         return createJwt(newUser);
     }
-    @Mutation(returns => Int)
+    @Mutation((returns) => Int)
     async signOut(@Ctx() context: AppContext): Promise<boolean> {
         const { session } = context.request;
         await appSession.destroy({ session });
 
         return true;
     }
-    @Mutation(returns => Int)
+    @Mutation((returns) => User)
+    async updateEmail(
+        @Arg('input') input: UpdateEmailInput,
+        @Ctx() context: AppContext,
+    ) {
+        const { username } = context.user || {};
+        if (!username) {
+            throw new AuthenticationError('User not logged in');
+        }
+        const user = await this.userRepository.findOne({ username });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        user.emailConfirmed = user.email === input.email;
+        user.email = input.email;
+        await this.userRepository.save(user);
+        await sendConfirmEmail(user);
+        return user;
+    }
+    @Mutation((returns) => User)
+    async resendConfirmEmail(@Ctx() context: AppContext) {
+        const { username } = context.user || {};
+        if (!username) {
+            throw new AuthenticationError('User not logged in');
+        }
+        const user = await this.userRepository.findOne({ username });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        const results = await sendConfirmEmail(user);
+        console.log(results);
+        return user;
+    }
+    @Mutation((returns) => Int)
     async deleteAccount(@Ctx() context: AppContext) {
         if (!context.user) {
             throw new Error('cannot delete user');

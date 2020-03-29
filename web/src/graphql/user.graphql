@@ -20,6 +20,20 @@ mutation signUp($input: SignUpInput!) {
     signUp(input: $input)
 }
 
+mutation updateEmail($input: UpdateEmailInput!) {
+    updateEmail(input: $input) {
+        username
+    }
+}
+
+mutation resendConfirmEmail {
+    resendConfirmEmail {
+        ...UserFields
+    }
+}
+
 fragment UserFields on User {
     username
+    email
+    emailConfirmed
 }

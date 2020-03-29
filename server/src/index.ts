@@ -12,11 +12,17 @@ import { generateHttpsCertificate } from './helpers';
 
     const { serviceKey, certificate } = await generateHttpsCertificate();
     const app = await createApp();
-    const server =
-        config.get('Env') === 'development'
-            ? https.createServer({ key: serviceKey, cert: certificate }, app)
-            : http.createServer(app);
-    server.listen(port, () => {
-        console.info(`server listening on  http://localhost:${port}`);
+    const httpServer = http.createServer(app);
+    httpServer.listen(port, () => {
+        console.info(`http server listening on  http://localhost:${port}`);
     });
+    if (config.get('Env') === 'development') {
+        const httpsServer = https.createServer(
+            { key: serviceKey, cert: certificate },
+            app,
+        );
+        httpsServer.listen(8081, () => {
+            console.info(`https server listening on  https://localhost:8081`);
+        });
+    }
 })();

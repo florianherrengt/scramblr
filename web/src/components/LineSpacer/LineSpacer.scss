@@ -1,4 +1,8 @@
 .LineSpacer {
     width: 100%;
     height: 20px;
+
+    &--small {
+        height: 10px;
+    }
 }
