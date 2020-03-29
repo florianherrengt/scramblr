@@ -12,6 +12,4 @@ Populate:
     demo: POPULATE_DEMO
 Env: NODE_ENV
 Redis:
-    host: REDIS_HOST
-    password: REDIS_PASSWORD
-    port: REDIS_PORT
+    connectionString: REDIS_CONNECTION_STRING
