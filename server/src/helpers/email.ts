@@ -5,7 +5,7 @@ import { User } from '../entities';
 import { AppRoutes } from './routes';
 import { Container } from 'typedi';
 
-export interface VerifyEmailToken {
+export interface ConfirmEmailToken {
     email: string;
 }
 
@@ -26,7 +26,7 @@ export const sendConfirmEmail = async (
     user: User,
 ): ReturnType<typeof sendEmail> => {
     const token = jwt.sign(
-        { email: user.email } as VerifyEmailToken,
+        { email: user.email } as ConfirmEmailToken,
         config.get('Jwt.secret'),
     );
     const verifyUrl = `${config.get('App.protocol')}://${config.get(

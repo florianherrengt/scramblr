@@ -1,6 +1,6 @@
 import * as config from 'config';
 import * as jwt from 'jsonwebtoken';
-import { VerifyEmailToken } from '../helpers';
+import { ConfirmEmailToken } from '../helpers';
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import { User } from '../entities';
@@ -13,7 +13,7 @@ export const confirmEmailHandler = async (
         const { email } = jwt.verify(
             request.param('token'),
             config.get('Jwt.secret'),
-        ) as VerifyEmailToken;
+        ) as ConfirmEmailToken;
         const userRepository = getRepository(User);
         const user = await userRepository.findOne({
             username: request.session?.username,

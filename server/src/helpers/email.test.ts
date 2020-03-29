@@ -17,6 +17,6 @@ describe('helpers/email', () => {
         sendConfirmEmail(user);
         const [[{ html }]] = mockedTransporter.sendMail.mock.calls;
 
-        expect(html).toContain('/api/email/verify?token=');
+        expect(html).toContain('/api/email/confirm?token=');
     });
 });
