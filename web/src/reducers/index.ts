@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { currentUser } from './currentUserReducer';
 import { currentUserNotes } from './currentUserNotesReducer';
 import { currentUserTags } from './currentUserTagsReducer';
+import { appState } from './appReducer';
 import { searchNotes } from './searchNotes';
 import { insights } from './insightsReducer';
 import { notifier } from './notifier';
@@ -15,6 +16,7 @@ export const rootReducer = combineReducers({
     searchNotes,
     notifier,
     insights,
+    appState,
     router: connectRouter(history),
 });
 

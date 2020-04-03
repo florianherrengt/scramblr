@@ -14,6 +14,7 @@ export const titles: { [key in $Keys<typeof routerUri>]: string } = {
     tags: 'Tags',
     search: 'Search',
     insights: 'Insights',
+    paymentFailed: 'Payment failed',
 };
 
 export const getTitleFromPath = (pathname: string): string => {

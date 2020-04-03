@@ -15,6 +15,8 @@ import {
     appSession,
     sendConfirmEmail,
     createJwt,
+    getStripeContainer,
+    getStripeCustomerByEmail,
 } from '../../helpers';
 
 @Resolver(User)
@@ -36,7 +38,15 @@ export class UserResolver {
         if (!username) {
             throw new AuthenticationError('User not logged in');
         }
-        return this.userRepository.findOne({ username });
+        const user = await this.userRepository.findOne({ username });
+        if (user?.email && user.emailConfirmed) {
+            const stripeCustomer = await getStripeCustomerByEmail(user.email);
+            if (stripeCustomer) {
+                const { paymentMethods } = stripeCustomer;
+                return { ...user, paymentMethods };
+            }
+        }
+        return user;
     }
 
     @Mutation((returns) => String, { nullable: true })
@@ -100,6 +110,9 @@ export class UserResolver {
         if (!user) {
             throw new Error('User not found');
         }
+        if (user.email && user.emailConfirmed) {
+            throw new Error('Cannot change email');
+        }
         user.emailConfirmed = user.email === input.email;
         user.email = input.email;
         await this.userRepository.save(user);
@@ -116,7 +129,7 @@ export class UserResolver {
         if (!user) {
             throw new Error('User not found');
         }
-        if (!user.emailConfirmed) {
+        if (user.emailConfirmed) {
             throw new Error('Email already confirmed');
         }
         await sendConfirmEmail(user);
@@ -125,11 +138,12 @@ export class UserResolver {
     }
     @Mutation((returns) => Int)
     async deleteAccount(@Ctx() context: AppContext) {
-        if (!context.user) {
-            throw new Error('cannot delete user');
+        const { user } = context;
+        if (!user) {
+            throw new AuthenticationError('User not logged in');
         }
         try {
-            await this.userRepository.delete(context.user.username);
+            await this.userRepository.delete(user.username);
             return true;
         } catch (error) {
             throw error;

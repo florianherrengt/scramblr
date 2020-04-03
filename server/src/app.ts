@@ -14,18 +14,20 @@ import { exportRouter } from './exportRouter';
 import {
     InsightResolver,
     NoteResolver,
+    PaymentResolver,
     TagResolver,
     UserResolver,
 } from './graphql/resolvers';
+import { confirmEmailHandler, stripePaymentSuccessHandler } from './handlers';
 import {
+    AppRoutes,
     createContext,
     getDbConnectionOptions,
     PopulateDemo,
     redisClient,
-    AppRoutes,
 } from './helpers';
 import { importRouter } from './importRouter';
-import { confirmEmailHandler } from './handlers';
+import * as dateFns from 'date-fns';
 
 const RedisStore = connectRedis(session);
 
@@ -38,7 +40,11 @@ export const createApp = async () => {
         session({
             secret: config.get('Jwt.secret'),
             store: new RedisStore({ client: redisClient }),
-            cookie: { httpOnly: true, secure: false },
+            cookie: {
+                expires: dateFns.addYears(new Date(), 1),
+                httpOnly: true,
+                secure: config.get('App.protocol') === 'https',
+            },
             saveUninitialized: true,
             resave: false,
         }),
@@ -53,7 +59,13 @@ export const createApp = async () => {
     });
 
     const schema = await buildSchema({
-        resolvers: [UserResolver, NoteResolver, TagResolver, InsightResolver],
+        resolvers: [
+            UserResolver,
+            NoteResolver,
+            TagResolver,
+            InsightResolver,
+            PaymentResolver,
+        ],
         container: Container,
     });
 
@@ -88,6 +100,7 @@ export const createApp = async () => {
 
     app.get('/api/export/:entity', exportRouter);
     app.use('/api/import/:entity', upload.single('data'), importRouter);
+    app.get(AppRoutes.paymentSuccess, stripePaymentSuccessHandler);
 
     app.get('/', (_, res) => {
         res.sendFile(path.join(__dirname + '/../assets/landing/index.html'));

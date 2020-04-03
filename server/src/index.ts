@@ -4,6 +4,7 @@ import * as config from 'config';
 import * as http from 'http';
 import * as https from 'https';
 import 'reflect-metadata';
+import './helpers/containers';
 import { createApp } from './app';
 import { generateHttpsCertificate } from './helpers';
 
@@ -14,7 +15,7 @@ import { generateHttpsCertificate } from './helpers';
     const app = await createApp();
     const httpServer = http.createServer(app);
     httpServer.listen(port, () => {
-        console.info(`http server listening on  http://localhost:${port}`);
+        console.info(`🚀 http server listening on  http://localhost:${port}`);
     });
     if (config.get('Env') === 'development') {
         const httpsServer = https.createServer(
@@ -22,7 +23,7 @@ import { generateHttpsCertificate } from './helpers';
             app,
         );
         httpsServer.listen(8081, () => {
-            console.info(`https server listening on  https://localhost:8081`);
+            console.info(`🔒https server listening on  https://localhost:8081`);
         });
     }
 })();

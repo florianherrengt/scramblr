@@ -8,4 +8,5 @@ export const routerUri = {
     tags: '/tags',
     search: '/search',
     insights: '/insights',
+    paymentFailed: '/payment-failed',
 };

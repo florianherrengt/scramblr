@@ -63,6 +63,14 @@ export const AppRouter = () => {
                             <InsightsPage />
                         </Suspense>
                     </Route>
+                    <Route path={routerUri.paymentFailed} exact>
+                        <Suspense fallback={<CircularProgress />}>
+                            <div>
+                                Payment failed. Please contact the support to
+                                resolve the issue.
+                            </div>
+                        </Suspense>
+                    </Route>
                 </MainLayout>
                 <Route path='*' exact>
                     <Redirect to={routerUri.notes} />

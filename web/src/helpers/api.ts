@@ -12,6 +12,25 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Card = {
+   __typename?: 'Card';
+  brand: CardBrand;
+  expMonth: Scalars['Float'];
+  expMonthString: Scalars['String'];
+  expYear: Scalars['Float'];
+  last4: Scalars['String'];
+};
+
+export enum CardBrand {
+  AmericanExpress = 'americanExpress',
+  DinersClub = 'dinersClub',
+  Discover = 'discover',
+  Jcb = 'jcb',
+  Mastercard = 'mastercard',
+  Unionpay = 'unionpay',
+  Visa = 'visa'
+}
+
 export type CreateNoteInput = {
   text: Scalars['String'];
   tags: Array<TagNote>;
@@ -113,6 +132,12 @@ export type PaginatedNoteResponse = {
   hasMore: Scalars['Boolean'];
 };
 
+export type PaymentMethod = {
+   __typename?: 'PaymentMethod';
+  id: Scalars['String'];
+  card: Card;
+};
+
 export type Query = {
    __typename?: 'Query';
   currentUserNotes: PaginatedNoteResponse;
@@ -120,6 +145,7 @@ export type Query = {
   currentUser?: Maybe<User>;
   currentUserTags: Array<Tag>;
   insights: Insight;
+  stripeSessionId: Scalars['String'];
 };
 
 
@@ -148,9 +174,15 @@ export type Tag = {
    __typename?: 'Tag';
   id: Scalars['ID'];
   label: Scalars['String'];
-  emotion?: Maybe<Scalars['String']>;
+  emotion?: Maybe<TagEmotion>;
   createdAt: Scalars['DateTime'];
 };
+
+export enum TagEmotion {
+  Positive = 'positive',
+  Neutral = 'neutral',
+  Negative = 'negative'
+}
 
 export type TagNote = {
   id: Scalars['String'];
@@ -177,6 +209,7 @@ export type User = {
   username: Scalars['ID'];
   email?: Maybe<Scalars['String']>;
   emailConfirmed?: Maybe<Scalars['Int']>;
+  paymentMethods?: Maybe<Array<PaymentMethod>>;
 };
 
 export type GetInsightsQueryVariables = {};
@@ -368,6 +401,14 @@ export type UserExistsQuery = (
   & Pick<Query, 'userExists'>
 );
 
+export type GetStripeSessionIdQueryVariables = {};
+
+
+export type GetStripeSessionIdQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'stripeSessionId'>
+);
+
 export type SignUpMutationVariables = {
   input: SignUpInput;
 };
@@ -387,7 +428,7 @@ export type UpdateEmailMutation = (
   { __typename?: 'Mutation' }
   & { updateEmail: (
     { __typename?: 'User' }
-    & Pick<User, 'username'>
+    & UserFieldsFragment
   ) }
 );
 
@@ -405,6 +446,14 @@ export type ResendConfirmEmailMutation = (
 export type UserFieldsFragment = (
   { __typename?: 'User' }
   & Pick<User, 'username' | 'email' | 'emailConfirmed'>
+  & { paymentMethods: Maybe<Array<(
+    { __typename?: 'PaymentMethod' }
+    & Pick<PaymentMethod, 'id'>
+    & { card: (
+      { __typename?: 'Card' }
+      & Pick<Card, 'brand' | 'expMonth' | 'expMonthString' | 'expYear' | 'last4'>
+    ) }
+  )>> }
 );
 
 export const NoteFieldsFragmentDoc = gql`
@@ -427,6 +476,16 @@ export const UserFieldsFragmentDoc = gql`
   username
   email
   emailConfirmed
+  paymentMethods {
+    id
+    card {
+      brand
+      expMonth
+      expMonthString
+      expYear
+      last4
+    }
+  }
 }
     `;
 export const GetInsightsDocument = gql`
@@ -541,6 +600,11 @@ export const UserExistsDocument = gql`
   userExists(username: $username)
 }
     `;
+export const GetStripeSessionIdDocument = gql`
+    query getStripeSessionId {
+  stripeSessionId
+}
+    `;
 export const SignUpDocument = gql`
     mutation signUp($input: SignUpInput!) {
   signUp(input: $input)
@@ -549,10 +613,10 @@ export const SignUpDocument = gql`
 export const UpdateEmailDocument = gql`
     mutation updateEmail($input: UpdateEmailInput!) {
   updateEmail(input: $input) {
-    username
+    ...UserFields
   }
 }
-    `;
+    ${UserFieldsFragmentDoc}`;
 export const ResendConfirmEmailDocument = gql`
     mutation resendConfirmEmail {
   resendConfirmEmail {
@@ -600,6 +664,9 @@ export function getSdk(client: GraphQLClient) {
     },
     userExists(variables: UserExistsQueryVariables): Promise<UserExistsQuery> {
       return client.request<UserExistsQuery>(print(UserExistsDocument), variables);
+    },
+    getStripeSessionId(variables?: GetStripeSessionIdQueryVariables): Promise<GetStripeSessionIdQuery> {
+      return client.request<GetStripeSessionIdQuery>(print(GetStripeSessionIdDocument), variables);
     },
     signUp(variables: SignUpMutationVariables): Promise<SignUpMutation> {
       return client.request<SignUpMutation>(print(SignUpDocument), variables);

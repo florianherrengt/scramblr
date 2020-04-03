@@ -16,13 +16,17 @@ query userExists($username: String!) {
     userExists(username: $username)
 }
 
+query getStripeSessionId {
+    stripeSessionId
+}
+
 mutation signUp($input: SignUpInput!) {
     signUp(input: $input)
 }
 
 mutation updateEmail($input: UpdateEmailInput!) {
     updateEmail(input: $input) {
-        username
+        ...UserFields
     }
 }
 
@@ -36,4 +40,14 @@ fragment UserFields on User {
     username
     email
     emailConfirmed
+    paymentMethods {
+        id
+        card {
+            brand
+            expMonth
+            expMonthString
+            expYear
+            last4
+        }
+    }
 }
