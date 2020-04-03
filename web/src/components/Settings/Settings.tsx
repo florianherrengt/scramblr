@@ -13,6 +13,7 @@ import { SubscriptionSettings } from './SubscriptionSettings';
 
 export interface SettingsProps {
     currentUser: RootState['currentUser'];
+    checkoutLoading: boolean;
     onUpdateEmail(input: { email: string }): void;
     onResendEmailClick(): void;
     onLogoutClick(): void;

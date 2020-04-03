@@ -5,6 +5,10 @@ import { Card } from './Card.entity';
 export class PaymentMethod {
     @Field()
     id: string;
+
+    @Field()
+    isDefault: boolean;
+
     @Field(() => Card)
     card: Card;
 }

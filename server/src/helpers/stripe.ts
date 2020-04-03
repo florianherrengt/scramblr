@@ -28,9 +28,11 @@ export const getStripeCustomerByEmail = async (
     if (!customer.data.length) {
         return null;
     }
-
     const customerId = customer.data[0].id;
     const subscriptions = customer.data[0].subscriptions;
+
+    const defaultPaymentMethodId =
+        customer.data[0].invoice_settings.default_payment_method;
 
     const rawPaymentMethods = await stripe.paymentMethods.list({
         customer: customerId,
@@ -41,6 +43,7 @@ export const getStripeCustomerByEmail = async (
     const paymentMethods = rawPaymentMethods.data.length
         ? rawPaymentMethods.data.map((paymentMethod) => ({
               id: paymentMethod.id,
+              isDefault: paymentMethod.id === defaultPaymentMethodId,
               card: {
                   brand: paymentMethod.card!.brand,
                   expMonth: paymentMethod.card!.exp_month,

@@ -41,6 +41,7 @@ export const SettingsPage: React.SFC<SettingsPageProps> = props => {
             <AesPassphraseContainer submitLabel='Save' />
             <LineSpacer />
             <Settings
+                checkoutLoading={false}
                 onSubscribeClick={() => onSubscribeClick()}
                 onResendEmailClick={() => dispatch(resendConfirmEmail({}))}
                 onUpdateEmail={input => dispatch(updateEmail(input))}

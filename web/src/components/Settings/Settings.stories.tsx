@@ -22,6 +22,7 @@ export const Default = () => (
     <div style={{ maxWidth: 600, margin: 'auto' }}>
         <LineSpacer />
         <Settings
+            checkoutLoading={false}
             onSubscribeClick={action('onSubscribeClick')}
             onResendEmailClick={action('onResendEmailClick')}
             onUpdateEmail={action('onUpdateEmail')}

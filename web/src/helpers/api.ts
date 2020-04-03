@@ -135,6 +135,7 @@ export type PaginatedNoteResponse = {
 export type PaymentMethod = {
    __typename?: 'PaymentMethod';
   id: Scalars['String'];
+  isDefault: Scalars['Boolean'];
   card: Card;
 };
 
@@ -448,7 +449,7 @@ export type UserFieldsFragment = (
   & Pick<User, 'username' | 'email' | 'emailConfirmed'>
   & { paymentMethods: Maybe<Array<(
     { __typename?: 'PaymentMethod' }
-    & Pick<PaymentMethod, 'id'>
+    & Pick<PaymentMethod, 'id' | 'isDefault'>
     & { card: (
       { __typename?: 'Card' }
       & Pick<Card, 'brand' | 'expMonth' | 'expMonthString' | 'expYear' | 'last4'>
@@ -478,6 +479,7 @@ export const UserFieldsFragmentDoc = gql`
   emailConfirmed
   paymentMethods {
     id
+    isDefault
     card {
       brand
       expMonth

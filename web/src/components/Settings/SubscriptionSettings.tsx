@@ -9,17 +9,31 @@ import {
     ExpansionPanelDetails,
 } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { SettingsProps } from './Settings';
 import { User, PaymentMethod } from '../../helpers';
 import { LineSpacer } from '../LineSpacer';
+import { BlockSpace } from '../BlockSpace/';
+import classNames from 'classnames';
 
 const CardList: React.SFC<{ paymentMethods: PaymentMethod[] }> = props => {
+    const [expanded, setExpanded] = useState<string | null>(null);
+    const handleChange = (panel: string) => (
+        event: React.ChangeEvent<{}>,
+        isExpanded: boolean,
+    ) => {
+        setExpanded(isExpanded ? panel : null);
+    };
     return (
         <div>
-            {props.paymentMethods.map(({ id, card }) => {
+            {props.paymentMethods.map(({ id, card, isDefault }) => {
                 return (
-                    <ExpansionPanel id={id} variant='elevation'>
+                    <ExpansionPanel
+                        onChange={handleChange(id)}
+                        expanded={expanded === id}
+                        key={id}
+                        variant='elevation'
+                    >
                         <ExpansionPanelSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls='panel1a-content'
@@ -30,18 +44,33 @@ const CardList: React.SFC<{ paymentMethods: PaymentMethod[] }> = props => {
                                 alt={`${card.brand} logo`}
                                 src={`/cards/${card.brand}.png`}
                             />
-                            <Typography className='flex width-100'>
+                            <Typography
+                                className={classNames([
+                                    'flex width-100',
+                                    { bold: isDefault },
+                                ])}
+                            >
                                 {card.last4}
                                 <span className='grow' />
                                 {card.expMonthString}/{card.expYear}
                             </Typography>
                         </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            <Typography>
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Suspendisse malesuada lacus ex,
-                                sit amet blandit leo lobortis eget.
-                            </Typography>
+                        <ExpansionPanelDetails className='flex'>
+                            <Button
+                                disabled={isDefault}
+                                className='grow'
+                                variant='outlined'
+                            >
+                                Make default
+                            </Button>
+                            <BlockSpace />
+                            <Button
+                                className='grow'
+                                variant='outlined'
+                                color='secondary'
+                            >
+                                Remove
+                            </Button>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
                 );

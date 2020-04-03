@@ -42,6 +42,7 @@ fragment UserFields on User {
     emailConfirmed
     paymentMethods {
         id
+        isDefault
         card {
             brand
             expMonth
