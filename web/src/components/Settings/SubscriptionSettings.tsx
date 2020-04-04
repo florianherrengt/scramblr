@@ -14,15 +14,16 @@ import { SettingsProps } from './Settings';
 const Content: React.SFC<SettingsProps> = props => {
     return (
         <Fragment>
-            {props.currentUser.user?.paymentMethods && (
+            {props.subscription.fetching ? <CircularProgress /> : null}
+            {props.subscription.paymentMethods ? (
                 <Fragment>
                     <PaymentMethodList
-                        paymentMethods={props.currentUser.user.paymentMethods}
+                        paymentMethods={props.subscription.paymentMethods}
                         {...props}
                     />
                     <LineSpacer />
                 </Fragment>
-            )}
+            ) : null}
 
             <Button
                 disabled={props.checkoutLoading}
@@ -33,7 +34,7 @@ const Content: React.SFC<SettingsProps> = props => {
                 {props.checkoutLoading ? <CircularProgress /> : 'Add card'}
             </Button>
             <LineSpacer />
-            {props.currentUser.user?.subscribed ? (
+            {props.subscription.isSubscribed ? (
                 <Button
                     className='width-100'
                     color='secondary'

@@ -26,22 +26,6 @@ export class UserResolver {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    async getUser(username: string): Promise<User | undefined> {
-        const user = await this.userRepository.findOne({ username });
-        if (user?.email && user.emailConfirmed) {
-            const stripeCustomer = await getStripeCustomerByEmail(user.email);
-            if (stripeCustomer) {
-                const { paymentMethods, subscription } = stripeCustomer;
-                return {
-                    ...user,
-                    paymentMethods,
-                    subscribed: !!subscription.id,
-                };
-            }
-        }
-        return user;
-    }
-
     @Query((returns) => Int, { nullable: false })
     async userExists(@Arg('username') username: string): Promise<boolean> {
         const user = await this.userRepository.findOne(username);
@@ -54,8 +38,8 @@ export class UserResolver {
         if (!username) {
             throw new AuthenticationError('User not logged in');
         }
-
-        return this.getUser(username);
+        const user = await this.userRepository.findOne({ username });
+        return user;
     }
 
     @Mutation((returns) => String, { nullable: true })
@@ -110,7 +94,7 @@ export class UserResolver {
     async updateEmail(
         @Arg('input') input: UpdateEmailInput,
         @Ctx() context: AppContext,
-    ) {
+    ): Promise<User> {
         const { username } = context.user || {};
         if (!username) {
             throw new AuthenticationError('User not logged in');
@@ -126,10 +110,10 @@ export class UserResolver {
         user.email = input.email;
         await this.userRepository.save(user);
         await sendConfirmEmail(user);
-        return this.getUser(username);
+        return user;
     }
     @Mutation((returns) => User)
-    async resendConfirmEmail(@Ctx() context: AppContext) {
+    async resendConfirmEmail(@Ctx() context: AppContext): Promise<User> {
         const { username } = context.user || {};
         if (!username) {
             throw new AuthenticationError('User not logged in');
@@ -143,7 +127,7 @@ export class UserResolver {
         }
         await sendConfirmEmail(user);
 
-        return this.getUser(username);
+        return user;
     }
     @Mutation((returns) => Int)
     async deleteAccount(@Ctx() context: AppContext) {

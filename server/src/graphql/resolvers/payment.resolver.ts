@@ -3,7 +3,7 @@ import * as config from 'config';
 import { Ctx, Query, Resolver, Mutation, Arg, Int } from 'type-graphql';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { User } from '../../entities/user.entity';
+import { User, PaymentMethod } from '../../entities';
 import {
     AppContext,
     AppRoutes,
@@ -21,28 +21,51 @@ export class PaymentResolver {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ) {}
-    @Query((returns) => String)
-    async paymentMethods(@Ctx() context: AppContext) {
+    @Query((returns) => [PaymentMethod])
+    async paymentMethods(@Ctx() context: AppContext): Promise<PaymentMethod[]> {
         const { username } = context.user || {};
         if (!username) {
             throw new AuthenticationError('User not logged in');
         }
         const user = await this.userRepository.findOne({ username });
-
-        if (user?.email && user.emailConfirmed) {
-            const stripeCustomer = await getStripeCustomerByEmail(user.email);
-            if (stripeCustomer) {
-                const { paymentMethods, subscription } = stripeCustomer;
-                return {
-                    ...user,
-                    paymentMethods,
-                    subscribed: !!subscription.id,
-                };
-            }
+        if (!user) {
+            throw new Error('User not found');
         }
+
+        if (!user.email || !user.emailConfirmed) {
+            return [];
+        }
+
+        const stripeCustomer = await getStripeCustomerByEmail(user.email);
+        if (!stripeCustomer) {
+            return [];
+        }
+        return stripeCustomer.paymentMethods;
     }
     @Query((returns) => String)
-    async isSubscribed(@Ctx() context: AppContext) {}
+    async isSubscribed(@Ctx() context: AppContext): Promise<boolean> {
+        if (!config.get('App.requireSubscription')) {
+            return true;
+        }
+        const { username } = context.user || {};
+        if (!username) {
+            throw new AuthenticationError('User not logged in');
+        }
+        const user = await this.userRepository.findOne({ username });
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        if (!user.email || !user.emailConfirmed) {
+            return false;
+        }
+
+        const stripeCustomer = await getStripeCustomerByEmail(user.email);
+        if (!stripeCustomer || !stripeCustomer.subscription.id) {
+            return false;
+        }
+        return true;
+    }
     @Query((returns) => String)
     async stripeSessionId(@Ctx() context: AppContext) {
         if (!context.user?.username) {

@@ -159,6 +159,8 @@ export type Query = {
   currentUser?: Maybe<User>;
   currentUserTags: Array<Tag>;
   insights: Insight;
+  paymentMethods: Array<PaymentMethod>;
+  isSubscribed: Scalars['String'];
   stripeSessionId: Scalars['String'];
 };
 
@@ -223,8 +225,6 @@ export type User = {
   username: Scalars['ID'];
   email?: Maybe<Scalars['String']>;
   emailConfirmed?: Maybe<Scalars['Int']>;
-  paymentMethods?: Maybe<Array<PaymentMethod>>;
-  subscribed?: Maybe<Scalars['Int']>;
 };
 
 export type GetInsightsQueryVariables = {};
@@ -348,6 +348,29 @@ export type CancelSubscriptionMutationVariables = {};
 export type CancelSubscriptionMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'cancelSubscription'>
+);
+
+export type GetPaymentMethodsQueryVariables = {};
+
+
+export type GetPaymentMethodsQuery = (
+  { __typename?: 'Query' }
+  & { paymentMethods: Array<(
+    { __typename?: 'PaymentMethod' }
+    & Pick<PaymentMethod, 'id' | 'isDefault'>
+    & { card: (
+      { __typename?: 'Card' }
+      & Pick<Card, 'brand' | 'expMonth' | 'expMonthString' | 'expYear' | 'last4'>
+    ) }
+  )> }
+);
+
+export type IsSubscribedQueryVariables = {};
+
+
+export type IsSubscribedQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'isSubscribed'>
 );
 
 export type GetCurrentUserTagsQueryVariables = {};
@@ -488,15 +511,7 @@ export type ResendConfirmEmailMutation = (
 
 export type UserFieldsFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'username' | 'email' | 'emailConfirmed' | 'subscribed'>
-  & { paymentMethods: Maybe<Array<(
-    { __typename?: 'PaymentMethod' }
-    & Pick<PaymentMethod, 'id' | 'isDefault'>
-    & { card: (
-      { __typename?: 'Card' }
-      & Pick<Card, 'brand' | 'expMonth' | 'expMonthString' | 'expYear' | 'last4'>
-    ) }
-  )>> }
+  & Pick<User, 'username' | 'email' | 'emailConfirmed'>
 );
 
 export const NoteFieldsFragmentDoc = gql`
@@ -519,18 +534,6 @@ export const UserFieldsFragmentDoc = gql`
   username
   email
   emailConfirmed
-  subscribed
-  paymentMethods {
-    id
-    isDefault
-    card {
-      brand
-      expMonth
-      expMonthString
-      expYear
-      last4
-    }
-  }
 }
     `;
 export const GetInsightsDocument = gql`
@@ -608,6 +611,26 @@ export const DeletePaymentMethodDocument = gql`
 export const CancelSubscriptionDocument = gql`
     mutation cancelSubscription {
   cancelSubscription
+}
+    `;
+export const GetPaymentMethodsDocument = gql`
+    query getPaymentMethods {
+  paymentMethods {
+    id
+    isDefault
+    card {
+      brand
+      expMonth
+      expMonthString
+      expYear
+      last4
+    }
+  }
+}
+    `;
+export const IsSubscribedDocument = gql`
+    query isSubscribed {
+  isSubscribed
 }
     `;
 export const GetCurrentUserTagsDocument = gql`
@@ -709,6 +732,12 @@ export function getSdk(client: GraphQLClient) {
     },
     cancelSubscription(variables?: CancelSubscriptionMutationVariables): Promise<CancelSubscriptionMutation> {
       return client.request<CancelSubscriptionMutation>(print(CancelSubscriptionDocument), variables);
+    },
+    getPaymentMethods(variables?: GetPaymentMethodsQueryVariables): Promise<GetPaymentMethodsQuery> {
+      return client.request<GetPaymentMethodsQuery>(print(GetPaymentMethodsDocument), variables);
+    },
+    isSubscribed(variables?: IsSubscribedQueryVariables): Promise<IsSubscribedQuery> {
+      return client.request<IsSubscribedQuery>(print(IsSubscribedDocument), variables);
     },
     getCurrentUserTags(variables?: GetCurrentUserTagsQueryVariables): Promise<GetCurrentUserTagsQuery> {
       return client.request<GetCurrentUserTagsQuery>(print(GetCurrentUserTagsDocument), variables);

@@ -6,6 +6,7 @@ import { appState } from './appReducer';
 import { searchNotes } from './searchNotes';
 import { insights } from './insightsReducer';
 import { notifier } from './notifier';
+import { subscription } from './subscriptionReducer';
 import { connectRouter } from 'connected-react-router';
 import { history } from '../helpers/history';
 
@@ -17,6 +18,7 @@ export const rootReducer = combineReducers({
     notifier,
     insights,
     appState,
+    subscription,
     router: connectRouter(history),
 });
 

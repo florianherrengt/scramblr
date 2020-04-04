@@ -16,6 +16,7 @@ export interface SettingsProps {
     onDeletePaymentMethod(paymentMethodId: string): void;
     onUpdateDefaultPaymentMethod(paymentMethodId: string): void;
     currentUser: RootState['currentUser'];
+    subscription: RootState['subscription'];
     checkoutLoading: boolean;
     onUpdateEmail(input: { email: string }): void;
     onResendEmailClick(): void;

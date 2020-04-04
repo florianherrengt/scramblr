@@ -3,4 +3,4 @@ export * from './notes';
 export * from './tags';
 export * from './notifier';
 export * from './insights';
-export * from './payment';
+export * from './subscription';

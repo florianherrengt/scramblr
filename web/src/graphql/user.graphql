@@ -40,16 +40,4 @@ fragment UserFields on User {
     username
     email
     emailConfirmed
-    subscribed
-    paymentMethods {
-        id
-        isDefault
-        card {
-            brand
-            expMonth
-            expMonthString
-            expYear
-            last4
-        }
-    }
 }

@@ -22,11 +22,11 @@ export class User {
     @Column({ nullable: false, length: 100 })
     password: string;
 
-    @Field(() => [PaymentMethod], { nullable: true })
-    paymentMethods: PaymentMethod[];
+    // @Field(() => [PaymentMethod], { nullable: true })
+    // paymentMethods: PaymentMethod[];
 
-    @Field(() => Int, { nullable: true, defaultValue: false })
-    subscribed?: boolean;
+    // @Field(() => Int, { nullable: true, defaultValue: false })
+    // subscribed?: boolean;
 
     @OneToMany((type) => Note, (note) => note.id, { onDelete: 'CASCADE' })
     notes?: Note[];

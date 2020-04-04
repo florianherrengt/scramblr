@@ -15,6 +15,7 @@ import { RootState } from '../../reducers';
 import { ThunkDispatch } from 'redux-thunk';
 import { loadStripe } from '@stripe/stripe-js';
 import { getApi } from '../../helpers';
+import { fetchPaymentMethods } from '../../actions';
 
 interface SettingsPageProps {}
 
@@ -22,10 +23,12 @@ export const SettingsPage: React.SFC<SettingsPageProps> = props => {
     type AppDispatch = ThunkDispatch<{}, any, any>;
     const dispatch: AppDispatch = useDispatch();
     const currentUser = useSelector((state: RootState) => state.currentUser);
+    const subscription = useSelector((state: RootState) => state.subscription);
     const [checkoutLoading, setCheckoutLoading] = useState(false);
 
     useEffect(() => {
         dispatch(fetchCurrentUser());
+        dispatch(fetchPaymentMethods());
     }, [dispatch]);
 
     const onSubscribeClick = async () => {
@@ -59,6 +62,7 @@ export const SettingsPage: React.SFC<SettingsPageProps> = props => {
             <AesPassphraseContainer submitLabel='Save' />
             <LineSpacer />
             <Settings
+                subscription={subscription}
                 checkoutLoading={checkoutLoading}
                 onCancelSubscription={onCancelSubscription}
                 onDeletePaymentMethod={onDeletePaymentMethod}

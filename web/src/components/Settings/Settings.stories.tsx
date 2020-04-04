@@ -18,10 +18,18 @@ const user: RootState['currentUser'] = {
     },
 };
 
+const subscription: RootState['subscription'] = {
+    fetched: false,
+    fetching: false,
+    isSubscribed: false,
+    paymentMethods: [],
+};
+
 export const Default = () => (
     <div style={{ maxWidth: 600, margin: 'auto' }}>
         <LineSpacer />
         <Settings
+            subscription={subscription}
             onCancelSubscription={action('onCancelSubscription')}
             onDeletePaymentMethod={action('onDeletePaymentMethod')}
             onUpdateDefaultPaymentMethod={action(

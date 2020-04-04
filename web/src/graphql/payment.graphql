@@ -9,3 +9,21 @@ mutation deletePaymentMethod($id: String!) {
 mutation cancelSubscription {
     cancelSubscription
 }
+
+query getPaymentMethods {
+    paymentMethods {
+        id
+        isDefault
+        card {
+            brand
+            expMonth
+            expMonthString
+            expYear
+            last4
+        }
+    }
+}
+
+query isSubscribed {
+    isSubscribed
+}

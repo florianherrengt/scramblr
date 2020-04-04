@@ -2,6 +2,7 @@ App:
     protocol: https
     domain: localhost:8081
     registrationDisabled: 0
+    requireSubscription: 0
 Jwt:
     secret: JWT_SECRET
 LogLevel: debug
