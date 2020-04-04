@@ -1,10 +1,10 @@
 import { push } from 'connected-react-router';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
+import { ActionCreator } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 import { routerUri } from '../../config';
 import { formatGraphqlErrors, getApi, User } from '../../helpers';
 import { RootState } from '../../reducers';
 import { SharedActions } from '../shared';
-import { ActionCreator } from 'redux';
 
 export interface GetCurrentUserActionFetching {
     type: 'GET_CURRENT_USER_REQUEST';
@@ -46,14 +46,14 @@ export const fetchCurrentUser: ActionCreator<ThunkAction<
         return dispatch({
             type: 'GET_CURRENT_USER_SUCCESS',
             user: currentUser,
-            isFetching: false,
         });
     } catch (error) {
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
-            return dispatch(push(routerUri.signIn));
+            dispatch(push(routerUri.signIn));
+        } else {
+            console.error(error);
         }
-        console.error(error);
         return dispatch({
             type: 'GET_CURRENT_USER_FAILURE',
         });

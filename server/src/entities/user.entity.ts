@@ -25,6 +25,9 @@ export class User {
     @Field(() => [PaymentMethod], { nullable: true })
     paymentMethods: PaymentMethod[];
 
+    @Field(() => Int, { nullable: true, defaultValue: false })
+    subscribed?: boolean;
+
     @OneToMany((type) => Note, (note) => note.id, { onDelete: 'CASCADE' })
     notes?: Note[];
 

@@ -1,10 +1,12 @@
 import { Redirect, Router, Switch, Route } from 'react-router';
 import React, { Suspense, lazy } from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Backdrop, useTheme } from '@material-ui/core';
 import { routerUri } from './config';
 import { MainLayout } from './containers/MainLayout';
 import { NotesPage } from './pages/Notes';
 import { history } from './helpers/history';
+import { RootState } from './reducers';
+import { useSelector } from 'react-redux';
 
 const TagsPage = lazy(() => import('./pages/Tags'));
 const PrivacyPage = lazy(() => import('./pages/Privacy'));
@@ -16,8 +18,16 @@ const SearchPage = lazy(() => import('./pages/Search'));
 const InsightsPage = lazy(() => import('./pages/Insights'));
 
 export const AppRouter = () => {
+    const theme = useTheme();
+    const appState = useSelector((state: RootState) => state.appState);
     return (
         <Router history={history}>
+            <Backdrop
+                style={{ zIndex: theme.zIndex.drawer + 1 }}
+                open={appState.loading}
+            >
+                <CircularProgress color='inherit' />
+            </Backdrop>
             <Switch>
                 <Route path={routerUri.signUp} exact>
                     <Suspense fallback={<CircularProgress />}>

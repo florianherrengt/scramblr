@@ -1,6 +1,6 @@
 import { AuthenticationError } from 'apollo-server-express';
 import * as config from 'config';
-import { Ctx, Query, Resolver } from 'type-graphql';
+import { Ctx, Query, Resolver, Mutation, Arg, Int } from 'type-graphql';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { User } from '../../entities/user.entity';
@@ -10,6 +10,8 @@ import {
     getStripeContainer,
     getStripeCustomerByEmail,
 } from '../../helpers';
+import Container from 'typedi';
+import Stripe from 'stripe';
 
 const planId = config.get('Stripe.planId') as string;
 
@@ -19,7 +21,28 @@ export class PaymentResolver {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ) {}
+    @Query((returns) => String)
+    async paymentMethods(@Ctx() context: AppContext) {
+        const { username } = context.user || {};
+        if (!username) {
+            throw new AuthenticationError('User not logged in');
+        }
+        const user = await this.userRepository.findOne({ username });
 
+        if (user?.email && user.emailConfirmed) {
+            const stripeCustomer = await getStripeCustomerByEmail(user.email);
+            if (stripeCustomer) {
+                const { paymentMethods, subscription } = stripeCustomer;
+                return {
+                    ...user,
+                    paymentMethods,
+                    subscribed: !!subscription.id,
+                };
+            }
+        }
+    }
+    @Query((returns) => String)
+    async isSubscribed(@Ctx() context: AppContext) {}
     @Query((returns) => String)
     async stripeSessionId(@Ctx() context: AppContext) {
         if (!context.user?.username) {
@@ -51,7 +74,7 @@ export class PaymentResolver {
                     setup_intent_data: {
                         metadata: {
                             customer_id: customer.id,
-                            subscription_id: customer.subscription.id,
+                            subscription_id: customer.subscription.id || null,
                         },
                     },
                     success_url: `${baseUrl}${AppRoutes.paymentSuccess}?session_id={CHECKOUT_SESSION_ID}`,
@@ -77,5 +100,61 @@ export class PaymentResolver {
                 cancel_url: `${baseUrl}/payment/failed`,
             })
         ).id;
+    }
+    @Mutation((returns) => Int)
+    async updateDefaultPaymentMethod(
+        @Arg('paymentMethodId') paymentMethodId: string,
+        @Ctx() context: AppContext,
+    ): Promise<boolean> {
+        if (!context.user?.username) {
+            throw new AuthenticationError('User not logged in');
+        }
+        const stripe = getStripeContainer();
+        const user = await this.userRepository.findOne(context.user.username);
+        const stripeCustomer = await getStripeCustomerByEmail(user?.email);
+        if (!stripeCustomer) {
+            throw new Error('No stripe customer for this user');
+        }
+        await stripe.customers.update(stripeCustomer.id, {
+            invoice_settings: {
+                default_payment_method: paymentMethodId,
+            },
+        });
+
+        if (stripeCustomer.subscription.id) {
+            await stripe.subscriptions.update(stripeCustomer.subscription.id, {
+                default_payment_method: paymentMethodId,
+            });
+        }
+        return true;
+    }
+    @Mutation((returns) => Int)
+    async deletePaymentMethod(
+        @Arg('paymentMethodId') paymentMethodId: string,
+        @Ctx() context: AppContext,
+    ): Promise<boolean> {
+        if (!context.user?.username) {
+            throw new AuthenticationError('User not logged in');
+        }
+        const stripe = getStripeContainer();
+        await stripe.paymentMethods.detach(paymentMethodId);
+        return true;
+    }
+    @Mutation((returns) => Int)
+    async cancelSubscription(@Ctx() context: AppContext): Promise<boolean> {
+        if (!context.user?.username) {
+            throw new AuthenticationError('User not logged in');
+        }
+        const stripe = getStripeContainer();
+        const user = await this.userRepository.findOne(context.user.username);
+        const stripeCustomer = await getStripeCustomerByEmail(user?.email);
+        if (!stripeCustomer) {
+            throw new Error('No stripe customer for this user');
+        }
+        if (!stripeCustomer.subscription.id) {
+            throw new Error('This user has no subscription');
+        }
+        await stripe.subscriptions.del(stripeCustomer.subscription.id);
+        return true;
     }
 }

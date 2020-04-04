@@ -70,6 +70,9 @@ export type Mutation = {
   createTag: Tag;
   updateTag: Tag;
   deleteTag: Tag;
+  updateDefaultPaymentMethod: Scalars['Int'];
+  deletePaymentMethod: Scalars['Int'];
+  cancelSubscription: Scalars['Int'];
 };
 
 
@@ -115,6 +118,16 @@ export type MutationUpdateTagArgs = {
 
 export type MutationDeleteTagArgs = {
   id: Scalars['String'];
+};
+
+
+export type MutationUpdateDefaultPaymentMethodArgs = {
+  paymentMethodId: Scalars['String'];
+};
+
+
+export type MutationDeletePaymentMethodArgs = {
+  paymentMethodId: Scalars['String'];
 };
 
 export type Note = {
@@ -211,6 +224,7 @@ export type User = {
   email?: Maybe<Scalars['String']>;
   emailConfirmed?: Maybe<Scalars['Int']>;
   paymentMethods?: Maybe<Array<PaymentMethod>>;
+  subscribed?: Maybe<Scalars['Int']>;
 };
 
 export type GetInsightsQueryVariables = {};
@@ -306,6 +320,34 @@ export type UpdateNoteMutation = (
 export type NoteFieldsFragment = (
   { __typename?: 'Note' }
   & Pick<Note, 'id' | 'text' | 'createdAt'>
+);
+
+export type UpdateDefaultPaymentMethodMutationVariables = {
+  id: Scalars['String'];
+};
+
+
+export type UpdateDefaultPaymentMethodMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateDefaultPaymentMethod'>
+);
+
+export type DeletePaymentMethodMutationVariables = {
+  id: Scalars['String'];
+};
+
+
+export type DeletePaymentMethodMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deletePaymentMethod'>
+);
+
+export type CancelSubscriptionMutationVariables = {};
+
+
+export type CancelSubscriptionMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'cancelSubscription'>
 );
 
 export type GetCurrentUserTagsQueryVariables = {};
@@ -446,7 +488,7 @@ export type ResendConfirmEmailMutation = (
 
 export type UserFieldsFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'username' | 'email' | 'emailConfirmed'>
+  & Pick<User, 'username' | 'email' | 'emailConfirmed' | 'subscribed'>
   & { paymentMethods: Maybe<Array<(
     { __typename?: 'PaymentMethod' }
     & Pick<PaymentMethod, 'id' | 'isDefault'>
@@ -477,6 +519,7 @@ export const UserFieldsFragmentDoc = gql`
   username
   email
   emailConfirmed
+  subscribed
   paymentMethods {
     id
     isDefault
@@ -552,6 +595,21 @@ export const UpdateNoteDocument = gql`
   }
 }
     ${NoteFieldsFragmentDoc}`;
+export const UpdateDefaultPaymentMethodDocument = gql`
+    mutation updateDefaultPaymentMethod($id: String!) {
+  updateDefaultPaymentMethod(paymentMethodId: $id)
+}
+    `;
+export const DeletePaymentMethodDocument = gql`
+    mutation deletePaymentMethod($id: String!) {
+  deletePaymentMethod(paymentMethodId: $id)
+}
+    `;
+export const CancelSubscriptionDocument = gql`
+    mutation cancelSubscription {
+  cancelSubscription
+}
+    `;
 export const GetCurrentUserTagsDocument = gql`
     query getCurrentUserTags {
   currentUserTags {
@@ -642,6 +700,15 @@ export function getSdk(client: GraphQLClient) {
     },
     updateNote(variables: UpdateNoteMutationVariables): Promise<UpdateNoteMutation> {
       return client.request<UpdateNoteMutation>(print(UpdateNoteDocument), variables);
+    },
+    updateDefaultPaymentMethod(variables: UpdateDefaultPaymentMethodMutationVariables): Promise<UpdateDefaultPaymentMethodMutation> {
+      return client.request<UpdateDefaultPaymentMethodMutation>(print(UpdateDefaultPaymentMethodDocument), variables);
+    },
+    deletePaymentMethod(variables: DeletePaymentMethodMutationVariables): Promise<DeletePaymentMethodMutation> {
+      return client.request<DeletePaymentMethodMutation>(print(DeletePaymentMethodDocument), variables);
+    },
+    cancelSubscription(variables?: CancelSubscriptionMutationVariables): Promise<CancelSubscriptionMutation> {
+      return client.request<CancelSubscriptionMutation>(print(CancelSubscriptionDocument), variables);
     },
     getCurrentUserTags(variables?: GetCurrentUserTagsQueryVariables): Promise<GetCurrentUserTagsQuery> {
       return client.request<GetCurrentUserTagsQuery>(print(GetCurrentUserTagsDocument), variables);

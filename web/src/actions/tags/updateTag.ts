@@ -89,16 +89,16 @@ export const updateTag = (variables: MutationUpdateTagArgs) => async (
             transactionId,
         });
     } catch (error) {
+        dispatch({
+            type: 'UPDATE_TAGS_FAILURE',
+            error,
+            transactionId,
+        });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[updateTag] Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
             return;
         }
         console.log(error);
-        dispatch({
-            type: 'UPDATE_TAGS_FAILURE',
-            error,
-            transactionId,
-        });
     }
 };

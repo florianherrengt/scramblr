@@ -55,13 +55,13 @@ export const updateEmail = (
             }),
         );
     } catch (error) {
+        dispatch({ type: 'UPDATE_EMAIL_FAILURE' });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
             return;
         }
         console.error(error);
-        dispatch({ type: 'UPDATE_EMAIL_FAILURE' });
 
         dispatch(
             enqueueSnackbar({

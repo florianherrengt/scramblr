@@ -12,6 +12,9 @@ import { EmailSettings } from './EmailSetting';
 import { SubscriptionSettings } from './SubscriptionSettings';
 
 export interface SettingsProps {
+    onCancelSubscription(): void;
+    onDeletePaymentMethod(paymentMethodId: string): void;
+    onUpdateDefaultPaymentMethod(paymentMethodId: string): void;
     currentUser: RootState['currentUser'];
     checkoutLoading: boolean;
     onUpdateEmail(input: { email: string }): void;

@@ -22,6 +22,11 @@ export const Default = () => (
     <div style={{ maxWidth: 600, margin: 'auto' }}>
         <LineSpacer />
         <Settings
+            onCancelSubscription={action('onCancelSubscription')}
+            onDeletePaymentMethod={action('onDeletePaymentMethod')}
+            onUpdateDefaultPaymentMethod={action(
+                'onUpdateDefaultPaymentMethod',
+            )}
             checkoutLoading={false}
             onSubscribeClick={action('onSubscribeClick')}
             onResendEmailClick={action('onResendEmailClick')}

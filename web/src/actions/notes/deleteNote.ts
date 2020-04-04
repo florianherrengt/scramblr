@@ -47,7 +47,12 @@ export const deleteNote = (id: string) => async (
             id: deleteNote.id,
         });
     } catch (error) {
-        console.error(error);
+        dispatch({
+            type: 'DELETE_NOTE_FAILURE',
+            id,
+            error,
+        });
+
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
@@ -59,10 +64,5 @@ export const deleteNote = (id: string) => async (
                 options: { variant: 'error' },
             }),
         );
-        dispatch({
-            type: 'DELETE_NOTE_FAILURE',
-            id,
-            error,
-        });
     }
 };

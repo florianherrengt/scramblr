@@ -4,7 +4,7 @@ import { getStripeContainer } from './containers';
 interface CustomerData {
     id: string;
     subscription: {
-        id: string;
+        id: string | null;
     };
     paymentMethods: PaymentMethod[];
 }
@@ -28,6 +28,7 @@ export const getStripeCustomerByEmail = async (
     if (!customer.data.length) {
         return null;
     }
+    // console.log(JSON.stringify(customer, null, 2));
     const customerId = customer.data[0].id;
     const subscriptions = customer.data[0].subscriptions;
 
@@ -54,16 +55,11 @@ export const getStripeCustomerByEmail = async (
           }))
         : [];
 
-    if (!subscriptions?.data.length) {
-        console.error(
-            'Error: A customer does not have a susbcription. This should not be possible.',
-        );
-        return null;
-    }
-
     return {
         id: customerId,
-        subscription: { id: subscriptions.data[0].id },
+        subscription: {
+            id: subscriptions?.data.length ? subscriptions.data[0].id : null,
+        },
         paymentMethods,
     };
 };

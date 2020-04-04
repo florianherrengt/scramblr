@@ -48,12 +48,12 @@ export const resendConfirmEmail = (
         );
         dispatch({ type: 'RESEND_EMAIL_SUCCESS' });
     } catch (error) {
+        dispatch({ type: 'RESEND_EMAIL_FAILURE' });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
             return;
         }
-        dispatch({ type: 'RESEND_EMAIL_FAILURE' });
         console.error(error);
         dispatch(
             enqueueSnackbar({

@@ -26,6 +26,22 @@ export class UserResolver {
         private readonly userRepository: Repository<User>,
     ) {}
 
+    async getUser(username: string): Promise<User | undefined> {
+        const user = await this.userRepository.findOne({ username });
+        if (user?.email && user.emailConfirmed) {
+            const stripeCustomer = await getStripeCustomerByEmail(user.email);
+            if (stripeCustomer) {
+                const { paymentMethods, subscription } = stripeCustomer;
+                return {
+                    ...user,
+                    paymentMethods,
+                    subscribed: !!subscription.id,
+                };
+            }
+        }
+        return user;
+    }
+
     @Query((returns) => Int, { nullable: false })
     async userExists(@Arg('username') username: string): Promise<boolean> {
         const user = await this.userRepository.findOne(username);
@@ -38,15 +54,8 @@ export class UserResolver {
         if (!username) {
             throw new AuthenticationError('User not logged in');
         }
-        const user = await this.userRepository.findOne({ username });
-        if (user?.email && user.emailConfirmed) {
-            const stripeCustomer = await getStripeCustomerByEmail(user.email);
-            if (stripeCustomer) {
-                const { paymentMethods } = stripeCustomer;
-                return { ...user, paymentMethods };
-            }
-        }
-        return user;
+
+        return this.getUser(username);
     }
 
     @Mutation((returns) => String, { nullable: true })
@@ -117,7 +126,7 @@ export class UserResolver {
         user.email = input.email;
         await this.userRepository.save(user);
         await sendConfirmEmail(user);
-        return user;
+        return this.getUser(username);
     }
     @Mutation((returns) => User)
     async resendConfirmEmail(@Ctx() context: AppContext) {
@@ -134,7 +143,7 @@ export class UserResolver {
         }
         await sendConfirmEmail(user);
 
-        return user;
+        return this.getUser(username);
     }
     @Mutation((returns) => Int)
     async deleteAccount(@Ctx() context: AppContext) {
@@ -147,7 +156,6 @@ export class UserResolver {
             return true;
         } catch (error) {
             throw error;
-            return false;
         }
     }
 }

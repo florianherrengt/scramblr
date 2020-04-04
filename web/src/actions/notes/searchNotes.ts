@@ -106,14 +106,14 @@ export const searchNotes = (options: SearchOptions) => async (
         });
     } catch (error) {
         console.error(error);
+        dispatch({
+            type: 'SEARCH_NOTES_FAILURE',
+            error,
+        });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
             return;
         }
-        dispatch({
-            type: 'SEARCH_NOTES_FAILURE',
-            error,
-        });
     }
 };

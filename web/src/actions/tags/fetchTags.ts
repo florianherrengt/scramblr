@@ -88,16 +88,16 @@ export const fetchCurrentUserTags = (
             isFetching: false,
         });
     } catch (error) {
+        dispatch({
+            type: 'GET_CURRENT_USER_TAGS_FAILURE',
+            error,
+            isFetching: false,
+        });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[deleteTag] Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
             return;
         }
         console.log(error);
-        dispatch({
-            type: 'GET_CURRENT_USER_TAGS_FAILURE',
-            error,
-            isFetching: false,
-        });
     }
 };

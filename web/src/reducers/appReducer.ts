@@ -7,11 +7,13 @@ interface LoadingOrError {
 }
 
 export interface AppState {
+    loading: boolean;
     updateEmail: LoadingOrError;
     resendEmail: LoadingOrError;
 }
 
 const defaultState: AppState = {
+    loading: false,
     updateEmail: {
         loading: false,
     },
@@ -25,6 +27,8 @@ export const appState = (
     action: SharedActions | UpdateEmailAction | ResendConfirmEmailAction,
 ): AppState => {
     switch (action.type) {
+        case 'APP_LOADING':
+            return { ...state, loading: action.loading };
         case 'UPDATE_EMAIL_REQUEST':
             return Object.assign({}, state, {
                 updateEmail: { ...state.updateEmail, loading: true },

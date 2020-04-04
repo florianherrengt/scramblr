@@ -40,6 +40,7 @@ fragment UserFields on User {
     username
     email
     emailConfirmed
+    subscribed
     paymentMethods {
         id
         isDefault
