@@ -49,13 +49,14 @@ export const fetchPaymentMethods: ActionCreator<ThunkAction<
             dispatch(push(routerUri.signIn));
         } else {
             console.error(error);
+            dispatch(
+                enqueueSnackbar({
+                    message: 'Error fetching payment methods',
+                    options: { variant: 'error' },
+                }),
+            );
         }
-        dispatch(
-            enqueueSnackbar({
-                message: 'Error fetching payment methods',
-                options: { variant: 'error' },
-            }),
-        );
+        
         return dispatch({
             type: 'GET_PAYMENT_METHODS_FAILURE',
         });

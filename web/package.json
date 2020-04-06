@@ -77,7 +77,6 @@
         ]
     },
     "devDependencies": {
-        "@bahmutov/add-typescript-to-cypress": "^2.1.2",
         "@graphql-codegen/cli": "^1.13.0",
         "@graphql-codegen/typescript": "^1.13.0",
         "@graphql-codegen/typescript-graphql-request": "^1.13.0",

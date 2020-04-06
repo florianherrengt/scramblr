@@ -1,17 +1,10 @@
 import { AuthenticationError } from 'apollo-server-express';
 import * as config from 'config';
-import { Ctx, Query, Resolver, Mutation, Arg, Int } from 'type-graphql';
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { User, PaymentMethod } from '../../entities';
-import {
-    AppContext,
-    AppRoutes,
-    getStripeContainer,
-    getStripeCustomerByEmail,
-} from '../../helpers';
-import Container from 'typedi';
-import Stripe from 'stripe';
+import { PaymentMethod, User } from '../../entities';
+import { AppContext, AppRoutes, getStripeContainer, getStripeCustomerByEmail } from '../../helpers';
 
 const planId = config.get('Stripe.planId') as string;
 
