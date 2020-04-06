@@ -26,7 +26,7 @@ registerEnumType(TagEmotion, {
 @Entity()
 @ObjectType()
 export class Tag {
-    @Field(type => ID)
+    @Field((type) => ID)
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -34,25 +34,21 @@ export class Tag {
     @Column({ length: 500 })
     label: string;
 
-    @Field({ defaultValue: TagEmotion.neutral })
+    @Field(() => TagEmotion, { defaultValue: TagEmotion.neutral })
     @Column({ default: TagEmotion.neutral })
     emotion: TagEmotion;
 
-    @ManyToMany(type => Note)
+    @ManyToMany((type) => Note)
     notes: Note[];
 
     @Field()
     @CreateDateColumn()
     createdAt: Date;
 
-    @ManyToOne(
-        type => User,
-        user => user.username,
-        {
-            onDelete: 'CASCADE',
-            nullable: false,
-        },
-    )
+    @ManyToOne((type) => User, (user) => user.username, {
+        onDelete: 'CASCADE',
+        nullable: false,
+    })
     user: User;
 }
 export interface ExportedTag

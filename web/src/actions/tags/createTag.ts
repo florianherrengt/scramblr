@@ -88,17 +88,18 @@ export const createTag = (variables: MutationCreateTagArgs) => async (
             }),
         );
     } catch (error) {
+        dispatch({
+            type: 'CREATE_TAGS_FAILURE',
+            error,
+            transactionId,
+        });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[createTag] Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
             return;
         }
         console.log(error);
-        dispatch({
-            type: 'CREATE_TAGS_FAILURE',
-            error,
-            transactionId,
-        });
+
         dispatch(
             enqueueSnackbar({
                 message: 'Error creating tag',

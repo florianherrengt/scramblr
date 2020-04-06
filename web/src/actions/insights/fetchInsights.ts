@@ -39,6 +39,9 @@ export const fetchInsights = () => async (
             insights,
         });
     } catch (error) {
+        dispatch({
+            type: 'GET_INSIGHTS_FAILURE',
+        });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
@@ -52,8 +55,5 @@ export const fetchInsights = () => async (
                 options: { variant: 'error' },
             }),
         );
-        dispatch({
-            type: 'GET_INSIGHTS_FAILURE',
-        });
     }
 };

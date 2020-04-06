@@ -10,14 +10,33 @@ import {
 import { RootState } from '../../reducers';
 import { SharedActions } from '../shared';
 
-export type ResendEmailAction = SharedActions;
+export interface ResendEmailActionRequest {
+    type: 'RESEND_EMAIL_REQUEST';
+}
+
+export interface ResendEmailActionSuccess {
+    type: 'RESEND_EMAIL_SUCCESS';
+}
+
+export interface ResendEmailActionFailure {
+    type: 'RESEND_EMAIL_FAILURE';
+}
+
+export type ResendConfirmEmailAction =
+    | SharedActions
+    | ResendEmailActionRequest
+    | ResendEmailActionSuccess
+    | ResendEmailActionFailure;
 
 export const resendConfirmEmail = (
     variables: ResendConfirmEmailMutationVariables,
-): ThunkAction<Promise<void>, RootState, {}, ResendEmailAction> => async (
-    dispatch,
-    getState,
-) => {
+): ThunkAction<
+    Promise<void>,
+    RootState,
+    {},
+    ResendConfirmEmailAction
+> => async (dispatch, getState) => {
+    dispatch({ type: 'RESEND_EMAIL_REQUEST' });
     const api = getApi();
     try {
         await api.resendConfirmEmail();
@@ -27,7 +46,9 @@ export const resendConfirmEmail = (
                 options: { variant: 'success' },
             }),
         );
+        dispatch({ type: 'RESEND_EMAIL_SUCCESS' });
     } catch (error) {
+        dispatch({ type: 'RESEND_EMAIL_FAILURE' });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));

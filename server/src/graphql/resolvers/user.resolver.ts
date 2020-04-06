@@ -15,6 +15,8 @@ import {
     appSession,
     sendConfirmEmail,
     createJwt,
+    getStripeContainer,
+    getStripeCustomerByEmail,
 } from '../../helpers';
 
 @Resolver(User)
@@ -36,7 +38,8 @@ export class UserResolver {
         if (!username) {
             throw new AuthenticationError('User not logged in');
         }
-        return this.userRepository.findOne({ username });
+        const user = await this.userRepository.findOne({ username });
+        return user;
     }
 
     @Mutation((returns) => String, { nullable: true })
@@ -91,7 +94,7 @@ export class UserResolver {
     async updateEmail(
         @Arg('input') input: UpdateEmailInput,
         @Ctx() context: AppContext,
-    ) {
+    ): Promise<User> {
         const { username } = context.user || {};
         if (!username) {
             throw new AuthenticationError('User not logged in');
@@ -99,6 +102,9 @@ export class UserResolver {
         const user = await this.userRepository.findOne({ username });
         if (!user) {
             throw new Error('User not found');
+        }
+        if (user.email && user.emailConfirmed) {
+            throw new Error('Cannot change email');
         }
         user.emailConfirmed = user.email === input.email;
         user.email = input.email;
@@ -107,7 +113,7 @@ export class UserResolver {
         return user;
     }
     @Mutation((returns) => User)
-    async resendConfirmEmail(@Ctx() context: AppContext) {
+    async resendConfirmEmail(@Ctx() context: AppContext): Promise<User> {
         const { username } = context.user || {};
         if (!username) {
             throw new AuthenticationError('User not logged in');
@@ -116,7 +122,7 @@ export class UserResolver {
         if (!user) {
             throw new Error('User not found');
         }
-        if (!user.emailConfirmed) {
+        if (user.emailConfirmed) {
             throw new Error('Email already confirmed');
         }
         await sendConfirmEmail(user);
@@ -125,15 +131,15 @@ export class UserResolver {
     }
     @Mutation((returns) => Int)
     async deleteAccount(@Ctx() context: AppContext) {
-        if (!context.user) {
-            throw new Error('cannot delete user');
+        const { user } = context;
+        if (!user) {
+            throw new AuthenticationError('User not logged in');
         }
         try {
-            await this.userRepository.delete(context.user.username);
+            await this.userRepository.delete(user.username);
             return true;
         } catch (error) {
             throw error;
-            return false;
         }
     }
 }

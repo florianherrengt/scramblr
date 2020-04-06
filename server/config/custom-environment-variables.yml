@@ -2,6 +2,7 @@ App:
     protocol: APP_PROTOCOL
     domain: APP_DOMAIN
     registrationDisabled: DISABLE_REGISTRATION
+    requireSubscription: REQUIRE_SUBSCRIPTION
 Jwt:
     secret: JWT_SECRET
 Database:

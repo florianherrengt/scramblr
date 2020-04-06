@@ -12,6 +12,25 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Card = {
+   __typename?: 'Card';
+  brand: CardBrand;
+  expMonth: Scalars['Float'];
+  expMonthString: Scalars['String'];
+  expYear: Scalars['Float'];
+  last4: Scalars['String'];
+};
+
+export enum CardBrand {
+  AmericanExpress = 'americanExpress',
+  DinersClub = 'dinersClub',
+  Discover = 'discover',
+  Jcb = 'jcb',
+  Mastercard = 'mastercard',
+  Unionpay = 'unionpay',
+  Visa = 'visa'
+}
+
 export type CreateNoteInput = {
   text: Scalars['String'];
   tags: Array<TagNote>;
@@ -51,6 +70,9 @@ export type Mutation = {
   createTag: Tag;
   updateTag: Tag;
   deleteTag: Tag;
+  updateDefaultPaymentMethod: Scalars['Int'];
+  deletePaymentMethod: Scalars['Int'];
+  cancelSubscription: Scalars['Int'];
 };
 
 
@@ -98,6 +120,16 @@ export type MutationDeleteTagArgs = {
   id: Scalars['String'];
 };
 
+
+export type MutationUpdateDefaultPaymentMethodArgs = {
+  paymentMethodId: Scalars['String'];
+};
+
+
+export type MutationDeletePaymentMethodArgs = {
+  paymentMethodId: Scalars['String'];
+};
+
 export type Note = {
    __typename?: 'Note';
   id: Scalars['ID'];
@@ -113,6 +145,13 @@ export type PaginatedNoteResponse = {
   hasMore: Scalars['Boolean'];
 };
 
+export type PaymentMethod = {
+   __typename?: 'PaymentMethod';
+  id: Scalars['String'];
+  isDefault: Scalars['Boolean'];
+  card: Card;
+};
+
 export type Query = {
    __typename?: 'Query';
   currentUserNotes: PaginatedNoteResponse;
@@ -120,6 +159,9 @@ export type Query = {
   currentUser?: Maybe<User>;
   currentUserTags: Array<Tag>;
   insights: Insight;
+  paymentMethods: Array<PaymentMethod>;
+  isSubscribed: Scalars['String'];
+  stripeSessionId: Scalars['String'];
 };
 
 
@@ -148,9 +190,15 @@ export type Tag = {
    __typename?: 'Tag';
   id: Scalars['ID'];
   label: Scalars['String'];
-  emotion?: Maybe<Scalars['String']>;
+  emotion?: Maybe<TagEmotion>;
   createdAt: Scalars['DateTime'];
 };
+
+export enum TagEmotion {
+  Positive = 'positive',
+  Neutral = 'neutral',
+  Negative = 'negative'
+}
 
 export type TagNote = {
   id: Scalars['String'];
@@ -274,6 +322,57 @@ export type NoteFieldsFragment = (
   & Pick<Note, 'id' | 'text' | 'createdAt'>
 );
 
+export type UpdateDefaultPaymentMethodMutationVariables = {
+  id: Scalars['String'];
+};
+
+
+export type UpdateDefaultPaymentMethodMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateDefaultPaymentMethod'>
+);
+
+export type DeletePaymentMethodMutationVariables = {
+  id: Scalars['String'];
+};
+
+
+export type DeletePaymentMethodMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deletePaymentMethod'>
+);
+
+export type CancelSubscriptionMutationVariables = {};
+
+
+export type CancelSubscriptionMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'cancelSubscription'>
+);
+
+export type GetPaymentMethodsQueryVariables = {};
+
+
+export type GetPaymentMethodsQuery = (
+  { __typename?: 'Query' }
+  & { paymentMethods: Array<(
+    { __typename?: 'PaymentMethod' }
+    & Pick<PaymentMethod, 'id' | 'isDefault'>
+    & { card: (
+      { __typename?: 'Card' }
+      & Pick<Card, 'brand' | 'expMonth' | 'expMonthString' | 'expYear' | 'last4'>
+    ) }
+  )> }
+);
+
+export type IsSubscribedQueryVariables = {};
+
+
+export type IsSubscribedQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'isSubscribed'>
+);
+
 export type GetCurrentUserTagsQueryVariables = {};
 
 
@@ -368,6 +467,14 @@ export type UserExistsQuery = (
   & Pick<Query, 'userExists'>
 );
 
+export type GetStripeSessionIdQueryVariables = {};
+
+
+export type GetStripeSessionIdQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'stripeSessionId'>
+);
+
 export type SignUpMutationVariables = {
   input: SignUpInput;
 };
@@ -387,7 +494,7 @@ export type UpdateEmailMutation = (
   { __typename?: 'Mutation' }
   & { updateEmail: (
     { __typename?: 'User' }
-    & Pick<User, 'username'>
+    & UserFieldsFragment
   ) }
 );
 
@@ -491,6 +598,41 @@ export const UpdateNoteDocument = gql`
   }
 }
     ${NoteFieldsFragmentDoc}`;
+export const UpdateDefaultPaymentMethodDocument = gql`
+    mutation updateDefaultPaymentMethod($id: String!) {
+  updateDefaultPaymentMethod(paymentMethodId: $id)
+}
+    `;
+export const DeletePaymentMethodDocument = gql`
+    mutation deletePaymentMethod($id: String!) {
+  deletePaymentMethod(paymentMethodId: $id)
+}
+    `;
+export const CancelSubscriptionDocument = gql`
+    mutation cancelSubscription {
+  cancelSubscription
+}
+    `;
+export const GetPaymentMethodsDocument = gql`
+    query getPaymentMethods {
+  paymentMethods {
+    id
+    isDefault
+    card {
+      brand
+      expMonth
+      expMonthString
+      expYear
+      last4
+    }
+  }
+}
+    `;
+export const IsSubscribedDocument = gql`
+    query isSubscribed {
+  isSubscribed
+}
+    `;
 export const GetCurrentUserTagsDocument = gql`
     query getCurrentUserTags {
   currentUserTags {
@@ -541,6 +683,11 @@ export const UserExistsDocument = gql`
   userExists(username: $username)
 }
     `;
+export const GetStripeSessionIdDocument = gql`
+    query getStripeSessionId {
+  stripeSessionId
+}
+    `;
 export const SignUpDocument = gql`
     mutation signUp($input: SignUpInput!) {
   signUp(input: $input)
@@ -549,10 +696,10 @@ export const SignUpDocument = gql`
 export const UpdateEmailDocument = gql`
     mutation updateEmail($input: UpdateEmailInput!) {
   updateEmail(input: $input) {
-    username
+    ...UserFields
   }
 }
-    `;
+    ${UserFieldsFragmentDoc}`;
 export const ResendConfirmEmailDocument = gql`
     mutation resendConfirmEmail {
   resendConfirmEmail {
@@ -577,6 +724,21 @@ export function getSdk(client: GraphQLClient) {
     updateNote(variables: UpdateNoteMutationVariables): Promise<UpdateNoteMutation> {
       return client.request<UpdateNoteMutation>(print(UpdateNoteDocument), variables);
     },
+    updateDefaultPaymentMethod(variables: UpdateDefaultPaymentMethodMutationVariables): Promise<UpdateDefaultPaymentMethodMutation> {
+      return client.request<UpdateDefaultPaymentMethodMutation>(print(UpdateDefaultPaymentMethodDocument), variables);
+    },
+    deletePaymentMethod(variables: DeletePaymentMethodMutationVariables): Promise<DeletePaymentMethodMutation> {
+      return client.request<DeletePaymentMethodMutation>(print(DeletePaymentMethodDocument), variables);
+    },
+    cancelSubscription(variables?: CancelSubscriptionMutationVariables): Promise<CancelSubscriptionMutation> {
+      return client.request<CancelSubscriptionMutation>(print(CancelSubscriptionDocument), variables);
+    },
+    getPaymentMethods(variables?: GetPaymentMethodsQueryVariables): Promise<GetPaymentMethodsQuery> {
+      return client.request<GetPaymentMethodsQuery>(print(GetPaymentMethodsDocument), variables);
+    },
+    isSubscribed(variables?: IsSubscribedQueryVariables): Promise<IsSubscribedQuery> {
+      return client.request<IsSubscribedQuery>(print(IsSubscribedDocument), variables);
+    },
     getCurrentUserTags(variables?: GetCurrentUserTagsQueryVariables): Promise<GetCurrentUserTagsQuery> {
       return client.request<GetCurrentUserTagsQuery>(print(GetCurrentUserTagsDocument), variables);
     },
@@ -600,6 +762,9 @@ export function getSdk(client: GraphQLClient) {
     },
     userExists(variables: UserExistsQueryVariables): Promise<UserExistsQuery> {
       return client.request<UserExistsQuery>(print(UserExistsDocument), variables);
+    },
+    getStripeSessionId(variables?: GetStripeSessionIdQueryVariables): Promise<GetStripeSessionIdQuery> {
+      return client.request<GetStripeSessionIdQuery>(print(GetStripeSessionIdDocument), variables);
     },
     signUp(variables: SignUpMutationVariables): Promise<SignUpMutation> {
       return client.request<SignUpMutation>(print(SignUpDocument), variables);

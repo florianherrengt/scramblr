@@ -11,6 +11,7 @@ export const SignInPage = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const currentUser = useSelector((state: RootState) => state.currentUser);
+    console.log(currentUser);
     useEffect(() => {
         const isDemo =
             new URLSearchParams(history.location.search).get('demo') === 'true';

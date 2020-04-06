@@ -85,6 +85,11 @@ export const updateNote = (
             transactionId,
         });
     } catch (error) {
+        dispatch({
+            type: 'UPDATE_NOTE_FAILURE',
+            transactionId,
+            error,
+        });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
@@ -97,10 +102,5 @@ export const updateNote = (
                 options: { variant: 'error' },
             }),
         );
-        dispatch({
-            type: 'UPDATE_NOTE_FAILURE',
-            transactionId,
-            error,
-        });
     }
 };

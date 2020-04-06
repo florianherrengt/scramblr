@@ -1,3 +1,5 @@
+@import '../../styles/variables';
+
 .Settings {
     .Settings_Button_Logout {
         width: 100%;
@@ -9,5 +11,10 @@
             display: block;
             width: 100%;
         }
+    }
+    .CardElementContainer {
+        border: 1px solid $color-grey;
+        padding: 20px;
+        border-radius: 5px;
     }
 }

@@ -65,6 +65,11 @@ export const deleteTag = (variables: MutationDeleteTagArgs) => async (
             transactionId,
         });
     } catch (error) {
+        dispatch({
+            type: 'DELETE_TAGS_FAILURE',
+            error,
+            transactionId,
+        });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[deleteTag] Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
@@ -77,10 +82,5 @@ export const deleteTag = (variables: MutationDeleteTagArgs) => async (
                 options: { variant: 'error' },
             }),
         );
-        dispatch({
-            type: 'DELETE_TAGS_FAILURE',
-            error,
-            transactionId,
-        });
     }
 };

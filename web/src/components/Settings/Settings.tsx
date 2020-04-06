@@ -4,19 +4,25 @@ import {
     CardContent,
     CardHeader,
     TextField,
-    Typography,
 } from '@material-ui/core';
-import React, { Fragment } from 'react';
+import React from 'react';
 import { RootState } from '../../reducers';
 import { LineSpacer } from '../LineSpacer';
 import { EmailSettings } from './EmailSetting';
+import { SubscriptionSettings } from './SubscriptionSettings';
 
 export interface SettingsProps {
+    onCancelSubscription(): void;
+    onDeletePaymentMethod(paymentMethodId: string): void;
+    onUpdateDefaultPaymentMethod(paymentMethodId: string): void;
     currentUser: RootState['currentUser'];
+    subscription: RootState['subscription'];
+    checkoutLoading: boolean;
     onUpdateEmail(input: { email: string }): void;
     onResendEmailClick(): void;
     onLogoutClick(): void;
     onExportClick(entity: 'notes' | 'tags'): void;
+    onSubscribeClick(): void;
 }
 
 export const Settings: React.SFC<SettingsProps> = props => {
@@ -35,20 +41,8 @@ export const Settings: React.SFC<SettingsProps> = props => {
                     <LineSpacer />
                     <EmailSettings {...props} />
 
-                    {props.currentUser.user?.email &&
-                        !props.currentUser.user?.emailConfirmed && (
-                            <Fragment>
-                                <LineSpacer variant='small' />
-                                <Typography color='secondary'>
-                                    You need to confirm your email address.
-                                    <Button onClick={props.onResendEmailClick}>
-                                        Resend email
-                                    </Button>
-                                </Typography>
-                            </Fragment>
-                        )}
-
                     <LineSpacer />
+
                     <Button
                         className='Settings_Button_Logout'
                         onClick={props.onLogoutClick}
@@ -59,6 +53,8 @@ export const Settings: React.SFC<SettingsProps> = props => {
                     </Button>
                 </CardContent>
             </Card>
+            <LineSpacer />
+            <SubscriptionSettings {...props} />
             <LineSpacer />
             <Card variant='outlined' className='Settings_Export'>
                 <CardHeader title='Export' />

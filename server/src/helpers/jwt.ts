@@ -2,8 +2,6 @@ import * as jwt from 'jsonwebtoken';
 import * as config from 'config';
 import { User } from '../entities/user.entity';
 
-console.info('jwt secret', config.get('Jwt.secret'));
-
 export interface JwtObject {
     username: string;
 }

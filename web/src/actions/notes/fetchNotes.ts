@@ -71,14 +71,14 @@ export const fetchCurrentUserNotes = (
             aesPassphrase: state.currentUser.aesPassphrase,
         });
     } catch (error) {
+        dispatch({
+            type: 'GET_CURRENT_USER_NOTES_FAILURE',
+        });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[FetchNotes] Unauthenticated. Redirect to sign in');
             dispatch(push(routerUri.signIn));
             return;
         }
         console.error(error);
-        dispatch({
-            type: 'GET_CURRENT_USER_NOTES_FAILURE',
-        });
     }
 };

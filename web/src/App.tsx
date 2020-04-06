@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, Fragment } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import './App.css';
 import { AppRouter } from './AppRouter';
@@ -26,10 +26,12 @@ function App() {
                 <CssBaseline />
                 <ReduxProvider store={store}>
                     <SnackbarProvider>
+                        <Fragment>
                         <Suspense fallback={<div />}>
                             <Notifier />
                         </Suspense>
                         <AppRouter />
+                        </Fragment>
                     </SnackbarProvider>
                 </ReduxProvider>
             </ThemeProvider>

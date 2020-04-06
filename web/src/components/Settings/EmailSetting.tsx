@@ -4,14 +4,25 @@ import {
     TextField,
     useMediaQuery,
     useTheme,
+    Typography,
 } from '@material-ui/core';
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import { SettingsProps } from './Settings';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../reducers';
+import { LineSpacer } from '..';
 
 export const EmailSettings: React.SFC<SettingsProps> = props => {
     const theme = useTheme();
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
+    const [isDirty, setIsDirty] = useState(false);
+    const isSaving = useSelector(
+        (state: RootState) => state.appState.updateEmail.loading,
+    );
+    const isSending = useSelector(
+        (state: RootState) => state.appState.resendEmail.loading,
+    );
     const [email, setEmail] = useState<string>('');
     if (props.currentUser.isFetching) {
         return <CircularProgress />;
@@ -20,26 +31,59 @@ export const EmailSettings: React.SFC<SettingsProps> = props => {
         return <div>Error, no user found.</div>;
     }
     return (
-        <div className={classNames({ flex: isDesktop })}>
-            <TextField
-                className={classNames({
-                    grow: isDesktop,
-                    'width-100': !isDesktop,
-                })}
-                label='Email'
-                variant='outlined'
-                disabled={props.currentUser.isFetching}
-                value={email || props.currentUser.user.email}
-                onChange={event => setEmail(event.target.value)}
-            />
-            <Button
-                onClick={() => email && props.onUpdateEmail({ email })}
-                className={classNames({
-                    'width-100': !isDesktop,
-                })}
+        <Fragment>
+            <form
+                className={classNames({ flex: isDesktop })}
+                onSubmit={event => {
+                    event.preventDefault();
+                    props.onUpdateEmail({ email });
+                }}
             >
-                Save
-            </Button>
-        </div>
+                <TextField
+                    className={classNames({
+                        grow: isDesktop,
+                        'width-100': !isDesktop,
+                    })}
+                    type='email'
+                    label='Email'
+                    variant='outlined'
+                    disabled={props.currentUser.isFetching || isSaving}
+                    value={
+                        isDirty
+                            ? email
+                            : email || props.currentUser.user.email || ''
+                    }
+                    onChange={event => {
+                        !isDirty && setIsDirty(true);
+                        setEmail(event.target.value);
+                    }}
+                />
+                <Button
+                    disabled={isSaving}
+                    onClick={() => email && props.onUpdateEmail({ email })}
+                    className={classNames({
+                        'width-100': !isDesktop,
+                    })}
+                >
+                    Save
+                </Button>
+            </form>
+            {props.currentUser.user?.email &&
+                !props.currentUser.user?.emailConfirmed && (
+                    <Fragment>
+                        <LineSpacer variant='small' />
+                        {isSending ? (
+                            <CircularProgress size={20} />
+                        ) : (
+                            <Typography color='secondary'>
+                                You need to confirm your email address.
+                                <Button onClick={props.onResendEmailClick}>
+                                    Resend email
+                                </Button>
+                            </Typography>
+                        )}
+                    </Fragment>
+                )}
+        </Fragment>
     );
 };
