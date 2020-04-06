@@ -89,6 +89,7 @@ describe('helpers/stripe', () => {
             customers: {
                 list: jest.fn().mockReturnValue(stripeResponse),
             },
+            paymentMethods: {list: jest.fn().mockReturnValue({data: []})}
         };
         Container.set('stripe', mockStripe);
         const customer = await getStripeCustomerByEmail('fake@email.com');
