@@ -53,12 +53,12 @@ export const createApp = async () => {
 
     app.set('trust proxy', 1);
 
-    // app.use(helmet());
-    // app.use(helmet.xssFilter());
-    // app.use(noCache());
-    // app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
-    // app.use(contentSecurityPolicyMiddleware);
-    // app.use(featurePolicyMiddleware);
+    app.use(helmet());
+    app.use(helmet.xssFilter());
+    app.use(noCache());
+    app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+    app.use(contentSecurityPolicyMiddleware);
+    app.use(featurePolicyMiddleware);
 
     app.use(compression({ level: 9 }));
     app.use(
@@ -127,14 +127,14 @@ export const createApp = async () => {
     app.use('/api/import/:entity', upload.single('data'), importRouter);
     app.get(AppRoutes.paymentSuccess, stripePaymentSuccessHandler);
 
-    app.get('/', (_, res) => {
-        res.sendFile(path.join(__dirname + '/../assets/landing/index.html'));
-    });
-    app.use('/landing*', (request, response) => {
-        response.sendFile(
-            path.join(__dirname + '/../assets/landing', request.originalUrl),
-        );
-    });
+    // app.get('/', (_, res) => {
+    //     res.sendFile(path.join(__dirname + '/../assets/landing/index.html'));
+    // });
+    // app.use('/landing*', (request, response) => {
+    //     response.sendFile(
+    //         path.join(__dirname + '/../assets/landing', request.originalUrl),
+    //     );
+    // });
 
     if (config.get('Env') === 'development') {
         app.use(

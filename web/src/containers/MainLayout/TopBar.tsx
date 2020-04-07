@@ -2,11 +2,11 @@ import {
     AppBar,
     Button,
     IconButton,
+    Slide,
     Toolbar,
     useMediaQuery,
     useScrollTrigger,
     useTheme,
-    Slide,
 } from '@material-ui/core';
 import {
     AccountCircle as AccountIcon,
