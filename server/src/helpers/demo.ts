@@ -6,6 +6,9 @@ import { range } from 'lodash';
 import { Connection, Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Note, Tag, TagEmotion, User } from '../entities';
+import { getLogger } from './logger';
+
+const logger = getLogger('stripePaymentSuccessHandler');
 
 export const encrypt = (str?: string): string => {
     if (!str) {
@@ -25,7 +28,7 @@ export class PopulateDemo {
         private readonly tagRepository: Repository<Tag>,
     ) {}
     async populate(): Promise<void> {
-        console.log('populating...');
+        console.info('populating...');
 
         const queryRunner = this.connection.createQueryRunner();
         await queryRunner.startTransaction();
@@ -107,7 +110,7 @@ export class PopulateDemo {
                         tags: [tags.startupIdea],
                         createdAt: new Date(),
                     })),
-                ].map(note => this.noteRepository.create({ ...note, user })),
+                ].map((note) => this.noteRepository.create({ ...note, user })),
             );
 
             const randomNotes = range(1, 100)
@@ -121,11 +124,11 @@ export class PopulateDemo {
                         new Date(),
                     ),
                 }))
-                .map(note => this.noteRepository.create({ ...note, user }));
+                .map((note) => this.noteRepository.create({ ...note, user }));
 
             await manager.insert(Note, randomNotes);
             await Promise.all(
-                randomNotes.map(note =>
+                randomNotes.map((note) =>
                     manager.save(Note, {
                         ...note,
                         tags: [faker.random.arrayElement(randomTags)],
@@ -160,7 +163,7 @@ export class PopulateDemo {
             ];
             await manager.save(
                 Note,
-                notes.map(note =>
+                notes.map((note) =>
                     this.noteRepository.create({
                         ...note,
                         text: encrypt(note.text),
@@ -171,7 +174,7 @@ export class PopulateDemo {
 
             await queryRunner.commitTransaction();
         } catch (error) {
-            console.log(error);
+            logger.log(error);
             await queryRunner.rollbackTransaction();
         } finally {
             await queryRunner.release();

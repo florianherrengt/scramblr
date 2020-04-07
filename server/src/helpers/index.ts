@@ -9,3 +9,4 @@ export * from './email';
 export * from './routes';
 export * from './stripe';
 export * from './containers';
+export * from './logger';

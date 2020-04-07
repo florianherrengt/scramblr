@@ -1,6 +1,8 @@
 import { Handler } from 'express';
-import { getStripeContainer } from '../helpers';
+import { getStripeContainer, getLogger } from '../helpers';
 import Stripe from 'stripe';
+
+const logger = getLogger('stripePaymentSuccessHandler');
 
 interface StripeSession {
     customer: string;
@@ -20,7 +22,6 @@ const getCustomerId = (setupIntent: Stripe.SetupIntent): string => {
     if (typeof setupIntent.metadata.customer_id === 'string') {
         return setupIntent.metadata.customer_id;
     }
-    console.debug(JSON.stringify({ setupIntent }, null, 2));
     throw new Error('No customer id found');
 };
 
@@ -75,7 +76,7 @@ export const stripePaymentSuccessHandler: Handler = async (
 
         response.redirect('/settings');
     } catch (error) {
-        console.error(error);
+        logger.error(error);
 
         response.status(500).send('Unexpected error: ' + error.message);
     }

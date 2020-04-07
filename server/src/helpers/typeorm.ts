@@ -2,7 +2,7 @@ import * as config from 'config';
 import * as TypeORM from 'typeorm';
 
 export const getDbConnectionOptions = () => {
-    console.info(`💾Using ${config.get('Database.type')} database`);
+    console.info(`🗄 Using ${config.get('Database.type')} database`);
 
     const defaultConnection = {
         database: config.get('Database.name') as string,

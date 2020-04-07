@@ -1,6 +1,6 @@
 {
     "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "node_modules"],
     "watch": ["src"],
-    "exec": "node --require ts-node/register --inspect src/index.ts",
+    "exec": "node --require ts-node/register src/index.ts",
     "ext": "ts"
 }
