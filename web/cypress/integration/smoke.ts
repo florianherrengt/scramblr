@@ -2,6 +2,7 @@
 /// <reference types="cypress" />
 
 import CryptoJS from 'crypto-js';
+import * as faker from 'faker';
 import { config } from '../config';
 
 const username =
@@ -11,7 +12,11 @@ const password =
 const aesPassphrase = 'passphrase';
 const tagLabel = 'tagtest';
 context('Smoke tests', () => {
-    it.only('sign up', function() {
+    beforeEach(() => {
+        Cypress.Cookies.preserveOnce('connect.sid');
+    });
+
+    it('sign up', function() {
         cy.visit(Cypress.config().baseUrl + config.routerUri.signUp);
         cy.get('.SignUp_TextField_Username').type(username);
         cy.get('.SignUp_TextField_Password').type(password);
@@ -68,6 +73,7 @@ context('Smoke tests', () => {
         cy.get('.NoteCard_MenuItem_Delete')
             .last()
             .click();
+        cy.get('.ConfirmModal_Button_Confirm').click();
         cy.get('.ListTags').should('not.contain', 'delete me');
     });
 
@@ -95,13 +101,22 @@ context('Smoke tests', () => {
     it('add a lot of notes and scroll back to top', function() {
         for (let i = 0; i < 10; i++) {
             cy.get('.CreateNote_TextField_Text')
-                .type(Math.random().toString())
+                .type(faker.random.words())
                 .type('{alt}{enter}');
         }
         cy.scrollTo('bottom');
         cy.get('.NoteList_Button_ScrollTop').should('be.visible');
         cy.get('.NoteList_Button_ScrollTop').click();
         cy.get('.NoteList_Button_ScrollTop').should('not.be.visible');
+    });
+
+    it('search for a tag', function() {
+        cy.get('.TopBar_IconButton_Menu').click();
+        cy.get('.MainLayout_Drawer_ListItem_Search').click();
+        cy.get('.SelectTag')
+            .type('test')
+            .type('{enter}');
+        cy.get('.NoteCard').should('have.length', 1);
     });
 
     it('logout', function() {
@@ -115,6 +130,14 @@ context('Smoke tests', () => {
                     localStorage.getItem(config.localStorageKeys.aesPassphrase),
                 ).to.be.null;
             });
+    });
+
+    it('sign in', function() {
+        cy.visit(Cypress.config().baseUrl + config.routerUri.notes);
+        cy.get('.SignIn_TextField_Username').type(username);
+        cy.get('.SignIn_TextField_Password').type(password);
+        cy.get('.SignIn_Button_Submit').click();
+        cy.url().should('include', config.routerUri.notes);
     });
 });
 

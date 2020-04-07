@@ -49,7 +49,7 @@ export const SignIn = (props: SignInProps) => {
                 </div>
                 <LineSpacer />
                 <Button
-                    className='SignIn_TextField_Button_Submit width-100'
+                    className='SignIn_Button_Submit width-100'
                     disabled={props.loading}
                     type='submit'
                     variant='outlined'

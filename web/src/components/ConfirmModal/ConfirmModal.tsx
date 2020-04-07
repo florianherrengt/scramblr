@@ -22,7 +22,11 @@ export interface ConfirmModalData {
 
 export const ConfirmModal: React.SFC<ConfirmModalProps> = props => {
     return (
-        <Dialog open={props.open} onClose={props.onCancel}>
+        <Dialog
+            className='ConfirmModal'
+            open={props.open}
+            onClose={props.onCancel}
+        >
             <DialogTitle>{props.title}</DialogTitle>
             <DialogContent>
                 <DialogContentText id='alert-dialog-description'>
@@ -30,10 +34,19 @@ export const ConfirmModal: React.SFC<ConfirmModalProps> = props => {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.onCancel} color='primary'>
+                <Button
+                    className='ConfirmModal_Button_Cancel'
+                    onClick={props.onCancel}
+                    color='primary'
+                >
                     Cancel
                 </Button>
-                <Button onClick={props.onConfirm} color='secondary' autoFocus>
+                <Button
+                    className='ConfirmModal_Button_Confirm'
+                    onClick={props.onConfirm}
+                    color='secondary'
+                    autoFocus
+                >
                     {props.confirmText || 'Ok'}
                 </Button>
             </DialogActions>

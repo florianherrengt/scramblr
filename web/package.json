@@ -77,6 +77,7 @@
         ]
     },
     "devDependencies": {
+        "@cypress/webpack-preprocessor": "^5.1.1",
         "@graphql-codegen/cli": "^1.13.0",
         "@graphql-codegen/typescript": "^1.13.0",
         "@graphql-codegen/typescript-graphql-request": "^1.13.0",
@@ -90,6 +91,7 @@
         "cypress": "^4.2.0",
         "faker": "^4.1.0",
         "prettier": "^1.19.1",
+        "ts-loader": "^6.2.2",
         "tslint": "^6.1.0",
         "tslint-config-prettier": "^1.18.0",
         "tslint-plugin-prettier": "^2.1.0",
