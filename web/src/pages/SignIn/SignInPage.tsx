@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { signIn } from '../../actions';
+import { useHistory } from 'react-router';
 import { SignIn } from '../../components';
 import { LineSpacer } from '../../components/LineSpacer';
-import { RootState } from '../../reducers';
-import { useHistory } from 'react-router';
+import { RootState } from '../../redux';
+import { signIn } from '../../redux/actions';
 
 export const SignInPage = () => {
     console.debug('SignInPage');

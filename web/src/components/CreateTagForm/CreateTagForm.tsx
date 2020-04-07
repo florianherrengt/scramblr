@@ -3,15 +3,15 @@ import {
     MenuItem,
     Select,
     TextField,
-    useTheme,
     useMediaQuery,
+    useTheme,
 } from '@material-ui/core';
-import React, { useState } from 'react';
-import { TagEmotion } from '../../helpers';
 import classNames from 'classnames';
-import { LineSpacer } from '../LineSpacer';
-import { RootState } from '../../reducers';
+import React, { useState } from 'react';
 import { ValuesType } from 'utility-types';
+import { TagEmotion } from '../../helpers';
+import { RootState } from '../../redux';
+import { LineSpacer } from '../LineSpacer';
 
 interface SubmitValues {
     label: string;

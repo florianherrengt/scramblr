@@ -1,8 +1,8 @@
+import { useSnackbar } from 'notistack';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSnackbar } from 'notistack';
-import { RootState } from '../reducers';
-import { removeSnackbar } from '../actions';
+import { RootState } from '../redux';
+import { removeSnackbar } from '../redux/actions';
 
 let displayed: string[] = [];
 

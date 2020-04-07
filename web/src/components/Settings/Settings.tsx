@@ -6,7 +6,7 @@ import {
     TextField,
 } from '@material-ui/core';
 import React from 'react';
-import { RootState } from '../../reducers';
+import { RootState } from '../../redux';
 import { LineSpacer } from '../LineSpacer';
 import { EmailSettings } from './EmailSetting';
 import { SubscriptionSettings } from './SubscriptionSettings';

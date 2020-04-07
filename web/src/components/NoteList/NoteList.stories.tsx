@@ -1,9 +1,7 @@
-import '../../styles/index.scss';
-import React from 'react';
-import { NoteList } from './NoteList';
-import { RootState } from '../../reducers';
-import { ValuesType } from 'utility-types';
 import { action } from '@storybook/addon-actions';
+import React from 'react';
+import '../../styles/index.scss';
+import { NoteList } from './NoteList';
 
 export default {
     component: NoteList,

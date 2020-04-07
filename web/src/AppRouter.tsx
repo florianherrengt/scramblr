@@ -1,12 +1,12 @@
-import { Redirect, Router, Switch, Route } from 'react-router';
-import React, { Suspense, lazy } from 'react';
-import { CircularProgress, Backdrop, useTheme } from '@material-ui/core';
+import { Backdrop, CircularProgress, useTheme } from '@material-ui/core';
+import React, { lazy, Suspense } from 'react';
+import { useSelector } from 'react-redux';
+import { Redirect, Route, Router, Switch } from 'react-router';
 import { routerUri } from './config';
 import { MainLayout } from './containers/MainLayout';
-import { NotesPage } from './pages/Notes';
 import { history } from './helpers/history';
-import { RootState } from './reducers';
-import { useSelector } from 'react-redux';
+import { NotesPage } from './pages/Notes';
+import { RootState } from './redux';
 
 const TagsPage = lazy(() => import('./pages/Tags'));
 const PrivacyPage = lazy(() => import('./pages/Privacy'));

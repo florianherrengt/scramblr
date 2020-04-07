@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { LineSpacer, Settings } from '../../components';
-import { AesPassphraseContainer } from '../Notes/AesPassphraseContainer';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-    signOut,
-    updateEmail,
-    resendConfirmEmail,
-    fetchCurrentUser,
-    updateDefaultPaymentMethod,
-    deletePaymentMethod,
-    cancelSubscription,
-} from '../../actions';
-import { RootState } from '../../reducers';
-import { ThunkDispatch } from 'redux-thunk';
 import { loadStripe } from '@stripe/stripe-js';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { LineSpacer, Settings } from '../../components';
 import { getApi } from '../../helpers';
-import { fetchPaymentMethods } from '../../actions';
+import { RootState } from '../../redux';
+import {
+    cancelSubscription,
+    deletePaymentMethod,
+    fetchCurrentUser,
+    fetchPaymentMethods,
+    resendConfirmEmail,
+    signOut,
+    updateDefaultPaymentMethod,
+    updateEmail,
+} from '../../redux/actions';
+import { AesPassphraseContainer } from '../Notes/AesPassphraseContainer';
 
 interface SettingsPageProps {}
 

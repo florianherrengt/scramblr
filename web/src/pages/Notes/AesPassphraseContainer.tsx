@@ -1,9 +1,9 @@
 import { CircularProgress } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAesPassphrase } from '../../actions';
 import { AesPassphraseForm } from '../../components';
-import { RootState } from '../../reducers';
+import { RootState } from '../../redux';
+import { setAesPassphrase } from '../../redux/actions';
 
 interface AesPassphraseContainerProps {
     submitLabel?: string;

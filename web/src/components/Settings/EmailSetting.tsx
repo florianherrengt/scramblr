@@ -2,16 +2,16 @@ import {
     Button,
     CircularProgress,
     TextField,
+    Typography,
     useMediaQuery,
     useTheme,
-    Typography,
 } from '@material-ui/core';
 import classNames from 'classnames';
-import React, { useState, Fragment } from 'react';
-import { SettingsProps } from './Settings';
+import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../reducers';
 import { LineSpacer } from '..';
+import { RootState } from '../../redux';
+import { SettingsProps } from './Settings';
 
 export const EmailSettings: React.SFC<SettingsProps> = props => {
     const theme = useTheme();

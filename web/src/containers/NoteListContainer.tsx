@@ -1,9 +1,9 @@
 import { Button, CircularProgress } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteNote, updateNote } from '../actions';
-import { NoteList, CreateNoteFormValues } from '../components';
-import { RootState } from '../reducers';
+import { CreateNoteFormValues, NoteList } from '../components';
+import { RootState } from '../redux';
+import { deleteNote, updateNote } from '../redux/actions';
 
 interface NoteListContainerProps {
     loadMore(): void;

@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
-
-import { TagsListContainer } from './TagsListContainer';
-import { CreateTagContainer } from './CreateTagContainer';
-import { LineSpacer } from '../../components';
 import { useDispatch } from 'react-redux';
-import { fetchCurrentUserTags } from '../../actions';
+import { LineSpacer } from '../../components';
+import { fetchCurrentUserTags } from '../../redux/actions';
+import { CreateTagContainer } from './CreateTagContainer';
+import { TagsListContainer } from './TagsListContainer';
 
 interface TagsPageProps {}
 

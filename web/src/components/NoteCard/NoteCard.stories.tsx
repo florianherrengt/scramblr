@@ -1,9 +1,9 @@
-import '../../styles/index.scss';
-import React from 'react';
-import { NoteCard } from './NoteCard';
-import { RootState } from '../../reducers';
-import { ValuesType } from 'utility-types';
 import { action } from '@storybook/addon-actions';
+import React from 'react';
+import { ValuesType } from 'utility-types';
+import { RootState } from '../../redux';
+import '../../styles/index.scss';
+import { NoteCard } from './NoteCard';
 
 export default {
     component: NoteCard,

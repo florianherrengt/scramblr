@@ -1,7 +1,7 @@
 import { CircularProgress, TextField } from '@material-ui/core/';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import React from 'react';
-import { RootState } from '../../reducers';
+import { RootState } from '../../redux';
 import { TagChip } from '../TagChip';
 
 export interface SelectTagProps {

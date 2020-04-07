@@ -1,9 +1,9 @@
 import { CircularProgress, Typography } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTag, updateTag } from '../../actions';
 import { ListTags } from '../../components';
-import { RootState } from '../../reducers';
+import { RootState } from '../../redux';
+import { deleteTag, updateTag } from '../../redux/actions';
 
 interface TagsListContainerProps {}
 

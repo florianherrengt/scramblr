@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { SelectTag, SelectTagProps } from '../components';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../reducers';
-import { fetchCurrentUserTags } from '../actions';
+import { RootState } from '../redux';
+import { fetchCurrentUserTags } from '../redux/actions';
 
 interface SelectTagContainerProps {
     onSubmit?: SelectTagProps['onSubmit'];

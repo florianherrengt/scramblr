@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { LineSpacer } from '../../components';
-import { RootState } from '../../reducers';
+import { NoteListContainer } from '../../containers/NoteListContainer';
+import { RootState } from '../../redux';
+import { fetchCurrentUserNotes } from '../../redux/actions';
 import { AesPassphraseContainer } from './AesPassphraseContainer';
 import { CreateNoteContainer } from './CreateNoteContainer';
-import { NoteListContainer } from '../../containers/NoteListContainer';
-import { fetchCurrentUserNotes } from '../../actions';
 
 export const NotesPage = () => {
     const dispatch = useDispatch();

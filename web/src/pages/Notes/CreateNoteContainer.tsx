@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createNote, fetchCurrentUserTags } from '../../actions';
 import { CreateNote } from '../../components';
-import { RootState } from '../../reducers';
+import { RootState } from '../../redux';
+import { createNote, fetchCurrentUserTags } from '../../redux/actions';
 
 interface CreateNoteContainerProps {}
 

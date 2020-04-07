@@ -14,11 +14,11 @@ import {
     Edit as EditIcon,
     MoreVert as MoreVertIcon,
 } from '@material-ui/icons';
+import classNames from 'classnames';
 import { formatDistance } from 'date-fns';
 import React from 'react';
 import { Optional, ValuesType } from 'utility-types';
-import { RootState } from '../../reducers';
-import classNames from 'classnames';
+import { RootState } from '../../redux';
 import { TagChip } from '../TagChip';
 
 export interface NoteCardProps {

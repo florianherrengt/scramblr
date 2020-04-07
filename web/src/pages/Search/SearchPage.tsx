@@ -1,14 +1,14 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { LineSpacer } from '../../components';
+import { NoteListContainer } from '../../containers/NoteListContainer';
+import { SelectTagContainer } from '../../containers/SelectTagContainer';
+import { RootState } from '../../redux';
 import {
     fetchCurrentUserNotes,
     resetSearchNotes,
     searchNotes,
-} from '../../actions';
-import { LineSpacer } from '../../components';
-import { NoteListContainer } from '../../containers/NoteListContainer';
-import { SelectTagContainer } from '../../containers/SelectTagContainer';
-import { RootState } from '../../reducers';
+} from '../../redux/actions';
 
 export const SearchPage = () => {
     const dispatch = useDispatch();

@@ -1,9 +1,9 @@
 import throttle from 'lodash.throttle';
 import React, { useState } from 'react';
-import { signUp } from '../../actions';
-import { LineSpacer } from '../../components/LineSpacer';
-import { SignUp } from '../../components';
 import { useDispatch } from 'react-redux';
+import { SignUp } from '../../components';
+import { LineSpacer } from '../../components/LineSpacer';
+import { signUp } from '../../redux/actions';
 
 export const SignUpPage = () => {
     const [usernameExists, setUsernameExists] = useState(false);

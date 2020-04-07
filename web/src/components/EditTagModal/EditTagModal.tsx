@@ -1,7 +1,7 @@
 import { Backdrop, Modal, Slide } from '@material-ui/core/';
 import React from 'react';
 import { ValuesType } from 'utility-types';
-import { RootState } from '../../reducers';
+import { RootState } from '../../redux';
 import { CreateTagForm, CreateTagFormProps } from '../CreateTagForm';
 
 interface EditTagModalProps {

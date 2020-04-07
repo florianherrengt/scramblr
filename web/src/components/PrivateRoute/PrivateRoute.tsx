@@ -1,9 +1,9 @@
-import React from 'react';
-import { Route, Redirect, RouteProps } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../reducers';
-import { fetchCurrentUser } from '../../actions';
 import { CircularProgress } from '@material-ui/core';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
+import { RootState } from '../../redux';
+import { fetchCurrentUser } from '../../redux/actions';
 
 export const PrivateRoute: React.SFC<RouteProps> = ({ children, ...rest }) => {
     const currentUser = useSelector((state: RootState) => state.currentUser);

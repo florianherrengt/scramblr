@@ -1,9 +1,9 @@
-import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { Settings } from './';
-import { LineSpacer } from '../LineSpacer';
-import { RootState } from '../../reducers';
 import * as faker from 'faker';
+import React from 'react';
+import { RootState } from '../../redux';
+import { LineSpacer } from '../LineSpacer';
+import { Settings } from './';
 export default {
     title: 'Setting',
 };
