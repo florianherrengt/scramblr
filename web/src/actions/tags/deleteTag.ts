@@ -3,9 +3,9 @@ import CryptoJS from 'crypto-js';
 import { ThunkDispatch } from 'redux-thunk';
 import { routerUri } from '../../config';
 import {
+    formatGraphqlErrors,
     getApi,
     MutationDeleteTagArgs,
-    formatGraphqlErrors,
 } from '../../helpers';
 import { RootState } from '../../reducers';
 import { enqueueSnackbar } from '../notifier';
@@ -72,6 +72,7 @@ export const deleteTag = (variables: MutationDeleteTagArgs) => async (
         });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[deleteTag] Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

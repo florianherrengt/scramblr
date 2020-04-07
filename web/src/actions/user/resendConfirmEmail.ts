@@ -51,6 +51,7 @@ export const resendConfirmEmail = (
         dispatch({ type: 'RESEND_EMAIL_FAILURE' });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

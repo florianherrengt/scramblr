@@ -1,15 +1,15 @@
+import { push, RouterAction } from 'connected-react-router';
+import { isEmpty } from 'lodash';
 import { ThunkDispatch } from 'redux-thunk';
+import { routerUri } from '../../config';
 import {
     decrypt,
+    formatGraphqlErrors,
+    getApi,
     GetCurrentUserNotesQuery,
     Tag,
-    getApi,
-    formatGraphqlErrors,
 } from '../../helpers';
 import { RootState } from '../../reducers';
-import { isEmpty } from 'lodash';
-import { routerUri } from '../../config';
-import { push, RouterAction } from 'connected-react-router';
 
 export interface SearchNotesActionReset {
     type: 'SEARCH_NOTES_RESET';
@@ -112,6 +112,7 @@ export const searchNotes = (options: SearchOptions) => async (
         });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

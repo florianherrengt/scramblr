@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { currentUser } from './currentUserReducer';
-import { currentUserNotes } from './currentUserNotesReducer';
+import { currentUserNotes } from './notes';
 import { currentUserTags } from './currentUserTagsReducer';
 import { appState } from './appReducer';
 import { searchNotes } from './searchNotes';

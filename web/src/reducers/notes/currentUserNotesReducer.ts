@@ -1,5 +1,5 @@
-import { CurrentUserActionSetAesPassphrase, NotesAction } from '../actions';
-import { decrypt, Note, Tag } from '../helpers';
+import { CurrentUserActionSetAesPassphrase, NotesAction } from '../../actions';
+import { decrypt, Note, Tag } from '../../helpers';
 
 type StateNote = Omit<Note, 'tags'> & {
     tags: Array<Pick<Tag, 'id'>>;
@@ -17,7 +17,7 @@ export interface CurrentUserNotesState {
     total: number;
 }
 
-const defaultState: CurrentUserNotesState = {
+export const defaultState: CurrentUserNotesState = {
     notes: [],
     isFetching: false,
     fetched: false,
@@ -32,6 +32,7 @@ export const currentUserNotes = (
     switch (action.type) {
         case 'SIGN_OUT_SUCCESS':
             return defaultState;
+
         case 'SET_AES_PASSPHRASE':
             return {
                 ...state,
@@ -41,9 +42,8 @@ export const currentUserNotes = (
                 })),
             };
         case 'GET_CURRENT_USER_NOTES_REQUEST':
-            return { ...state, ...action, isFetching: true };
+            return { ...state, ...action, isFetching: true, error: '' };
         case 'GET_CURRENT_USER_NOTES_SUCCESS':
-            console.debug('GET_CURRENT_USER_NOTES_SUCCESS');
             const notes = [
                 ...state.notes,
                 ...action.notes.items.map(note => ({
@@ -58,9 +58,15 @@ export const currentUserNotes = (
                 fetched: true,
                 isFetching: false,
                 total: action.notes.total,
+                error: '',
             };
         case 'GET_CURRENT_USER_NOTES_FAILURE':
-            return { ...state, fetched: true, isFetching: false };
+            return {
+                ...state,
+                fetched: true,
+                isFetching: false,
+                error: 'Failed fetching notes',
+            };
 
         case 'DELETE_NOTE_REQUEST':
             return {
@@ -69,6 +75,7 @@ export const currentUserNotes = (
                     ...note,
                     isLoading: note.id === action.id,
                 })),
+                error: '',
             };
 
         case 'DELETE_NOTE_SUCCESS':
@@ -76,12 +83,14 @@ export const currentUserNotes = (
                 ...state,
                 notes: state.notes.filter(note => note.id !== action.id),
                 total: state.total - 1,
+                error: '',
             };
 
         case 'DELETE_NOTE_FAILURE':
             return {
                 ...state,
                 notes: state.notes.map(note => ({ ...note, isLoading: false })),
+                error: action.error,
             };
 
         case 'CREATE_NOTE_REQUEST':
@@ -112,7 +121,6 @@ export const currentUserNotes = (
             };
 
         case 'CREATE_NOTE_FAILURE':
-            alert('Oops! Something wrong happened.');
             return {
                 ...state,
                 notes: state.notes.filter(
@@ -148,7 +156,6 @@ export const currentUserNotes = (
             };
 
         case 'UPDATE_NOTE_FAILURE':
-            alert('Oops! Something wrong happened.');
             return {
                 ...state,
                 notes: state.notes.map(note =>

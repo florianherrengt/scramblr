@@ -1,10 +1,10 @@
 import {
     CurrentUserActionSetAesPassphrase,
-    SearchNoteAction,
     NotesAction,
+    SearchNoteAction,
 } from '../actions';
 import { decrypt } from '../helpers';
-import { CurrentUserNotesState } from './currentUserNotesReducer';
+import { CurrentUserNotesState } from './notes';
 
 interface SearchNotesState extends CurrentUserNotesState {}
 
@@ -23,6 +23,7 @@ export const searchNotes = (
     switch (action.type) {
         case 'SIGN_OUT_SUCCESS':
             return defaultState;
+
         case 'SET_AES_PASSPHRASE':
             return {
                 ...state,

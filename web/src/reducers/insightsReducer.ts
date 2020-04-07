@@ -21,6 +21,7 @@ export const insights = (
     switch (action.type) {
         case 'SIGN_OUT_SUCCESS':
             return defaultState;
+
         case 'GET_INSIGHTS_REQUEST':
             return {
                 ...state,

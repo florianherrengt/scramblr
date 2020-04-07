@@ -1,14 +1,15 @@
+import { push } from 'connected-react-router';
 import { ThunkAction } from 'redux-thunk';
+import { routerUri } from '../../config';
 import {
     decrypt,
+    formatGraphqlErrors,
+    getApi,
     GetCurrentUserNotesQuery,
     GetCurrentUserNotesQueryVariables,
-    getApi,
-    formatGraphqlErrors,
 } from '../../helpers';
 import { RootState } from '../../reducers';
-import { routerUri } from '../../config';
-import { push, RouterAction } from 'connected-react-router';
+import { SharedActions } from '../shared';
 
 export interface GetNotesActionFetching {
     type: 'GET_CURRENT_USER_NOTES_REQUEST';
@@ -25,7 +26,7 @@ export interface GetNotesActionFailure {
 }
 
 export type GetNoteAction =
-    | RouterAction
+    | SharedActions
     | GetNotesActionFetching
     | GetNotesActionSuccess
     | GetNotesActionFailure;
@@ -76,6 +77,8 @@ export const fetchCurrentUserNotes = (
         });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[FetchNotes] Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

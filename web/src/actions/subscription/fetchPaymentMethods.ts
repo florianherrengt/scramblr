@@ -4,8 +4,8 @@ import { ThunkAction } from 'redux-thunk';
 import { routerUri } from '../../config';
 import { formatGraphqlErrors, getApi, PaymentMethod } from '../../helpers';
 import { RootState } from '../../reducers';
-import { SharedActions } from '../shared';
 import { enqueueSnackbar } from '../notifier';
+import { SharedActions } from '../shared';
 
 export interface GetPaymentMethodsFetching {
     type: 'GET_PAYMENT_METHODS_REQUEST';
@@ -46,6 +46,7 @@ export const fetchPaymentMethods: ActionCreator<ThunkAction<
     } catch (error) {
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
         } else {
             console.error(error);
@@ -56,7 +57,7 @@ export const fetchPaymentMethods: ActionCreator<ThunkAction<
                 }),
             );
         }
-        
+
         return dispatch({
             type: 'GET_PAYMENT_METHODS_FAILURE',
         });

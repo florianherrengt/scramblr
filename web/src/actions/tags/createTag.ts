@@ -6,9 +6,9 @@ import {
     CreateTagInput,
     CreateTagMutation,
     encrypt,
+    formatGraphqlErrors,
     getApi,
     MutationCreateTagArgs,
-    formatGraphqlErrors,
 } from '../../helpers';
 import { RootState } from '../../reducers';
 import { enqueueSnackbar } from '../notifier';
@@ -95,6 +95,7 @@ export const createTag = (variables: MutationCreateTagArgs) => async (
         });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[createTag] Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

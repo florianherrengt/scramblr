@@ -17,6 +17,9 @@ const defaultState: PaymentState = {
 
 export const subscription = (state = defaultState, action: PaymentActions) => {
     switch (action.type) {
+        case 'SIGN_OUT_SUCCESS':
+            return defaultState;
+
         case 'GET_PAYMENT_METHODS_REQUEST':
             return { ...state, fetching: true };
         case 'GET_PAYMENT_METHODS_SUCCESS':

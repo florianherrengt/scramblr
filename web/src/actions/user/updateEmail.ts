@@ -1,15 +1,15 @@
 import { push } from 'connected-react-router';
 import { ThunkAction } from 'redux-thunk';
+import { enqueueSnackbar } from '..';
 import { routerUri } from '../../config';
 import {
-    getApi,
     formatGraphqlErrors,
+    getApi,
     MutationUpdateEmailArgs,
 } from '../../helpers';
 import { RootState } from '../../reducers';
 import { SharedActions } from '../shared';
 import { GetCurrentUserAction } from './fetchUser';
-import { enqueueSnackbar } from '..';
 
 export interface UpdateEmailActionRequest {
     type: 'UPDATE_EMAIL_REQUEST';
@@ -58,6 +58,7 @@ export const updateEmail = (
         dispatch({ type: 'UPDATE_EMAIL_FAILURE' });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

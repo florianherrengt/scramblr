@@ -1,5 +1,5 @@
+import { ResendConfirmEmailAction, UpdateEmailAction } from '../actions';
 import { SharedActions } from '../actions/shared';
-import { UpdateEmailAction, ResendConfirmEmailAction } from '../actions';
 
 interface LoadingOrError {
     loading: boolean;
@@ -27,6 +27,8 @@ export const appState = (
     action: SharedActions | UpdateEmailAction | ResendConfirmEmailAction,
 ): AppState => {
     switch (action.type) {
+        case 'SIGN_OUT_SUCCESS':
+            return defaultState;
         case 'APP_LOADING':
             return { ...state, loading: action.loading };
         case 'UPDATE_EMAIL_REQUEST':

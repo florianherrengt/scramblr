@@ -95,6 +95,7 @@ export const fetchCurrentUserTags = (
         });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[deleteTag] Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

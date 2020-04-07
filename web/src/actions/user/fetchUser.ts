@@ -50,6 +50,7 @@ export const fetchCurrentUser: ActionCreator<ThunkAction<
     } catch (error) {
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
         } else {
             console.error(error);

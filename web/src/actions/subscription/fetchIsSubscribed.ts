@@ -4,7 +4,6 @@ import { ThunkAction } from 'redux-thunk';
 import { routerUri } from '../../config';
 import { formatGraphqlErrors, getApi } from '../../helpers';
 import { RootState } from '../../reducers';
-import { fetchCurrentUser, GetCurrentUserAction } from '../user';
 import { SharedActions } from '../shared';
 
 export interface GetIsSubscribedFetching {
@@ -13,7 +12,7 @@ export interface GetIsSubscribedFetching {
 
 export interface GetIsSubscribedSuccess {
     type: 'GET_IS_SUBSCRIBED_SUCCESS';
-    isSubscribed: boolean
+    isSubscribed: boolean;
 }
 
 export interface GetIsSubscribedFailure {
@@ -26,7 +25,6 @@ export type GetIsSubscribed =
     | GetIsSubscribedSuccess
     | GetIsSubscribedFailure;
 
-
 export const fetchIsSubscribed: ActionCreator<ThunkAction<
     Promise<GetIsSubscribed>,
     RootState,
@@ -37,27 +35,27 @@ export const fetchIsSubscribed: ActionCreator<ThunkAction<
     try {
         dispatch({
             type: 'GET_IS_SUBSCRIBED_REQUEST',
-        })
-        const {isSubscribed} = await api.isSubscribed()
-        if(!isSubscribed) {
+        });
+        const { isSubscribed } = await api.isSubscribed();
+        if (!isSubscribed) {
             return dispatch({
-                type: 'GET_IS_SUBSCRIBED_FAILURE'
-            })
+                type: 'GET_IS_SUBSCRIBED_FAILURE',
+            });
         }
         return dispatch({
             type: 'GET_IS_SUBSCRIBED_SUCCESS',
-            isSubscribed: Boolean(parseInt(isSubscribed, 10))
-        })
+            isSubscribed: Boolean(parseInt(isSubscribed, 10)),
+        });
     } catch (error) {
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
         } else {
             console.error(error);
-            
         }
         return dispatch({
-            type: "GET_IS_SUBSCRIBED_FAILURE"
-        })
+            type: 'GET_IS_SUBSCRIBED_FAILURE',
+        });
     }
 };

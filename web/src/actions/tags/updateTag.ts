@@ -96,6 +96,7 @@ export const updateTag = (variables: MutationUpdateTagArgs) => async (
         });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('[updateTag] Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

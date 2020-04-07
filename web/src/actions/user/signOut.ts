@@ -23,6 +23,7 @@ export const signOut = (): ThunkAction<
         localStorage.removeItem(localStorageKeys.aesPassphrase);
         await api.signOut();
         dispatch({ type: 'SIGN_OUT_SUCCESS' });
+        dispatch({ type: 'SIGN_OUT_SUCCESS' });
         dispatch(push(routerUri.signIn));
     } catch (error) {
         console.error(error);

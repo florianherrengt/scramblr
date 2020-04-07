@@ -1,7 +1,7 @@
 import { push } from 'connected-react-router';
 import { ThunkDispatch } from 'redux-thunk';
 import { routerUri } from '../../config';
-import { getApi, GetInsightsQuery, formatGraphqlErrors } from '../../helpers';
+import { formatGraphqlErrors, getApi, GetInsightsQuery } from '../../helpers';
 import { RootState } from '../../reducers';
 import { enqueueSnackbar } from '../notifier';
 import { SharedActions } from '../shared';
@@ -44,6 +44,7 @@ export const fetchInsights = () => async (
         });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

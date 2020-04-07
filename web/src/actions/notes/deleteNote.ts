@@ -1,8 +1,8 @@
-import { ThunkDispatch } from 'redux-thunk';
-import { getApi, formatGraphqlErrors } from '../../helpers';
-import { RootState } from '../../reducers';
 import { push } from 'connected-react-router';
+import { ThunkDispatch } from 'redux-thunk';
 import { routerUri } from '../../config';
+import { formatGraphqlErrors, getApi } from '../../helpers';
+import { RootState } from '../../reducers';
 import { enqueueSnackbar } from '../notifier';
 import { SharedActions } from '../shared';
 
@@ -55,6 +55,7 @@ export const deleteNote = (id: string) => async (
 
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

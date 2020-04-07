@@ -1,5 +1,6 @@
 import * as Notistack from 'notistack';
 import { NotifierActions } from '../actions';
+import { SharedActions } from '../actions/shared';
 
 export interface SnackNotification {
     key: string;
@@ -15,8 +16,14 @@ const defaultState: NotifierState = {
     notifications: [],
 };
 
-export const notifier = (state = defaultState, action: NotifierActions) => {
+export const notifier = (
+    state = defaultState,
+    action: NotifierActions | SharedActions,
+) => {
     switch (action.type) {
+        case 'SIGN_OUT_SUCCESS':
+            return defaultState;
+
         case 'ENQUEUE_SNACKBAR':
             return {
                 ...state,

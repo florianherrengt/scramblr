@@ -1,16 +1,9 @@
+import { push } from 'connected-react-router';
 import CryptoJS from 'crypto-js';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-    getApi,
-    CreateNoteMutation,
-    CreateNoteMutationVariables,
-    decrypt,
-    encrypt,
-    formatGraphqlErrors,
-} from '../../helpers';
-import { RootState } from '../../reducers';
-import { push } from 'connected-react-router';
 import { routerUri } from '../../config';
+import { CreateNoteMutation, CreateNoteMutationVariables, decrypt, encrypt, formatGraphqlErrors, getApi } from '../../helpers';
+import { RootState } from '../../reducers';
 import { enqueueSnackbar } from '../notifier';
 import { SharedActions } from '../shared';
 
@@ -86,6 +79,7 @@ export const createNote = (
         });
         if (formatGraphqlErrors(error)?.isUnauthenticated) {
             console.debug('Unauthenticated. Redirect to sign in');
+            dispatch({ type: 'SIGN_OUT_SUCCESS' });
             dispatch(push(routerUri.signIn));
             return;
         }

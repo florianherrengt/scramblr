@@ -1,5 +1,5 @@
-import { TagsAction, CurrentUserActionSetAesPassphrase } from '../actions';
-import { Tag, decrypt, TagEmotion } from '../helpers/';
+import { CurrentUserActionSetAesPassphrase, TagsAction } from '../actions';
+import { decrypt, Tag, TagEmotion } from '../helpers/';
 
 interface CurrentUserTagsState {
     tags: Array<
@@ -39,6 +39,7 @@ export const currentUserTags = (
     switch (action.type) {
         case 'SIGN_OUT_SUCCESS':
             return defaultState;
+
         case 'SET_AES_PASSPHRASE':
             return {
                 ...state,
