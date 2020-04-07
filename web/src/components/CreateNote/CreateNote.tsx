@@ -1,16 +1,18 @@
 import {
     Button,
     Card,
-    CardContent,
     CardActions,
+    CardContent,
     TextField,
+    TextFieldProps,
     Tooltip,
     useMediaQuery,
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router';
-import { SelectTag, SelectTagProps } from '../SelectTag';
+import { localStorageKeys } from '../../config';
 import { NoteCardProps } from '../NoteCard';
+import { SelectTag, SelectTagProps } from '../SelectTag';
 
 export interface CreateNoteFormValues {
     text: string;
@@ -28,7 +30,11 @@ export interface CreateNoteProps {
 
 const CreateNote = (props: CreateNoteProps) => {
     const isMobile = useMediaQuery('(max-width:450px)');
-    const [text, setText] = useState<string>(props.defaultText || '');
+    const [text, setText] = useState<string>(
+        props.defaultText ||
+            localStorage.getItem(localStorageKeys.createNoteText) ||
+            '',
+    );
     const [selectedTags, setSelectedTags] = useState<SelectTagProps['tags']>(
         // @ts-ignore
         props.defaultTags || [],
@@ -38,6 +44,7 @@ const CreateNote = (props: CreateNoteProps) => {
     const reset = () => {
         setText('');
         setSelectedTags([]);
+        localStorage.removeItem(localStorageKeys.createNoteText);
     };
 
     const submit = () => {
@@ -47,6 +54,15 @@ const CreateNote = (props: CreateNoteProps) => {
 
         props.onSubmit({ text, tags: selectedTags });
         reset();
+    };
+
+    const onChange: TextFieldProps['onChange'] = event => {
+        const text = event.target.value;
+        setText(text);
+        localStorage.setItem(
+            localStorageKeys.createNoteText,
+            event.target.value,
+        );
     };
 
     return (
@@ -69,12 +85,12 @@ const CreateNote = (props: CreateNoteProps) => {
                                     'search',
                                 )
                             }
-                            onChange={({ target: { value } }) => setText(value)}
+                            onChange={onChange}
                             value={text}
                             style={{ width: '100%' }}
                             multiline
                             variant='outlined'
-                            placeholder="What's in your mind?"
+                            placeholder="What's on your mind?"
                             onKeyDown={event => {
                                 if (event.key === 'Enter') {
                                     if (

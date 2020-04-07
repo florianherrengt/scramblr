@@ -1,7 +1,12 @@
 import { Button, CircularProgress } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CreateNoteFormValues, NoteList } from '../components';
+import {
+    ConfirmModal,
+    ConfirmModalData,
+    CreateNoteFormValues,
+    NoteList,
+} from '../components';
 import { RootState } from '../redux';
 import { deleteNote, updateNote } from '../redux/actions';
 
@@ -12,14 +17,40 @@ interface NoteListContainerProps {
 }
 
 export const NoteListContainer: React.SFC<NoteListContainerProps> = props => {
+    const [confirmModalData, setConfirmModalData] = useState<ConfirmModalData>({
+        action: null,
+        id: null,
+    });
     const [editingNoteId, setEditingNoteId] = useState('');
     const dispatch = useDispatch();
 
     const currentUserTags = useSelector(
         (state: RootState) => state.currentUserTags,
     );
+
     return (
         <div>
+            <ConfirmModal
+                title='Delete'
+                confirmText='Delete'
+                onCancel={() =>
+                    setConfirmModalData({
+                        action: null,
+                        id: null,
+                    })
+                }
+                open={Boolean(confirmModalData.action && confirmModalData.id)}
+                onConfirm={() => {
+                    if (
+                        confirmModalData.action === 'delete' &&
+                        confirmModalData.id
+                    ) {
+                        dispatch(deleteNote(confirmModalData.id));
+                        setConfirmModalData({ action: null, id: null });
+                    }
+                }}
+                message='Are you sure you want to delete this note?'
+            />
             <div>
                 {
                     <NoteList
@@ -38,9 +69,10 @@ export const NoteListContainer: React.SFC<NoteListContainerProps> = props => {
                         tags={currentUserTags.tags}
                         isTagLoading={currentUserTags.isFetching}
                         onDeleteClick={noteId => {
-                            if (window.confirm('Delete note?')) {
-                                dispatch(deleteNote(noteId));
-                            }
+                            setConfirmModalData({
+                                action: 'delete',
+                                id: noteId,
+                            });
                         }}
                         notes={props.displayedNotes.notes.map(note => {
                             const tags = note.tags
