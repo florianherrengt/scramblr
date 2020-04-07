@@ -1,4 +1,4 @@
-import { push, RouterAction } from 'connected-react-router';
+import { push } from 'connected-react-router';
 import { isEmpty } from 'lodash';
 import { ThunkDispatch } from 'redux-thunk';
 import { routerUri } from '../../config';
@@ -10,6 +10,7 @@ import {
     Tag,
 } from '../../helpers';
 import { RootState } from '../../reducers';
+import { SharedActions } from '../shared';
 
 export interface SearchNotesActionReset {
     type: 'SEARCH_NOTES_RESET';
@@ -31,7 +32,7 @@ export interface SearchNotesActionFailure {
 }
 
 export type SearchNoteAction =
-    | RouterAction
+    | SharedActions
     | SearchNotesActionReset
     | SearchNotesActionFetching
     | SearchNotesActionSuccess
