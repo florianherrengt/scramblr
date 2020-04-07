@@ -81,10 +81,10 @@ export const AppRouter = () => {
                             </div>
                         </Suspense>
                     </Route>
+                    <Route path='/' exact>
+                        <Redirect to={routerUri.notes} />
+                    </Route>
                 </MainLayout>
-                <Route path='*' exact>
-                    <Redirect to={routerUri.notes} />
-                </Route>
             </Switch>
         </Router>
     );
