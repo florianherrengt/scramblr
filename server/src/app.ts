@@ -53,12 +53,12 @@ export const createApp = async () => {
 
     app.set('trust proxy', 1);
 
-    app.use(helmet());
-    app.use(helmet.xssFilter());
-    app.use(noCache());
-    app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
-    app.use(contentSecurityPolicyMiddleware);
-    app.use(featurePolicyMiddleware);
+    // app.use(helmet());
+    // app.use(helmet.xssFilter());
+    // app.use(noCache());
+    // app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+    // app.use(contentSecurityPolicyMiddleware);
+    // app.use(featurePolicyMiddleware);
 
     app.use(compression({ level: 9 }));
     app.use(

@@ -20,10 +20,9 @@ export const SelectTag: React.SFC<SelectTagProps> = props => {
             multiple
             disabled={props.isLoading}
             autoHighlight
-            // selectOnFocus
             value={props.value}
             options={props.tags}
-            // autoSelect
+            getOptionLabel={option => option.label}
             onChange={(_, newValues: SelectTagProps['tags']) => {
                 props.onChange(newValues);
             }}
