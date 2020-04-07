@@ -28,7 +28,6 @@ export const getStripeCustomerByEmail = async (
     if (!customer.data.length) {
         return null;
     }
-    // console.log(JSON.stringify(customer, null, 2));
     const customerId = customer.data[0].id;
     const subscriptions = customer.data[0].subscriptions;
 

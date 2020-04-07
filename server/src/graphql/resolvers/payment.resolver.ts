@@ -4,9 +4,16 @@ import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { PaymentMethod, User } from '../../entities';
-import { AppContext, AppRoutes, getStripeContainer, getStripeCustomerByEmail } from '../../helpers';
+import {
+    AppContext,
+    AppRoutes,
+    getStripeContainer,
+    getStripeCustomerByEmail,
+    getLogger,
+} from '../../helpers';
 
 const planId = config.get('Stripe.planId') as string;
+const logger = getLogger('importRouter');
 
 @Resolver(User)
 export class PaymentResolver {
@@ -78,10 +85,7 @@ export class PaymentResolver {
         const stripe = getStripeContainer();
         // existing customer
         if (customer) {
-            console.debug(
-                'existing customer',
-                JSON.stringify(customer, null, 2),
-            );
+            logger.debug('existing customer', customer);
             return (
                 await stripe.checkout.sessions.create({
                     payment_method_types: ['card'],
@@ -100,7 +104,7 @@ export class PaymentResolver {
         }
 
         // new customer
-        console.debug('new customer');
+        logger.debug('new customer');
         return (
             await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],

@@ -25,7 +25,6 @@ interface RawTag {
 }
 
 export const exportRouter = async (request: Request, response: Response) => {
-    console.log('exportRouter', request.originalUrl);
     if (!['tags', 'notes'].includes(request.param('entity'))) {
         return response.status(400).send('Invalid entitty');
     }

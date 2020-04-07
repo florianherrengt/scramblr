@@ -4,6 +4,9 @@ import { Note, Tag, ExportedNote, ExportedTag, TagEmotion } from './entities';
 import { getRepository } from 'typeorm';
 import { Request, Response } from 'express';
 import * as readline from 'readline';
+import { getLogger } from './helpers';
+
+const logger = getLogger('importRouter');
 
 const getEmotion = (emotion: string): TagEmotion => {
     switch (emotion) {
@@ -41,7 +44,7 @@ export const importRouter = async (request: Request, response: Response) => {
 
     if (request.param('entity') === 'notes') {
         lineReader
-            .on('line', async rawNote => {
+            .on('line', async (rawNote) => {
                 try {
                     lineReader.pause();
                     const note: ExportedNote = JSON.parse(rawNote);
@@ -64,7 +67,7 @@ export const importRouter = async (request: Request, response: Response) => {
                     if (
                         note.tagId &&
                         !existingNote.tags
-                            .map(tag => tag.id)
+                            .map((tag) => tag.id)
                             .includes(note.tagId)
                     ) {
                         const tag = await tagRepository.findOne({
@@ -78,7 +81,7 @@ export const importRouter = async (request: Request, response: Response) => {
                     lineReader.resume();
                 } catch (e) {
                     error = e;
-                    console.error(e);
+                    logger.error(e);
                     lineReader.close();
                 }
             })
@@ -93,7 +96,7 @@ export const importRouter = async (request: Request, response: Response) => {
     }
     if (request.param('entity') === 'tags') {
         lineReader
-            .on('line', async rawTag => {
+            .on('line', async (rawTag) => {
                 try {
                     const tag: ExportedTag = JSON.parse(rawTag);
                     if (!(await tagRepository.findOne({ id: tag.id }))) {
@@ -107,7 +110,7 @@ export const importRouter = async (request: Request, response: Response) => {
                     }
                 } catch (e) {
                     error = e;
-                    console.error(e);
+                    logger.error(e);
                     lineReader.close();
                 }
             })
