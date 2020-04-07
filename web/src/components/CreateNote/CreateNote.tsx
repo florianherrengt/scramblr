@@ -135,7 +135,9 @@ const CreateNote = (props: CreateNoteProps) => {
                         >
                             {props.defaultText ? 'Cancel' : 'Discard'}
                         </Button>
+
                         <Tooltip
+                            open={isMobile ? false : undefined}
                             disableTouchListener
                             enterDelay={0}
                             title={`${
