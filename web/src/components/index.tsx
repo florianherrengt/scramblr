@@ -6,6 +6,7 @@ export * from './CreateTagForm';
 export * from './EmotionsCharts';
 export * from './LineSpacer';
 export * from './ListTags';
+export * from './MoodSelector';
 export * from './NoteCard';
 export * from './NoteList';
 export * from './PrivateRoute';

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LineSpacer } from '../../components';
+import { LineSpacer, MoodSelector } from '../../components';
 import { NoteListContainer } from '../../containers/NoteListContainer';
 import { RootState } from '../../redux';
 import { fetchCurrentUserNotes } from '../../redux/actions';
@@ -39,11 +39,14 @@ export const NotesPage = () => {
     return (
         <div>
             <LineSpacer />
+            <MoodSelector />
+            <LineSpacer />
             {!aesPassphrase ? (
                 <AesPassphraseContainer />
             ) : (
                 <CreateNoteContainer />
             )}
+
             <LineSpacer />
             <NoteListContainer
                 isLoading={currentUserNotes.isFetching}

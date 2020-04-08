@@ -1,0 +1,17 @@
+query moods {
+    moods {
+        ...MoodFields
+    }
+}
+
+mutation recordMood($input: RecordMoodInput!) {
+    recordMood(input: $input) {
+        ...MoodFields
+    }
+}
+
+fragment MoodFields on Mood {
+    id
+    rating
+    createdAt
+}

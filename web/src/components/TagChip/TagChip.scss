@@ -16,10 +16,10 @@
         }
     }
     &--negative {
-        border-color: $color-error !important;
-        color: $color-error !important;
+        border-color: $color-red !important;
+        color: $color-red !important;
         svg {
-            color: $color-error !important;
+            color: $color-red !important;
         }
     }
 }

@@ -1,4 +1,6 @@
 {
-    "git.ignoreLimitWarning": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    }
 }

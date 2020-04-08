@@ -1,0 +1,24 @@
+@import '../../styles/variables';
+
+.MoodSelector {
+    .MoodSelector_Card_CardContent {
+        text-align: center;
+    }
+
+    .MoodIcon {
+        font-size: 50px;
+        color: $color-grey;
+        &--very-dissatisfied:hover {
+            color: $color-red;
+        }
+        &--dissatisfied:hover {
+            color: $color-orange;
+        }
+        &--satisfied:hover {
+            color: $color-success;
+        }
+        &--special:hover {
+            color: $color-yellow;
+        }
+    }
+}

@@ -14,10 +14,11 @@ import * as path from 'path';
 import { buildSchema } from 'type-graphql';
 import { Container } from 'typedi';
 import * as TypeORM from 'typeorm';
-import { Note, Tag, User } from './entities';
+import { Mood, Note, Tag, User } from './entities';
 import { exportRouter } from './exportRouter';
 import {
     InsightResolver,
+    MoodResolver,
     NoteResolver,
     PaymentResolver,
     TagResolver,
@@ -32,10 +33,7 @@ import {
     redisClient,
 } from './helpers';
 import { importRouter } from './importRouter';
-import {
-    contentSecurityPolicyMiddleware,
-    featurePolicyMiddleware,
-} from './middlewares';
+import { featurePolicyMiddleware } from './middlewares';
 
 const RedisStore = connectRedis(session);
 
@@ -53,12 +51,11 @@ export const createApp = async () => {
 
     app.set('trust proxy', 1);
 
-    // app.use(helmet());
-    // app.use(helmet.xssFilter());
-    // app.use(noCache());
-    // app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
-    // app.use(contentSecurityPolicyMiddleware);
-    // app.use(featurePolicyMiddleware);
+    app.use(helmet());
+    app.use(helmet.xssFilter());
+    app.use(noCache());
+    app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+    app.use(featurePolicyMiddleware);
 
     app.use(compression({ level: 9 }));
     app.use(
@@ -80,7 +77,7 @@ export const createApp = async () => {
     const connection = await TypeORM.createConnection({
         ...getDbConnectionOptions(),
         synchronize: true,
-        entities: [User, Note, Tag],
+        entities: [User, Note, Tag, Mood],
     });
 
     const schema = await buildSchema({
@@ -90,6 +87,7 @@ export const createApp = async () => {
             TagResolver,
             InsightResolver,
             PaymentResolver,
+            MoodResolver,
         ],
         container: Container,
     });

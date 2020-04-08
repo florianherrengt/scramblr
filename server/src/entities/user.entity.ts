@@ -1,8 +1,7 @@
-import { Field, ID, ObjectType, Int } from 'type-graphql';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Note } from './note.entity';
 import { Tag } from './tag.entitiy';
-import { PaymentMethod } from './PaymentMethods.entity';
 
 @Entity()
 @ObjectType()
@@ -21,12 +20,6 @@ export class User {
 
     @Column({ nullable: false, length: 100 })
     password: string;
-
-    // @Field(() => [PaymentMethod], { nullable: true })
-    // paymentMethods: PaymentMethod[];
-
-    // @Field(() => Int, { nullable: true, defaultValue: false })
-    // subscribed?: boolean;
 
     @OneToMany((type) => Note, (note) => note.id, { onDelete: 'CASCADE' })
     notes?: Note[];

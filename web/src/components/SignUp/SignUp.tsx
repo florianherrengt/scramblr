@@ -24,13 +24,15 @@ export const SignUp = (props: SignUpProps) => {
         }, 200),
     );
 
+    const onSubmit = () => props.onSubmit({ username, password });
+
     useEffect(() => onUsernameChange.current(username), [username]);
     return (
         <div className='SignUp'>
             <form
                 onSubmit={event => {
                     event.preventDefault();
-                    props.onSubmit({ username, password });
+                    onSubmit();
                 }}
             >
                 <div>

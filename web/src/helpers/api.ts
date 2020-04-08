@@ -1,5 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import { print } from 'graphql';
+import { SdkFunctionWrapper, defaultWrapper } from '@graphql-codegen/typescript-graphql-request';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
@@ -56,23 +57,43 @@ export type InsightData = {
   negative: Scalars['Int'];
 };
 
+export type Mood = {
+   __typename?: 'Mood';
+  id: Scalars['ID'];
+  rating: MoodRating;
+  createdAt: Scalars['DateTime'];
+};
+
+export enum MoodRating {
+  Sad = 'sad',
+  Meh = 'meh',
+  Good = 'good',
+  Special = 'special'
+}
+
 export type Mutation = {
    __typename?: 'Mutation';
+  recordMood: Mood;
   deleteNote: Note;
   updateNote: Note;
   createNote: Note;
+  updateDefaultPaymentMethod: Scalars['Int'];
+  deletePaymentMethod: Scalars['Int'];
+  cancelSubscription: Scalars['Int'];
+  createTag: Tag;
+  updateTag: Tag;
+  deleteTag: Tag;
   signIn?: Maybe<Scalars['String']>;
   signUp: Scalars['String'];
   signOut: Scalars['Int'];
   updateEmail: User;
   resendConfirmEmail: User;
   deleteAccount: Scalars['Int'];
-  createTag: Tag;
-  updateTag: Tag;
-  deleteTag: Tag;
-  updateDefaultPaymentMethod: Scalars['Int'];
-  deletePaymentMethod: Scalars['Int'];
-  cancelSubscription: Scalars['Int'];
+};
+
+
+export type MutationRecordMoodArgs = {
+  input: RecordMoodInput;
 };
 
 
@@ -91,18 +112,13 @@ export type MutationCreateNoteArgs = {
 };
 
 
-export type MutationSignInArgs = {
-  input: SignInInput;
+export type MutationUpdateDefaultPaymentMethodArgs = {
+  paymentMethodId: Scalars['String'];
 };
 
 
-export type MutationSignUpArgs = {
-  input: SignUpInput;
-};
-
-
-export type MutationUpdateEmailArgs = {
-  input: UpdateEmailInput;
+export type MutationDeletePaymentMethodArgs = {
+  paymentMethodId: Scalars['String'];
 };
 
 
@@ -121,13 +137,18 @@ export type MutationDeleteTagArgs = {
 };
 
 
-export type MutationUpdateDefaultPaymentMethodArgs = {
-  paymentMethodId: Scalars['String'];
+export type MutationSignInArgs = {
+  input: SignInInput;
 };
 
 
-export type MutationDeletePaymentMethodArgs = {
-  paymentMethodId: Scalars['String'];
+export type MutationSignUpArgs = {
+  input: SignUpInput;
+};
+
+
+export type MutationUpdateEmailArgs = {
+  input: UpdateEmailInput;
 };
 
 export type Note = {
@@ -154,14 +175,15 @@ export type PaymentMethod = {
 
 export type Query = {
    __typename?: 'Query';
-  currentUserNotes: PaginatedNoteResponse;
-  userExists: Scalars['Int'];
-  currentUser?: Maybe<User>;
-  currentUserTags: Array<Tag>;
   insights: Insight;
+  moods: Array<Mood>;
+  currentUserNotes: PaginatedNoteResponse;
   paymentMethods: Array<PaymentMethod>;
   isSubscribed: Scalars['String'];
   stripeSessionId: Scalars['String'];
+  currentUserTags: Array<Tag>;
+  userExists: Scalars['Int'];
+  currentUser?: Maybe<User>;
 };
 
 
@@ -174,6 +196,12 @@ export type QueryCurrentUserNotesArgs = {
 
 export type QueryUserExistsArgs = {
   username: Scalars['String'];
+};
+
+export type RecordMoodInput = {
+  id: Scalars['ID'];
+  rating: MoodRating;
+  date: Scalars['DateTime'];
 };
 
 export type SignInInput = {
@@ -245,6 +273,35 @@ export type GetInsightsQuery = (
       & Pick<InsightData, 'label' | 'positive' | 'negative'>
     )> }
   ) }
+);
+
+export type MoodsQueryVariables = {};
+
+
+export type MoodsQuery = (
+  { __typename?: 'Query' }
+  & { moods: Array<(
+    { __typename?: 'Mood' }
+    & MoodFieldsFragment
+  )> }
+);
+
+export type RecordMoodMutationVariables = {
+  input: RecordMoodInput;
+};
+
+
+export type RecordMoodMutation = (
+  { __typename?: 'Mutation' }
+  & { recordMood: (
+    { __typename?: 'Mood' }
+    & MoodFieldsFragment
+  ) }
+);
+
+export type MoodFieldsFragment = (
+  { __typename?: 'Mood' }
+  & Pick<Mood, 'id' | 'rating' | 'createdAt'>
 );
 
 export type GetCurrentUserNotesQueryVariables = {
@@ -433,7 +490,7 @@ export type GetCurrentUserQueryVariables = {};
 
 export type GetCurrentUserQuery = (
   { __typename?: 'Query' }
-  & { currentUser: Maybe<(
+  & { currentUser?: Maybe<(
     { __typename?: 'User' }
     & UserFieldsFragment
   )> }
@@ -514,6 +571,13 @@ export type UserFieldsFragment = (
   & Pick<User, 'username' | 'email' | 'emailConfirmed'>
 );
 
+export const MoodFieldsFragmentDoc = gql`
+    fragment MoodFields on Mood {
+  id
+  rating
+  createdAt
+}
+    `;
 export const NoteFieldsFragmentDoc = gql`
     fragment NoteFields on Note {
   id
@@ -557,6 +621,20 @@ export const GetInsightsDocument = gql`
   }
 }
     `;
+export const MoodsDocument = gql`
+    query moods {
+  moods {
+    ...MoodFields
+  }
+}
+    ${MoodFieldsFragmentDoc}`;
+export const RecordMoodDocument = gql`
+    mutation recordMood($input: RecordMoodInput!) {
+  recordMood(input: $input) {
+    ...MoodFields
+  }
+}
+    ${MoodFieldsFragmentDoc}`;
 export const GetCurrentUserNotesDocument = gql`
     query getCurrentUserNotes($skip: Int, $limit: Int, $tagsId: [String!]) {
   currentUserNotes(skip: $skip, limit: $limit, tagsId: $tagsId) {
@@ -707,73 +785,79 @@ export const ResendConfirmEmailDocument = gql`
   }
 }
     ${UserFieldsFragmentDoc}`;
-export function getSdk(client: GraphQLClient) {
+export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
     getInsights(variables?: GetInsightsQueryVariables): Promise<GetInsightsQuery> {
-      return client.request<GetInsightsQuery>(print(GetInsightsDocument), variables);
+      return withWrapper(() => client.request<GetInsightsQuery>(print(GetInsightsDocument), variables));
+    },
+    moods(variables?: MoodsQueryVariables): Promise<MoodsQuery> {
+      return withWrapper(() => client.request<MoodsQuery>(print(MoodsDocument), variables));
+    },
+    recordMood(variables: RecordMoodMutationVariables): Promise<RecordMoodMutation> {
+      return withWrapper(() => client.request<RecordMoodMutation>(print(RecordMoodDocument), variables));
     },
     getCurrentUserNotes(variables?: GetCurrentUserNotesQueryVariables): Promise<GetCurrentUserNotesQuery> {
-      return client.request<GetCurrentUserNotesQuery>(print(GetCurrentUserNotesDocument), variables);
+      return withWrapper(() => client.request<GetCurrentUserNotesQuery>(print(GetCurrentUserNotesDocument), variables));
     },
     deleteNote(variables: DeleteNoteMutationVariables): Promise<DeleteNoteMutation> {
-      return client.request<DeleteNoteMutation>(print(DeleteNoteDocument), variables);
+      return withWrapper(() => client.request<DeleteNoteMutation>(print(DeleteNoteDocument), variables));
     },
     createNote(variables: CreateNoteMutationVariables): Promise<CreateNoteMutation> {
-      return client.request<CreateNoteMutation>(print(CreateNoteDocument), variables);
+      return withWrapper(() => client.request<CreateNoteMutation>(print(CreateNoteDocument), variables));
     },
     updateNote(variables: UpdateNoteMutationVariables): Promise<UpdateNoteMutation> {
-      return client.request<UpdateNoteMutation>(print(UpdateNoteDocument), variables);
+      return withWrapper(() => client.request<UpdateNoteMutation>(print(UpdateNoteDocument), variables));
     },
     updateDefaultPaymentMethod(variables: UpdateDefaultPaymentMethodMutationVariables): Promise<UpdateDefaultPaymentMethodMutation> {
-      return client.request<UpdateDefaultPaymentMethodMutation>(print(UpdateDefaultPaymentMethodDocument), variables);
+      return withWrapper(() => client.request<UpdateDefaultPaymentMethodMutation>(print(UpdateDefaultPaymentMethodDocument), variables));
     },
     deletePaymentMethod(variables: DeletePaymentMethodMutationVariables): Promise<DeletePaymentMethodMutation> {
-      return client.request<DeletePaymentMethodMutation>(print(DeletePaymentMethodDocument), variables);
+      return withWrapper(() => client.request<DeletePaymentMethodMutation>(print(DeletePaymentMethodDocument), variables));
     },
     cancelSubscription(variables?: CancelSubscriptionMutationVariables): Promise<CancelSubscriptionMutation> {
-      return client.request<CancelSubscriptionMutation>(print(CancelSubscriptionDocument), variables);
+      return withWrapper(() => client.request<CancelSubscriptionMutation>(print(CancelSubscriptionDocument), variables));
     },
     getPaymentMethods(variables?: GetPaymentMethodsQueryVariables): Promise<GetPaymentMethodsQuery> {
-      return client.request<GetPaymentMethodsQuery>(print(GetPaymentMethodsDocument), variables);
+      return withWrapper(() => client.request<GetPaymentMethodsQuery>(print(GetPaymentMethodsDocument), variables));
     },
     isSubscribed(variables?: IsSubscribedQueryVariables): Promise<IsSubscribedQuery> {
-      return client.request<IsSubscribedQuery>(print(IsSubscribedDocument), variables);
+      return withWrapper(() => client.request<IsSubscribedQuery>(print(IsSubscribedDocument), variables));
     },
     getCurrentUserTags(variables?: GetCurrentUserTagsQueryVariables): Promise<GetCurrentUserTagsQuery> {
-      return client.request<GetCurrentUserTagsQuery>(print(GetCurrentUserTagsDocument), variables);
+      return withWrapper(() => client.request<GetCurrentUserTagsQuery>(print(GetCurrentUserTagsDocument), variables));
     },
     createTag(variables: CreateTagMutationVariables): Promise<CreateTagMutation> {
-      return client.request<CreateTagMutation>(print(CreateTagDocument), variables);
+      return withWrapper(() => client.request<CreateTagMutation>(print(CreateTagDocument), variables));
     },
     updateTag(variables: UpdateTagMutationVariables): Promise<UpdateTagMutation> {
-      return client.request<UpdateTagMutation>(print(UpdateTagDocument), variables);
+      return withWrapper(() => client.request<UpdateTagMutation>(print(UpdateTagDocument), variables));
     },
     deleteTag(variables: DeleteTagMutationVariables): Promise<DeleteTagMutation> {
-      return client.request<DeleteTagMutation>(print(DeleteTagDocument), variables);
+      return withWrapper(() => client.request<DeleteTagMutation>(print(DeleteTagDocument), variables));
     },
     getCurrentUser(variables?: GetCurrentUserQueryVariables): Promise<GetCurrentUserQuery> {
-      return client.request<GetCurrentUserQuery>(print(GetCurrentUserDocument), variables);
+      return withWrapper(() => client.request<GetCurrentUserQuery>(print(GetCurrentUserDocument), variables));
     },
     signIn(variables: SignInMutationVariables): Promise<SignInMutation> {
-      return client.request<SignInMutation>(print(SignInDocument), variables);
+      return withWrapper(() => client.request<SignInMutation>(print(SignInDocument), variables));
     },
     signOut(variables?: SignOutMutationVariables): Promise<SignOutMutation> {
-      return client.request<SignOutMutation>(print(SignOutDocument), variables);
+      return withWrapper(() => client.request<SignOutMutation>(print(SignOutDocument), variables));
     },
     userExists(variables: UserExistsQueryVariables): Promise<UserExistsQuery> {
-      return client.request<UserExistsQuery>(print(UserExistsDocument), variables);
+      return withWrapper(() => client.request<UserExistsQuery>(print(UserExistsDocument), variables));
     },
     getStripeSessionId(variables?: GetStripeSessionIdQueryVariables): Promise<GetStripeSessionIdQuery> {
-      return client.request<GetStripeSessionIdQuery>(print(GetStripeSessionIdDocument), variables);
+      return withWrapper(() => client.request<GetStripeSessionIdQuery>(print(GetStripeSessionIdDocument), variables));
     },
     signUp(variables: SignUpMutationVariables): Promise<SignUpMutation> {
-      return client.request<SignUpMutation>(print(SignUpDocument), variables);
+      return withWrapper(() => client.request<SignUpMutation>(print(SignUpDocument), variables));
     },
     updateEmail(variables: UpdateEmailMutationVariables): Promise<UpdateEmailMutation> {
-      return client.request<UpdateEmailMutation>(print(UpdateEmailDocument), variables);
+      return withWrapper(() => client.request<UpdateEmailMutation>(print(UpdateEmailDocument), variables));
     },
     resendConfirmEmail(variables?: ResendConfirmEmailMutationVariables): Promise<ResendConfirmEmailMutation> {
-      return client.request<ResendConfirmEmailMutation>(print(ResendConfirmEmailDocument), variables);
+      return withWrapper(() => client.request<ResendConfirmEmailMutation>(print(ResendConfirmEmailDocument), variables));
     }
   };
 }

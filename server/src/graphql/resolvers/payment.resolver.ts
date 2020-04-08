@@ -7,16 +7,16 @@ import { PaymentMethod, User } from '../../entities';
 import {
     AppContext,
     AppRoutes,
+    getLogger,
     getStripeContainer,
     getStripeCustomerByEmail,
-    getLogger,
 } from '../../helpers';
 
 const planId = config.get('Stripe.planId') as string;
-const logger = getLogger('importRouter');
 
 @Resolver(User)
 export class PaymentResolver {
+    private logger = getLogger(PaymentResolver.name);
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
@@ -85,7 +85,7 @@ export class PaymentResolver {
         const stripe = getStripeContainer();
         // existing customer
         if (customer) {
-            logger.debug('existing customer', customer);
+            this.logger.debug('existing customer', customer);
             return (
                 await stripe.checkout.sessions.create({
                     payment_method_types: ['card'],
@@ -104,7 +104,7 @@ export class PaymentResolver {
         }
 
         // new customer
-        logger.debug('new customer');
+        this.logger.debug('new customer');
         return (
             await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
