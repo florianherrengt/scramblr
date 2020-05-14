@@ -19,7 +19,7 @@ export const MoodSelector: React.SFC<MoodSelectorProps> = props => {
     return (
         <Card className='MoodSelector'>
             <CardHeader
-                title='How was your day?'
+                title='How was test your day?'
                 className='MoodSelector_CardHeader text-center'
             />
             <CardContent className='MoodSelector_Card_CardContent'>
