@@ -2,14 +2,13 @@ import { ApolloServer } from 'apollo-server-express';
 import * as compression from 'compression';
 import * as config from 'config';
 import * as connectRedis from 'connect-redis';
+import * as cors from 'cors';
 import * as dateFns from 'date-fns';
 import * as express from 'express';
 import * as session from 'express-session';
-import * as helmet from 'helmet';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import * as morgan from 'morgan';
 import * as multer from 'multer';
-import * as noCache from 'nocache';
 import * as path from 'path';
 import { buildSchema } from 'type-graphql';
 import { Container } from 'typedi';
@@ -33,7 +32,6 @@ import {
     redisClient,
 } from './helpers';
 import { importRouter } from './importRouter';
-import { featurePolicyMiddleware } from './middlewares';
 
 const RedisStore = connectRedis(session);
 
@@ -41,6 +39,7 @@ const upload = multer({ dest: 'uploads/', limits: { fileSize: 10000000 } });
 
 export const createApp = async () => {
     const app = express();
+    app.use(cors());
     app.use(
         morgan(':method :url :status - :response-time ms', {
             skip: function (req, res) {
@@ -51,11 +50,11 @@ export const createApp = async () => {
 
     app.set('trust proxy', 1);
 
-    app.use(helmet());
-    app.use(helmet.xssFilter());
-    app.use(noCache());
-    app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
-    app.use(featurePolicyMiddleware);
+    // app.use(helmet());
+    // app.use(helmet.xssFilter());
+    // app.use(noCache());
+    // app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+    // app.use(featurePolicyMiddleware);
 
     app.use(compression({ level: 9 }));
     app.use(
